@@ -1,5 +1,7 @@
 # Never commit source data, archives, credentials, or model weights
 data/
+models/
+aihubshell
 *.zip
 *.z01
 *.z02
