@@ -1,0 +1,18 @@
+# Never commit source data, archives, credentials, or model weights
+data/
+*.zip
+*.z01
+*.z02
+*.z03
+*.z04
+*.z05
+*.jpg
+*.jpeg
+*.png
+*.mp4
+*.pth
+*.pt
+*.ckpt
+.env
+.ipynb_checkpoints/
+
