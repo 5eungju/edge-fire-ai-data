@@ -20,7 +20,7 @@ def create_demo(raw: Path) -> None:
     """Generate two synthetic image/label pairs matching the AI Hub schema."""
     raw.mkdir(parents=True, exist_ok=True)
     pixel = base64.b64decode(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aVuoAAAAASUVORK5CYII="
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4n8IAAAPJAWTeJBK5AAAAAElFTkSuQmCC"
     )
     for frame in range(1, 3):
         stem = f"demo_frame_{frame:02}"
