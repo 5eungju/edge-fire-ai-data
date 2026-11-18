@@ -3,7 +3,7 @@ set -euo pipefail
 
 DATASET_KEY="71330"
 FILE_KEY="${1:-485847}"  # default: VL.zip, 160.40 MB; label-only, not for model training
-DEST="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/data/raw"
+DEST="${AIHUB_DATA_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/data/raw}"
 mkdir -p "$DEST"
 cd "$DEST"
 

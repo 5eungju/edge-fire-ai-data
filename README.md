@@ -2,6 +2,50 @@
 
 AI Hub 산불 이미지 데이터(데이터셋 71330)를 내려받고, 이미지와 세그멘테이션 라벨을 점검하는 Python 프로젝트입니다. Colab 대신 **VS Code + WSL Ubuntu**를 기준으로 구성했습니다. AI Hub는 Windows에서 API 다운로드할 때 WSL 사용을 권장합니다.
 
+## 빠른 실행
+
+Python 3.10 이상에서 합성 이미지 2장과 라벨을 만들고 전처리까지 실행합니다. API 키나 추가 Python 패키지 없이 실행할 수 있습니다.
+
+```powershell
+python scripts/prepare.py demo
+```
+
+`data/demo/processed/`의 `summary.json`, `image_manifest.csv`, `annotations.csv`, `invalid_json.csv`를 확인하세요.
+
+AI Hub 71330 데이터 다운로드 승인을 받은 뒤 WSL Ubuntu에서 아래 명령을 실행하면 검증 라벨 `VL.zip`(약 160MB)을 받아 CSV를 생성합니다. 발급받은 API 키는 숨김 입력 프롬프트에서 입력하세요. 결과는 `data/download-labels/processed/`에 저장됩니다. 검증 이미지는 별도로 받으므로 이 단계는 라벨 점검용입니다.
+
+```bash
+python3 scripts/prepare.py download-labels
+```
+
+압축을 푼 이미지와 JSON이 이미 있으면 같은 배치 폴더에 두고 Windows에서도 실행할 수 있습니다. 배치마다 다른 결과 폴더를 지정하세요.
+
+```powershell
+python scripts/prepare.py local --input D:/edge-fire/batch-01 --output D:/edge-fire/results/batch-01
+```
+
+Colab에서도 같은 코드를 실행할 수 있습니다. Colab 보안 비밀 `AIHUB_API_KEY`에 API 키를 저장하고 노트북 접근을 허용한 다음 아래를 실행하세요. 승인된 키로 Colab에서 다운로드가 가능한지 확인합니다. 결과는 Drive에 저장됩니다.
+
+```python
+import os
+import subprocess
+import sys
+from pathlib import Path
+from google.colab import drive, userdata
+
+drive.mount('/content/drive')
+repo = Path('/content/edge-fire-ai-data')
+if not repo.exists():
+    subprocess.run([
+        'git', 'clone', '--branch', 'data-preprocessing',
+        'https://github.com/5eungju/edge-fire-ai-data.git', str(repo),
+    ], check=True)
+subprocess.run([
+    sys.executable, 'scripts/prepare.py', 'download-labels',
+    '--output', '/content/drive/MyDrive/edge-fire/vl-label-check',
+], cwd=repo, env={**os.environ, 'AIHUB_API_KEY': userdata.get('AIHUB_API_KEY')}, check=True)
+```
+
 ## 데이터 선택
 
 전체 원본은 이미지 70만 장, 약 662GB입니다. 파일목록에는 아래 묶음이 있습니다.
