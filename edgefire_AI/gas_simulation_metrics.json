@@ -1,0 +1,51 @@
+{
+  "data_origin": "synthetic",
+  "task": "synthetic_signal_pattern_classification",
+  "episodes": 800,
+  "rows": 2400,
+  "train_rows": 1800,
+  "test_rows": 600,
+  "episode_overlap": 0,
+  "macro_f1_on_synthetic_holdout": 0.9026143010672306,
+  "classification_report": {
+    "background": {
+      "precision": 0.7606382978723404,
+      "recall": 0.934640522875817,
+      "f1-score": 0.8387096774193549,
+      "support": 153.0
+    },
+    "multichannel_rise": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 141.0
+    },
+    "transient_interference": {
+      "precision": 1.0,
+      "recall": 0.9712643678160919,
+      "f1-score": 0.9854227405247813,
+      "support": 174.0
+    },
+    "sensor_artifact": {
+      "precision": 0.9019607843137255,
+      "recall": 0.696969696969697,
+      "f1-score": 0.7863247863247863,
+      "support": 132.0
+    },
+    "accuracy": 0.9083333333333333,
+    "macro avg": {
+      "precision": 0.9156497705465164,
+      "recall": 0.9007186469154016,
+      "f1-score": 0.9026143010672306,
+      "support": 600.0
+    },
+    "weighted avg": {
+      "precision": 0.9173941385064666,
+      "recall": 0.9083333333333333,
+      "f1-score": 0.907635015485575,
+      "support": 600.0
+    }
+  },
+  "limitation": "동일 생성기의 새 에피소드 평가일 뿐 실제 센서·가스·산불 성능을 나타내지 않습니다.",
+  "operational_use": false
+}

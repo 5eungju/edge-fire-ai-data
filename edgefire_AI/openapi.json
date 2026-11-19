@@ -1,0 +1,552 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EDGE-FIRE AI 연구 시제품",
+    "description": "산불 사례 주석 등급 분류, 합성 가스 신호 패턴 분류, 원시 화학물성 조회. 실제 가스 위험도·물질 식별·화재 확증 모델은 아닙니다.",
+    "version": "prototype-2026-11-19"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/model-info": {
+      "get": {
+        "summary": "Info",
+        "operationId": "info_model_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wildfire/assess": {
+      "post": {
+        "summary": "Assess",
+        "operationId": "assess_wildfire_assess_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Observation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/assess": {
+      "post": {
+        "summary": "Assess Telemetry",
+        "operationId": "assess_telemetry_api_v1_ai_assess_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelemetryAssessment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/gas/assess": {
+      "post": {
+        "summary": "Assess Gas",
+        "operationId": "assess_gas_api_v1_ai_gas_assess_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/chemicals/{cid}": {
+      "get": {
+        "summary": "Get Chemical",
+        "operationId": "get_chemical_api_v1_ai_chemicals__cid__get",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Baseline": {
+        "properties": {
+          "CO": {
+            "type": "number",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Co"
+          },
+          "H2": {
+            "type": "number",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "H2"
+          },
+          "VOC": {
+            "type": "number",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Voc"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "CO",
+          "H2",
+          "VOC"
+        ],
+        "title": "Baseline"
+      },
+      "GasMetrics": {
+        "properties": {
+          "CO": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Co"
+          },
+          "H2": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "H2"
+          },
+          "VOC": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Voc"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "CO",
+          "H2",
+          "VOC"
+        ],
+        "title": "GasMetrics"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Observation": {
+        "properties": {
+          "temperature": {
+            "type": "number",
+            "maximum": 70.0,
+            "minimum": -80.0,
+            "title": "Temperature",
+            "description": "섭씨"
+          },
+          "humidity_percent": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Humidity Percent"
+          },
+          "wind_speed": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Wind Speed",
+            "description": "데이터와 입력 단위의 일치 여부 확인 필요"
+          },
+          "wind_direction": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 360.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wind Direction"
+          },
+          "rainfall": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rainfall"
+          },
+          "past_rainfall_7days": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Past Rainfall 7Days"
+          },
+          "elevation": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 9000.0,
+                "minimum": -500.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Elevation"
+          },
+          "slope": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slope"
+          },
+          "slope_aspect": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 360.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slope Aspect"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "temperature",
+          "humidity_percent",
+          "wind_speed"
+        ],
+        "title": "Observation"
+      },
+      "SimulationRequest": {
+        "properties": {
+          "simulation": {
+            "type": "boolean",
+            "const": true,
+            "title": "Simulation"
+          },
+          "baseline": {
+            "$ref": "#/components/schemas/Baseline"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/Values"
+            },
+            "type": "array",
+            "maxItems": 120,
+            "minItems": 3,
+            "title": "History"
+          },
+          "sample_interval_seconds": {
+            "type": "number",
+            "maximum": 3600.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Sample Interval Seconds"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "simulation",
+          "baseline",
+          "history",
+          "sample_interval_seconds"
+        ],
+        "title": "SimulationRequest"
+      },
+      "TelemetryAssessment": {
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Node Id"
+          },
+          "sequence_no": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sequence No"
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Timestamp"
+          },
+          "gas_data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GasMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "camera_azimuth": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 360.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Camera Azimuth"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Observation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "gas_simulation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SimulationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "node_id"
+        ],
+        "title": "TelemetryAssessment",
+        "description": "기존 백엔드 센서 필드를 보존하고 기상 입력을 선택적으로 추가합니다."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Values": {
+        "properties": {
+          "CO": {
+            "type": "number",
+            "maximum": 1000000000.0,
+            "minimum": 0.0,
+            "title": "Co"
+          },
+          "H2": {
+            "type": "number",
+            "maximum": 1000000000.0,
+            "minimum": 0.0,
+            "title": "H2"
+          },
+          "VOC": {
+            "type": "number",
+            "maximum": 1000000000.0,
+            "minimum": 0.0,
+            "title": "Voc"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "CO",
+          "H2",
+          "VOC"
+        ],
+        "title": "Values"
+      }
+    }
+  }
+}

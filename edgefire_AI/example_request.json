@@ -1,0 +1,21 @@
+{
+  "node_id": "NODE_WUI_0102",
+  "sequence_no": 1042,
+  "timestamp": 1795090000,
+  "gas_data": {
+    "CO": 45.2,
+    "H2": 12.1,
+    "VOC": 110.5
+  },
+  "environment": {
+    "temperature": 25,
+    "humidity_percent": 30,
+    "wind_speed": 5,
+    "wind_direction": 90,
+    "rainfall": 0,
+    "past_rainfall_7days": 0,
+    "elevation": 300,
+    "slope": 15,
+    "slope_aspect": 180
+  }
+}
