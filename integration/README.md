@@ -65,6 +65,8 @@ flowchart LR
 
 ## 검증과 원본 보존
 
+추가 조사에서 카메라 분할 간 같은 장소명과 시각 유사 사례를 확인했습니다. 기존 실험은 독립 장소 검증으로 간주하지 않습니다. 다음 데이터·평가 계획은 [장소 평가 안내](../edgefire_AI/SPATIAL_EVALUATION.md)를 참고하세요. 학습 진행과 함께 더 엄격한 장소·마스크 전처리를 준비 중입니다.
+
 ```powershell
 py integration/test_storage.py
 ```

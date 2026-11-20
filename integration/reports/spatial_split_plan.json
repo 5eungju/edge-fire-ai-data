@@ -1,0 +1,3373 @@
+{
+  "solver_status": 0,
+  "solver_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "objective": 5.4374467030337446,
+  "relative_gap": 0.019598035942917664,
+  "target_ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "spatial_components": 74,
+  "camera_count": 469,
+  "collection_counts_by_split": {
+    "train": {
+      "PositiveSyntheticDB_백색회색연기": 50602,
+      "PositiveSyntheticDB_화염": 18940,
+      "PositiveSyntheticDB_흑색연기": 23320,
+      "NegativeDB_구름": 49959,
+      "NegativeDB_굴뚝연기": 48365,
+      "PositiveRealDB_백색회색연기": 115659,
+      "PositiveRealDB_화염": 56349,
+      "PositiveRealDB_흑색연기": 77654,
+      "NegativeDB_안개연무": 28394
+    },
+    "val": {
+      "PositiveSyntheticDB_백색회색연기": 9347,
+      "PositiveSyntheticDB_흑색연기": 4491,
+      "NegativeDB_안개연무": 4067,
+      "PositiveSyntheticDB_화염": 2513,
+      "PositiveRealDB_백색회색연기": 32616,
+      "PositiveRealDB_화염": 7756,
+      "PositiveRealDB_흑색연기": 3432,
+      "NegativeDB_구름": 10820,
+      "NegativeDB_굴뚝연기": 11040
+    },
+    "test": {
+      "NegativeDB_구름": 11195,
+      "NegativeDB_안개연무": 3539,
+      "PositiveSyntheticDB_백색회색연기": 7402,
+      "PositiveSyntheticDB_흑색연기": 5767,
+      "PositiveSyntheticDB_화염": 3725,
+      "NegativeDB_굴뚝연기": 12610,
+      "PositiveRealDB_백색회색연기": 24457,
+      "PositiveRealDB_흑색연기": 5267,
+      "PositiveRealDB_화염": 714
+    }
+  },
+  "coverage_group_counts": {
+    "NegativeDB_구름": 47,
+    "NegativeDB_굴뚝연기": 15,
+    "NegativeDB_안개연무": 9,
+    "PositiveRealDB_백색회색연기": 12,
+    "PositiveRealDB_화염": 7,
+    "PositiveRealDB_흑색연기": 9,
+    "PositiveSyntheticDB_백색회색연기": 12,
+    "PositiveSyntheticDB_화염": 6,
+    "PositiveSyntheticDB_흑색연기": 10
+  },
+  "component_assignments": [
+    {
+      "group_key": "8317e2ea5c3bbcc9493c",
+      "split": "train",
+      "places": [
+        "경포대후문"
+      ],
+      "camera_ids": [
+        "BC001001",
+        "BC001002",
+        "BC001011",
+        "BC001012",
+        "BC001021",
+        "BC001022",
+        "BC001031",
+        "BC001032"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 16621,
+        "PositiveSyntheticDB_화염": 6527,
+        "PositiveSyntheticDB_흑색연기": 8977
+      }
+    },
+    {
+      "group_key": "7858736e92e7c2721f50",
+      "split": "test",
+      "places": [
+        "강원도강릉시강동면모전리"
+      ],
+      "camera_ids": [
+        "BC002001",
+        "BC002021"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 614,
+        "NegativeDB_안개연무": 1086
+      }
+    },
+    {
+      "group_key": "8c158cc61589d4e21706",
+      "split": "train",
+      "places": [
+        "강원도강릉시사천면석교리"
+      ],
+      "camera_ids": [
+        "BC003021",
+        "BC011021"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1066
+      }
+    },
+    {
+      "group_key": "d41499279f01b6c1a6de",
+      "split": "test",
+      "places": [
+        "구라미휴게소"
+      ],
+      "camera_ids": [
+        "BC003031"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 1165,
+        "PositiveSyntheticDB_흑색연기": 1332
+      }
+    },
+    {
+      "group_key": "cfc85f916229d01a396a",
+      "split": "test",
+      "places": [
+        "강원도평창군대관령면"
+      ],
+      "camera_ids": [
+        "BC004011",
+        "ND106001",
+        "ND178002",
+        "ND178003"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 46,
+        "NegativeDB_안개연무": 1624
+      }
+    },
+    {
+      "group_key": "2db9f3b6d39e4d002ade",
+      "split": "val",
+      "places": [
+        "대기리안반데기옥녀봉"
+      ],
+      "camera_ids": [
+        "BC004031"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 3101,
+        "PositiveSyntheticDB_흑색연기": 1369
+      }
+    },
+    {
+      "group_key": "66eb450c1a1d79c5ac22",
+      "split": "train",
+      "places": [
+        "모산로모래고개"
+      ],
+      "camera_ids": [
+        "BC005002",
+        "BC005003"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 12287,
+        "PositiveSyntheticDB_화염": 11315,
+        "PositiveSyntheticDB_흑색연기": 2510
+      }
+    },
+    {
+      "group_key": "9958bc43b655397487e1",
+      "split": "val",
+      "places": [
+        "강원도강릉시옥계면금진리"
+      ],
+      "camera_ids": [
+        "BC007021"
+      ],
+      "collection_counts": {
+        "NegativeDB_안개연무": 1188
+      }
+    },
+    {
+      "group_key": "9de50b95222dfc7f6dea",
+      "split": "test",
+      "places": [
+        "백봉령"
+      ],
+      "camera_ids": [
+        "BC008001"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 3234,
+        "PositiveSyntheticDB_화염": 1738,
+        "PositiveSyntheticDB_흑색연기": 2807
+      }
+    },
+    {
+      "group_key": "bd194d1ce885c954bfff",
+      "split": "test",
+      "places": [
+        "강원도강릉시옥계면남양리"
+      ],
+      "camera_ids": [
+        "BC008011"
+      ],
+      "collection_counts": {
+        "NegativeDB_안개연무": 325
+      }
+    },
+    {
+      "group_key": "689ed53c04ae3ed013e0",
+      "split": "train",
+      "places": [
+        "보수적산악권역:시루봉"
+      ],
+      "camera_ids": [
+        "BC009001",
+        "BC009002",
+        "BC009031",
+        "BC009032",
+        "BD004002",
+        "BD005001",
+        "BD005002",
+        "RD020011",
+        "RD020012",
+        "RD020014",
+        "RD020015",
+        "RD020021",
+        "RD020022",
+        "RD020033",
+        "RG020010",
+        "RG020011",
+        "RG020012",
+        "RG020013",
+        "RG020014",
+        "RG020015",
+        "RG020016",
+        "RG020017",
+        "RG020018",
+        "RG020019"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 16622,
+        "PositiveSyntheticDB_화염": 1098,
+        "PositiveSyntheticDB_흑색연기": 7979,
+        "NegativeDB_굴뚝연기": 35,
+        "PositiveRealDB_백색회색연기": 18312,
+        "PositiveRealDB_화염": 21442,
+        "PositiveRealDB_흑색연기": 2859
+      }
+    },
+    {
+      "group_key": "070ccf82537855b96bd9",
+      "split": "test",
+      "places": [
+        "강원도강릉시홍제동"
+      ],
+      "camera_ids": [
+        "BC010011",
+        "BC010012",
+        "BC010021",
+        "BC010022"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 191,
+        "NegativeDB_안개연무": 504
+      }
+    },
+    {
+      "group_key": "1442ca11a0af949cc68b",
+      "split": "train",
+      "places": [
+        "시청옥상"
+      ],
+      "camera_ids": [
+        "BC010031",
+        "BC010032"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 5072,
+        "PositiveSyntheticDB_흑색연기": 3854
+      }
+    },
+    {
+      "group_key": "674a77245a4d73d4abb9",
+      "split": "test",
+      "places": [
+        "죽헌저수지삼거리"
+      ],
+      "camera_ids": [
+        "BD001002",
+        "BD001003"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 2714,
+        "PositiveSyntheticDB_화염": 1987,
+        "PositiveSyntheticDB_흑색연기": 1628
+      }
+    },
+    {
+      "group_key": "ca0fa27a43b802133338",
+      "split": "val",
+      "places": [
+        "죽헌저수지공터"
+      ],
+      "camera_ids": [
+        "BD002001"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 684,
+        "PositiveSyntheticDB_화염": 2513,
+        "PositiveSyntheticDB_흑색연기": 624
+      }
+    },
+    {
+      "group_key": "ecb955e6484ac7431d28",
+      "split": "val",
+      "places": [
+        "보수적산악권역:춘갑봉"
+      ],
+      "camera_ids": [
+        "BD006002",
+        "BD007002",
+        "BD007003",
+        "BD009001",
+        "BD010002",
+        "RD040011",
+        "RD040012",
+        "RD040013",
+        "RD040014",
+        "RD040015",
+        "RD040016",
+        "RD041021",
+        "RD041022",
+        "RD041023",
+        "RD041024",
+        "RD041025",
+        "RD041026",
+        "RD041032",
+        "RD041033",
+        "RD043031",
+        "RD043032",
+        "RD043033",
+        "RD043034",
+        "RD043035",
+        "RD043036",
+        "RG040010",
+        "RG040012",
+        "RG040013",
+        "RG040014",
+        "RG040015",
+        "RG040016",
+        "RG040017",
+        "RG040019",
+        "RG041020",
+        "RG041021",
+        "RG041022",
+        "RG041023",
+        "RG041024",
+        "RG041026",
+        "RG041028",
+        "RG041029",
+        "RG041030",
+        "RG041031",
+        "RG041032",
+        "RG041033",
+        "RG041034",
+        "RG041035",
+        "RG041036",
+        "RG041037",
+        "RG041038",
+        "RG041039",
+        "RG042034",
+        "RG042035",
+        "RG042036",
+        "RG042037",
+        "RG042038",
+        "RG043034",
+        "RG043035",
+        "RG043036",
+        "RG043037",
+        "RG043038"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 32616,
+        "PositiveRealDB_화염": 7756,
+        "PositiveRealDB_흑색연기": 3259,
+        "PositiveSyntheticDB_백색회색연기": 4311,
+        "PositiveSyntheticDB_흑색연기": 2498
+      }
+    },
+    {
+      "group_key": "162bc9854fda25e4749f",
+      "split": "val",
+      "places": [
+        "강원도강릉시장현동"
+      ],
+      "camera_ids": [
+        "BD011003",
+        "BD011025",
+        "ND103001",
+        "ND103002",
+        "ND104001",
+        "ND110001",
+        "ND111001",
+        "ND111002",
+        "ND115001",
+        "ND115002",
+        "ND124001",
+        "ND124002",
+        "ND155001",
+        "ND157001",
+        "ND179002",
+        "ND180002",
+        "ND180003",
+        "ND183002",
+        "NG102001",
+        "NG102002",
+        "NG103001",
+        "NG103002",
+        "NG116001",
+        "NG117001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 7254,
+        "NegativeDB_굴뚝연기": 6130,
+        "PositiveSyntheticDB_백색회색연기": 1251
+      }
+    },
+    {
+      "group_key": "bd3cf652f37f4b04f75e",
+      "split": "test",
+      "places": [
+        "칠성저수지"
+      ],
+      "camera_ids": [
+        "BD014003"
+      ],
+      "collection_counts": {
+        "PositiveSyntheticDB_백색회색연기": 289
+      }
+    },
+    {
+      "group_key": "cb27cb83ccb3c2ed3e17",
+      "split": "train",
+      "places": [
+        "강원도강릉시구정면"
+      ],
+      "camera_ids": [
+        "ND107001",
+        "ND114001",
+        "ND120001",
+        "ND120002",
+        "ND121001",
+        "ND128001",
+        "ND128002",
+        "ND128003",
+        "ND128004",
+        "ND129001",
+        "ND136001",
+        "NG011002",
+        "NG011003",
+        "NG011008",
+        "NG101001",
+        "NP010001"
+      ],
+      "collection_counts": {
+        "NegativeDB_안개연무": 11414,
+        "NegativeDB_구름": 1131,
+        "NegativeDB_굴뚝연기": 227
+      }
+    },
+    {
+      "group_key": "c4de5290a449be0904c3",
+      "split": "val",
+      "places": [
+        "강원도강릉시저동"
+      ],
+      "camera_ids": [
+        "ND108001",
+        "ND112001",
+        "ND113001",
+        "ND113002",
+        "ND126001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 32,
+        "NegativeDB_굴뚝연기": 1072
+      }
+    },
+    {
+      "group_key": "28e620c258923cc6cfed",
+      "split": "train",
+      "places": [
+        "강원도강릉시장현저수지"
+      ],
+      "camera_ids": [
+        "ND109001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 68
+      }
+    },
+    {
+      "group_key": "b600213b7acbbaa80ce3",
+      "split": "train",
+      "places": [
+        "강원도강릉시성산면"
+      ],
+      "camera_ids": [
+        "ND119001",
+        "ND119002",
+        "ND119003",
+        "ND119004",
+        "NG010001",
+        "NG010002",
+        "NG010003",
+        "NG010004",
+        "NG010007",
+        "NG010008",
+        "NG105001",
+        "NG105002",
+        "NG105003",
+        "NG105004",
+        "NG160001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 3406,
+        "NegativeDB_안개연무": 16980
+      }
+    },
+    {
+      "group_key": "db5aa9fdd79734ebfdd6",
+      "split": "train",
+      "places": [
+        "강원도강릉시죽헌저수지"
+      ],
+      "camera_ids": [
+        "ND122001",
+        "ND190002",
+        "ND190003"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 555
+      }
+    },
+    {
+      "group_key": "23bdbdbc465ccf30ec7a",
+      "split": "train",
+      "places": [
+        "강원도강릉시경포저수지"
+      ],
+      "camera_ids": [
+        "ND125001",
+        "NG118001",
+        "NG135001",
+        "NG135002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 632,
+        "NegativeDB_굴뚝연기": 357
+      }
+    },
+    {
+      "group_key": "46ba1dd5a309f625cd9d",
+      "split": "val",
+      "places": [
+        "강원도강릉시칠성저수지"
+      ],
+      "camera_ids": [
+        "ND127001",
+        "ND127002",
+        "NG123001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 364,
+        "NegativeDB_굴뚝연기": 563
+      }
+    },
+    {
+      "group_key": "6c5ae38419d441feec5a",
+      "split": "val",
+      "places": [
+        "경기도광명시가학동"
+      ],
+      "camera_ids": [
+        "ND163001",
+        "ND163002",
+        "NG158001"
+      ],
+      "collection_counts": {
+        "NegativeDB_굴뚝연기": 2756
+      }
+    },
+    {
+      "group_key": "9853fa7f0155eebbc046",
+      "split": "train",
+      "places": [
+        "경기도안산시상록구"
+      ],
+      "camera_ids": [
+        "ND166001",
+        "ND166002",
+        "NG166001",
+        "NG166002",
+        "NG166004",
+        "NG166005"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1538,
+        "NegativeDB_굴뚝연기": 14269
+      }
+    },
+    {
+      "group_key": "961fe0d11ffd09e5046a",
+      "split": "val",
+      "places": [
+        "인천계양구계산동"
+      ],
+      "camera_ids": [
+        "ND182002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 727
+      }
+    },
+    {
+      "group_key": "3bed20a67ff312110e8a",
+      "split": "val",
+      "places": [
+        "강원도삼척시교동"
+      ],
+      "camera_ids": [
+        "ND184005"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 478,
+        "NegativeDB_안개연무": 1782
+      }
+    },
+    {
+      "group_key": "d7cf007e6dec1b56d2b2",
+      "split": "test",
+      "places": [
+        "경기도광명시소하동"
+      ],
+      "camera_ids": [
+        "ND185001",
+        "ND186002",
+        "ND186003",
+        "ND186005"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 5636
+      }
+    },
+    {
+      "group_key": "6584afa16fdff9e28105",
+      "split": "test",
+      "places": [
+        "서울금천구독산동"
+      ],
+      "camera_ids": [
+        "ND187002",
+        "ND187003"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1181
+      }
+    },
+    {
+      "group_key": "02c5969975432f89d7e5",
+      "split": "train",
+      "places": [
+        "경기도안산시단원구"
+      ],
+      "camera_ids": [
+        "ND188001",
+        "ND188002",
+        "ND188003",
+        "ND188004",
+        "NG131001"
+      ],
+      "collection_counts": {
+        "NegativeDB_굴뚝연기": 2401,
+        "NegativeDB_구름": 232
+      }
+    },
+    {
+      "group_key": "471b75a0e5e194a1758f",
+      "split": "train",
+      "places": [
+        "경기도양평군강상면"
+      ],
+      "camera_ids": [
+        "ND189002",
+        "ND189003",
+        "NG167001",
+        "NG167002",
+        "NG167003",
+        "NG167005",
+        "NG167008",
+        "NG167012",
+        "NP149001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 812,
+        "NegativeDB_굴뚝연기": 13111
+      }
+    },
+    {
+      "group_key": "a412016094a387c9c9c6",
+      "split": "train",
+      "places": [
+        "강원도강릉시포남동"
+      ],
+      "camera_ids": [
+        "ND191002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 7
+      }
+    },
+    {
+      "group_key": "1b6ce8ff80cc3b633f95",
+      "split": "train",
+      "places": [
+        "경기도광명시하얀동"
+      ],
+      "camera_ids": [
+        "ND192001"
+      ],
+      "collection_counts": {
+        "NegativeDB_굴뚝연기": 247
+      }
+    },
+    {
+      "group_key": "50732546906588f83a63",
+      "split": "val",
+      "places": [
+        "강원도강릉시내곡동"
+      ],
+      "camera_ids": [
+        "NG020001",
+        "NG020002",
+        "NG020003"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 511
+      }
+    },
+    {
+      "group_key": "3a4f15ea1760df7ad263",
+      "split": "val",
+      "places": [
+        "강원도강릉시옥천면"
+      ],
+      "camera_ids": [
+        "NG030001",
+        "NG030002",
+        "NG030003",
+        "NG030004",
+        "NG030005"
+      ],
+      "collection_counts": {
+        "NegativeDB_안개연무": 1097,
+        "NegativeDB_구름": 162
+      }
+    },
+    {
+      "group_key": "4505e74a75e32929aad5",
+      "split": "test",
+      "places": [
+        "경기도김포시하성면석탄리"
+      ],
+      "camera_ids": [
+        "NG130001",
+        "NG130002",
+        "NG130003",
+        "NG130004",
+        "NG130005"
+      ],
+      "collection_counts": {
+        "NegativeDB_굴뚝연기": 12610,
+        "NegativeDB_구름": 182
+      }
+    },
+    {
+      "group_key": "56b065657596e23ea853",
+      "split": "train",
+      "places": [
+        "경기도광명시일직동"
+      ],
+      "camera_ids": [
+        "NG133002",
+        "NG133003",
+        "NG133005"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 538
+      }
+    },
+    {
+      "group_key": "e8a20676edadd98e0787",
+      "split": "train",
+      "places": [
+        "경기도김포시월곶면"
+      ],
+      "camera_ids": [
+        "NG134001",
+        "NG134005"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 37
+      }
+    },
+    {
+      "group_key": "2ee991606435c0b559cc",
+      "split": "test",
+      "places": [
+        "충북청주시상당구문의면"
+      ],
+      "camera_ids": [
+        "NG139001",
+        "NG139002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 734
+      }
+    },
+    {
+      "group_key": "3ea8dc608740eb9d14e7",
+      "split": "val",
+      "places": [
+        "경기도파주시금승리"
+      ],
+      "camera_ids": [
+        "NG140001",
+        "NG140002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1028,
+        "NegativeDB_굴뚝연기": 519
+      }
+    },
+    {
+      "group_key": "e656182c90171d2ede3b",
+      "split": "train",
+      "places": [
+        "경기도포천시장수면운산리"
+      ],
+      "camera_ids": [
+        "NG156001",
+        "NG156002",
+        "NG156003"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 108
+      }
+    },
+    {
+      "group_key": "ab37eba3cc3e9d2ff677",
+      "split": "train",
+      "places": [
+        "경기도포천시신북면신평리"
+      ],
+      "camera_ids": [
+        "NG159001",
+        "NG159002",
+        "NG159003",
+        "NG159004",
+        "NG159005",
+        "NG159006"
+      ],
+      "collection_counts": {
+        "NegativeDB_굴뚝연기": 14064
+      }
+    },
+    {
+      "group_key": "e708033dd472f8c2c304",
+      "split": "train",
+      "places": [
+        "김포시월곶면포내리"
+      ],
+      "camera_ids": [
+        "NG161001",
+        "NG161002",
+        "NG161003",
+        "NG161004",
+        "NG161005",
+        "NG161006"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 7624
+      }
+    },
+    {
+      "group_key": "fd689acba75bf51f84d4",
+      "split": "test",
+      "places": [
+        "대전영동군초강소류지"
+      ],
+      "camera_ids": [
+        "NG162001",
+        "NG162002",
+        "NG162003",
+        "NG162004",
+        "NG162005",
+        "NG162006"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 693
+      }
+    },
+    {
+      "group_key": "dd2a272d9893dcf9e3a1",
+      "split": "train",
+      "places": [
+        "경기도양주시남면"
+      ],
+      "camera_ids": [
+        "NG164001",
+        "NG164002",
+        "NG164003",
+        "NG164004",
+        "NG164005",
+        "NG164006"
+      ],
+      "collection_counts": {
+        "NegativeDB_굴뚝연기": 3654
+      }
+    },
+    {
+      "group_key": "265f4ae6437f7ce4c65d",
+      "split": "train",
+      "places": [
+        "경기도파주시적성면"
+      ],
+      "camera_ids": [
+        "NG165001",
+        "NG165002",
+        "NG165003",
+        "NG165004",
+        "NG165005",
+        "NG165006"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1170
+      }
+    },
+    {
+      "group_key": "c7612d88c0ba28f7c82d",
+      "split": "train",
+      "places": [
+        "서울강서구강서로"
+      ],
+      "camera_ids": [
+        "NG168002",
+        "NG168010"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 682
+      }
+    },
+    {
+      "group_key": "1065c893376d0c8fa6e6",
+      "split": "test",
+      "places": [
+        "인천서구아라동"
+      ],
+      "camera_ids": [
+        "NG169001",
+        "NG169002",
+        "NG169003",
+        "NG169004",
+        "NP146001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1918
+      }
+    },
+    {
+      "group_key": "71f159e92013a022d982",
+      "split": "train",
+      "places": [
+        "경기도남양주시와부읍"
+      ],
+      "camera_ids": [
+        "NG170004",
+        "NG170005",
+        "NG170006"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 1355
+      }
+    },
+    {
+      "group_key": "9cb3286712fb8fd2b8c7",
+      "split": "train",
+      "places": [
+        "경기도남양주시평내동"
+      ],
+      "camera_ids": [
+        "NG171004",
+        "NG171005",
+        "NG171006"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 3158
+      }
+    },
+    {
+      "group_key": "e1833c390b08f341c7c3",
+      "split": "train",
+      "places": [
+        "경기도파주시탄현동"
+      ],
+      "camera_ids": [
+        "NG172004",
+        "NG172005",
+        "NG172006"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 287
+      }
+    },
+    {
+      "group_key": "6d9b3047874038b45b9d",
+      "split": "val",
+      "places": [
+        "호주블루마운틴"
+      ],
+      "camera_ids": [
+        "NG173001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 110
+      }
+    },
+    {
+      "group_key": "35ff5aa20d85a1b3bd9b",
+      "split": "val",
+      "places": [
+        "호주팜비치"
+      ],
+      "camera_ids": [
+        "NG174001",
+        "NP174001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 154
+      }
+    },
+    {
+      "group_key": "4a1b947d300f5302c5a5",
+      "split": "train",
+      "places": [
+        "대전대덕구대청로"
+      ],
+      "camera_ids": [
+        "NG177001",
+        "NG177002",
+        "NG177003",
+        "NG177004",
+        "NG177005",
+        "NG177006",
+        "NG177007",
+        "NG177008"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 20539
+      }
+    },
+    {
+      "group_key": "45fb4d50842b7d1599dd",
+      "split": "train",
+      "places": [
+        "강원도강릉시난곡동"
+      ],
+      "camera_ids": [
+        "NP020001",
+        "NP020002",
+        "NP021001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 388
+      }
+    },
+    {
+      "group_key": "7c1a42992fff1fb51d01",
+      "split": "train",
+      "places": [
+        "경남창녕군창녕읍"
+      ],
+      "camera_ids": [
+        "NP142001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 2
+      }
+    },
+    {
+      "group_key": "0e1ea2b6a68cd8ea8fb5",
+      "split": "train",
+      "places": [
+        "제주도애월읍광령리"
+      ],
+      "camera_ids": [
+        "NP143001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 7
+      }
+    },
+    {
+      "group_key": "8125f1b481eb04acf1d7",
+      "split": "train",
+      "places": [
+        "경남통영시미수동"
+      ],
+      "camera_ids": [
+        "NP144001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 16
+      }
+    },
+    {
+      "group_key": "2d5d3b6e812707240391",
+      "split": "train",
+      "places": [
+        "경기도광주시곤지암읍"
+      ],
+      "camera_ids": [
+        "NP147001",
+        "NP147002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 130
+      }
+    },
+    {
+      "group_key": "b27d0ca66a3659c5d1a9",
+      "split": "train",
+      "places": [
+        "인천연수구옥련동"
+      ],
+      "camera_ids": [
+        "NP175001",
+        "NP175002"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 4156
+      }
+    },
+    {
+      "group_key": "1cd8ce6ff50fe3a27d92",
+      "split": "train",
+      "places": [
+        "인천영정도하늘도시"
+      ],
+      "camera_ids": [
+        "NP176001"
+      ],
+      "collection_counts": {
+        "NegativeDB_구름": 51
+      }
+    },
+    {
+      "group_key": "d10108e128c7fee32694",
+      "split": "train",
+      "places": [
+        "강원도강릉시대전동",
+        "강원도강릉시죽헌저수지삼거리"
+      ],
+      "camera_ids": [
+        "RD010022",
+        "RD010023",
+        "RD010032",
+        "RD010042",
+        "RD010043",
+        "RG010020",
+        "RG010021",
+        "RG010022",
+        "RG010023",
+        "RG010024",
+        "RG010025",
+        "RG010026",
+        "RG010027",
+        "RG010028",
+        "RG010029",
+        "RG010030",
+        "RG010031",
+        "RG010032",
+        "RG010033",
+        "RG010034",
+        "RG010035",
+        "RG010036",
+        "RG010037",
+        "RG010038",
+        "RG010039"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 46112,
+        "PositiveRealDB_흑색연기": 2272,
+        "NegativeDB_구름": 264,
+        "PositiveRealDB_화염": 1026
+      }
+    },
+    {
+      "group_key": "14c571e65e6d37e560fe",
+      "split": "test",
+      "places": [
+        "강원도강릉시죽헌저수지방둑"
+      ],
+      "camera_ids": [
+        "RD011032",
+        "RG011031",
+        "RG011033",
+        "RG011036",
+        "RG011037"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 65,
+        "PositiveRealDB_흑색연기": 196
+      }
+    },
+    {
+      "group_key": "0a90dfc4e4ffd13a2380",
+      "split": "val",
+      "places": [
+        "강원도강릉시죽헌저수지공터"
+      ],
+      "camera_ids": [
+        "RD012042",
+        "RD012043"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_흑색연기": 173
+      }
+    },
+    {
+      "group_key": "8ed9fcc8a82389f14f5b",
+      "split": "train",
+      "places": [
+        "강원도강릉시솔향수목원"
+      ],
+      "camera_ids": [
+        "RD030001",
+        "RD030002",
+        "RD030003",
+        "RD030004",
+        "RD030006",
+        "RD030011",
+        "RD030012",
+        "RD030013",
+        "RD030014",
+        "RD030021",
+        "RD030022",
+        "RD030023",
+        "RD030024",
+        "RD030031",
+        "RD030032",
+        "RD030033",
+        "RD030034",
+        "RD030041",
+        "RD030042",
+        "RD030043",
+        "RD030044",
+        "RD030051",
+        "RD030052",
+        "RD030053",
+        "RD030054",
+        "RD030055",
+        "RD030056",
+        "RD030057",
+        "RG030000",
+        "RG030001",
+        "RG030002",
+        "RG030003",
+        "RG030004",
+        "RG030005",
+        "RG030006",
+        "RG030007",
+        "RG030008",
+        "RG030009",
+        "RG030011",
+        "RG030013",
+        "RG030014",
+        "RG030015",
+        "RG030016",
+        "RG030017",
+        "RG030018",
+        "RG030019",
+        "RG030030",
+        "RG030031",
+        "RG030032",
+        "RG030033",
+        "RG030034",
+        "RG030036",
+        "RG030037",
+        "RG030038",
+        "RG030039",
+        "RG030040",
+        "RG030041",
+        "RG030042",
+        "RG030043",
+        "RG030044",
+        "RG030045",
+        "RG030046",
+        "RG030047",
+        "RG030048",
+        "RG030049",
+        "RG030050",
+        "RG030051",
+        "RG030052",
+        "RG030053",
+        "RG030054",
+        "RG030055",
+        "RG030057",
+        "RG030058"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 38707,
+        "PositiveRealDB_흑색연기": 70386,
+        "PositiveRealDB_화염": 33881
+      }
+    },
+    {
+      "group_key": "b48d0fdfbf36925ebfa8",
+      "split": "test",
+      "places": [
+        "강원도강릉시옥천면계곡"
+      ],
+      "camera_ids": [
+        "RD031012",
+        "RD031013"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 909
+      }
+    },
+    {
+      "group_key": "98813301884f0df18701",
+      "split": "test",
+      "places": [
+        "강원도강릉시옥천면교각밑"
+      ],
+      "camera_ids": [
+        "RD032011",
+        "RD032012",
+        "RD032013"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 1321
+      }
+    },
+    {
+      "group_key": "50f0f0a7895c5047ba1d",
+      "split": "test",
+      "places": [
+        "강원도강릉시옥천면비닐하우스"
+      ],
+      "camera_ids": [
+        "RD033023"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 2004
+      }
+    },
+    {
+      "group_key": "d3e619e4984556147596",
+      "split": "test",
+      "places": [
+        "강원도강릉시모래고개입구"
+      ],
+      "camera_ids": [
+        "RD050001",
+        "RD050002",
+        "RD050003",
+        "RD050004",
+        "RD050011",
+        "RD050012",
+        "RD050013",
+        "RD050014",
+        "RG050002",
+        "RG050003"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 7703,
+        "PositiveRealDB_흑색연기": 2299,
+        "PositiveRealDB_화염": 230
+      }
+    },
+    {
+      "group_key": "1684246d115ae2cb2bdb",
+      "split": "train",
+      "places": [
+        "강원도강릉시경포대입구"
+      ],
+      "camera_ids": [
+        "RD060011",
+        "RD060012",
+        "RD060013",
+        "RD060014",
+        "RG060010",
+        "RG060011",
+        "RG060012",
+        "RG060013",
+        "RG060014",
+        "RG060016",
+        "RG060017",
+        "RG060018",
+        "RG060019"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 12528,
+        "PositiveRealDB_흑색연기": 2137
+      }
+    },
+    {
+      "group_key": "91d56b35a0d5415e763a",
+      "split": "test",
+      "places": [
+        "강원도강릉시경포대공터"
+      ],
+      "camera_ids": [
+        "RD061021",
+        "RD061022",
+        "RD061023",
+        "RD061024",
+        "RD061031",
+        "RD061032",
+        "RD061033",
+        "RD061034",
+        "RG061020",
+        "RG061021",
+        "RG061022",
+        "RG061023",
+        "RG061024",
+        "RG061025",
+        "RG061026",
+        "RG061027",
+        "RG061028",
+        "RG061029"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 11833,
+        "PositiveRealDB_화염": 389,
+        "PositiveRealDB_흑색연기": 2772
+      }
+    },
+    {
+      "group_key": "202badad802de9ce1ccd",
+      "split": "test",
+      "places": [
+        "강원도강릉시사천면"
+      ],
+      "camera_ids": [
+        "RG070001",
+        "RG070002"
+      ],
+      "collection_counts": {
+        "PositiveRealDB_백색회색연기": 622,
+        "PositiveRealDB_화염": 95
+      }
+    }
+  ],
+  "place_name_aliases": {
+    "보수적산악권역:춘갑봉": [
+      "강원도강릉시춘갑봉공터",
+      "강원도강릉시춘갑봉등산로",
+      "강원도강릉시춘갑봉민가",
+      "강원도강릉시춘갑봉샛길",
+      "춘갑봉공터",
+      "춘갑봉등산로",
+      "춘갑봉민가",
+      "춘갑봉샛길"
+    ],
+    "보수적산악권역:시루봉": [
+      "강원도강릉시시루봉정상입구",
+      "시루봉",
+      "시루봉공터",
+      "시루봉입구",
+      "시루봉정상입구"
+    ]
+  },
+  "camera_mapping": {
+    "BC001011": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001021": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001031": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001022": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001002": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001001": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001032": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC001012": {
+      "split": "train",
+      "group_key": "8317e2ea5c3bbcc9493c"
+    },
+    "BC002021": {
+      "split": "test",
+      "group_key": "7858736e92e7c2721f50"
+    },
+    "BC002001": {
+      "split": "test",
+      "group_key": "7858736e92e7c2721f50"
+    },
+    "BC003021": {
+      "split": "train",
+      "group_key": "8c158cc61589d4e21706"
+    },
+    "BC011021": {
+      "split": "train",
+      "group_key": "8c158cc61589d4e21706"
+    },
+    "BC003031": {
+      "split": "test",
+      "group_key": "d41499279f01b6c1a6de"
+    },
+    "ND178003": {
+      "split": "test",
+      "group_key": "cfc85f916229d01a396a"
+    },
+    "BC004011": {
+      "split": "test",
+      "group_key": "cfc85f916229d01a396a"
+    },
+    "ND106001": {
+      "split": "test",
+      "group_key": "cfc85f916229d01a396a"
+    },
+    "ND178002": {
+      "split": "test",
+      "group_key": "cfc85f916229d01a396a"
+    },
+    "BC004031": {
+      "split": "val",
+      "group_key": "2db9f3b6d39e4d002ade"
+    },
+    "BC005003": {
+      "split": "train",
+      "group_key": "66eb450c1a1d79c5ac22"
+    },
+    "BC005002": {
+      "split": "train",
+      "group_key": "66eb450c1a1d79c5ac22"
+    },
+    "BC007021": {
+      "split": "val",
+      "group_key": "9958bc43b655397487e1"
+    },
+    "BC008001": {
+      "split": "test",
+      "group_key": "9de50b95222dfc7f6dea"
+    },
+    "BC008011": {
+      "split": "test",
+      "group_key": "bd194d1ce885c954bfff"
+    },
+    "RG020011": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020019": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020022": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020015": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BC009002": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020016": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BC009001": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020014": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020013": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BD004002": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020010": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BC009032": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020021": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020018": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020017": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020015": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020033": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RG020012": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BD005001": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020012": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BC009031": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BD005002": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020014": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "RD020011": {
+      "split": "train",
+      "group_key": "689ed53c04ae3ed013e0"
+    },
+    "BC010022": {
+      "split": "test",
+      "group_key": "070ccf82537855b96bd9"
+    },
+    "BC010012": {
+      "split": "test",
+      "group_key": "070ccf82537855b96bd9"
+    },
+    "BC010021": {
+      "split": "test",
+      "group_key": "070ccf82537855b96bd9"
+    },
+    "BC010011": {
+      "split": "test",
+      "group_key": "070ccf82537855b96bd9"
+    },
+    "BC010031": {
+      "split": "train",
+      "group_key": "1442ca11a0af949cc68b"
+    },
+    "BC010032": {
+      "split": "train",
+      "group_key": "1442ca11a0af949cc68b"
+    },
+    "BD001003": {
+      "split": "test",
+      "group_key": "674a77245a4d73d4abb9"
+    },
+    "BD001002": {
+      "split": "test",
+      "group_key": "674a77245a4d73d4abb9"
+    },
+    "BD002001": {
+      "split": "val",
+      "group_key": "ca0fa27a43b802133338"
+    },
+    "RG043037": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG042037": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040014": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041026": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD040014": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040016": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041032": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040019": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041035": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041028": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD040013": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041037": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041034": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041033": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD043034": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "BD009001": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD043036": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG042034": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041022": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG042038": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD043031": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD040012": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD043035": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040013": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG042036": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041021": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041038": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041023": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG042035": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD040011": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041030": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "BD007002": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD040015": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041026": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "BD010002": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041025": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041029": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040010": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041021": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041023": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "BD007003": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040012": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041031": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040015": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041024": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "BD006002": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG043034": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041032": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG043038": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041039": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD043032": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD043033": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD041022": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041033": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RD040016": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG043035": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG040017": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041024": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG043036": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041020": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "RG041036": {
+      "split": "val",
+      "group_key": "ecb955e6484ac7431d28"
+    },
+    "ND103002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND115002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND124002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "NG103002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND179002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND180003": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "NG103001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND157001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND183002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "NG102001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "NG116001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND110001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "BD011025": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "BD011003": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND124001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND155001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND115001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND180002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND104001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "NG102002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "NG117001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND111001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND103001": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "ND111002": {
+      "split": "val",
+      "group_key": "162bc9854fda25e4749f"
+    },
+    "BD014003": {
+      "split": "test",
+      "group_key": "bd3cf652f37f4b04f75e"
+    },
+    "ND107001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND128004": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "NG101001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND120001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND128001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND129001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND136001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND114001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND120002": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "NG011003": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "NG011008": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "NG011002": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND121001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "NP010001": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND128002": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND128003": {
+      "split": "train",
+      "group_key": "cb27cb83ccb3c2ed3e17"
+    },
+    "ND113001": {
+      "split": "val",
+      "group_key": "c4de5290a449be0904c3"
+    },
+    "ND113002": {
+      "split": "val",
+      "group_key": "c4de5290a449be0904c3"
+    },
+    "ND108001": {
+      "split": "val",
+      "group_key": "c4de5290a449be0904c3"
+    },
+    "ND112001": {
+      "split": "val",
+      "group_key": "c4de5290a449be0904c3"
+    },
+    "ND126001": {
+      "split": "val",
+      "group_key": "c4de5290a449be0904c3"
+    },
+    "ND109001": {
+      "split": "train",
+      "group_key": "28e620c258923cc6cfed"
+    },
+    "NG010007": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "ND119001": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG160001": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG105001": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG105002": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG105003": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "ND119002": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG105004": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG010002": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG010004": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG010008": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG010003": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "ND119003": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "NG010001": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "ND119004": {
+      "split": "train",
+      "group_key": "b600213b7acbbaa80ce3"
+    },
+    "ND190002": {
+      "split": "train",
+      "group_key": "db5aa9fdd79734ebfdd6"
+    },
+    "ND190003": {
+      "split": "train",
+      "group_key": "db5aa9fdd79734ebfdd6"
+    },
+    "ND122001": {
+      "split": "train",
+      "group_key": "db5aa9fdd79734ebfdd6"
+    },
+    "NG135001": {
+      "split": "train",
+      "group_key": "23bdbdbc465ccf30ec7a"
+    },
+    "ND125001": {
+      "split": "train",
+      "group_key": "23bdbdbc465ccf30ec7a"
+    },
+    "NG118001": {
+      "split": "train",
+      "group_key": "23bdbdbc465ccf30ec7a"
+    },
+    "NG135002": {
+      "split": "train",
+      "group_key": "23bdbdbc465ccf30ec7a"
+    },
+    "ND127002": {
+      "split": "val",
+      "group_key": "46ba1dd5a309f625cd9d"
+    },
+    "ND127001": {
+      "split": "val",
+      "group_key": "46ba1dd5a309f625cd9d"
+    },
+    "NG123001": {
+      "split": "val",
+      "group_key": "46ba1dd5a309f625cd9d"
+    },
+    "NG158001": {
+      "split": "val",
+      "group_key": "6c5ae38419d441feec5a"
+    },
+    "ND163002": {
+      "split": "val",
+      "group_key": "6c5ae38419d441feec5a"
+    },
+    "ND163001": {
+      "split": "val",
+      "group_key": "6c5ae38419d441feec5a"
+    },
+    "NG166005": {
+      "split": "train",
+      "group_key": "9853fa7f0155eebbc046"
+    },
+    "NG166001": {
+      "split": "train",
+      "group_key": "9853fa7f0155eebbc046"
+    },
+    "ND166001": {
+      "split": "train",
+      "group_key": "9853fa7f0155eebbc046"
+    },
+    "NG166002": {
+      "split": "train",
+      "group_key": "9853fa7f0155eebbc046"
+    },
+    "ND166002": {
+      "split": "train",
+      "group_key": "9853fa7f0155eebbc046"
+    },
+    "NG166004": {
+      "split": "train",
+      "group_key": "9853fa7f0155eebbc046"
+    },
+    "ND182002": {
+      "split": "val",
+      "group_key": "961fe0d11ffd09e5046a"
+    },
+    "ND184005": {
+      "split": "val",
+      "group_key": "3bed20a67ff312110e8a"
+    },
+    "ND186003": {
+      "split": "test",
+      "group_key": "d7cf007e6dec1b56d2b2"
+    },
+    "ND185001": {
+      "split": "test",
+      "group_key": "d7cf007e6dec1b56d2b2"
+    },
+    "ND186002": {
+      "split": "test",
+      "group_key": "d7cf007e6dec1b56d2b2"
+    },
+    "ND186005": {
+      "split": "test",
+      "group_key": "d7cf007e6dec1b56d2b2"
+    },
+    "ND187002": {
+      "split": "test",
+      "group_key": "6584afa16fdff9e28105"
+    },
+    "ND187003": {
+      "split": "test",
+      "group_key": "6584afa16fdff9e28105"
+    },
+    "ND188001": {
+      "split": "train",
+      "group_key": "02c5969975432f89d7e5"
+    },
+    "ND188004": {
+      "split": "train",
+      "group_key": "02c5969975432f89d7e5"
+    },
+    "ND188003": {
+      "split": "train",
+      "group_key": "02c5969975432f89d7e5"
+    },
+    "ND188002": {
+      "split": "train",
+      "group_key": "02c5969975432f89d7e5"
+    },
+    "NG131001": {
+      "split": "train",
+      "group_key": "02c5969975432f89d7e5"
+    },
+    "NG167001": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "NG167012": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "NG167005": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "NG167008": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "ND189002": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "NG167003": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "ND189003": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "NG167002": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "NP149001": {
+      "split": "train",
+      "group_key": "471b75a0e5e194a1758f"
+    },
+    "ND191002": {
+      "split": "train",
+      "group_key": "a412016094a387c9c9c6"
+    },
+    "ND192001": {
+      "split": "train",
+      "group_key": "1b6ce8ff80cc3b633f95"
+    },
+    "NG020003": {
+      "split": "val",
+      "group_key": "50732546906588f83a63"
+    },
+    "NG020002": {
+      "split": "val",
+      "group_key": "50732546906588f83a63"
+    },
+    "NG020001": {
+      "split": "val",
+      "group_key": "50732546906588f83a63"
+    },
+    "NG030002": {
+      "split": "val",
+      "group_key": "3a4f15ea1760df7ad263"
+    },
+    "NG030001": {
+      "split": "val",
+      "group_key": "3a4f15ea1760df7ad263"
+    },
+    "NG030005": {
+      "split": "val",
+      "group_key": "3a4f15ea1760df7ad263"
+    },
+    "NG030003": {
+      "split": "val",
+      "group_key": "3a4f15ea1760df7ad263"
+    },
+    "NG030004": {
+      "split": "val",
+      "group_key": "3a4f15ea1760df7ad263"
+    },
+    "NG130003": {
+      "split": "test",
+      "group_key": "4505e74a75e32929aad5"
+    },
+    "NG130001": {
+      "split": "test",
+      "group_key": "4505e74a75e32929aad5"
+    },
+    "NG130005": {
+      "split": "test",
+      "group_key": "4505e74a75e32929aad5"
+    },
+    "NG130004": {
+      "split": "test",
+      "group_key": "4505e74a75e32929aad5"
+    },
+    "NG130002": {
+      "split": "test",
+      "group_key": "4505e74a75e32929aad5"
+    },
+    "NG133005": {
+      "split": "train",
+      "group_key": "56b065657596e23ea853"
+    },
+    "NG133003": {
+      "split": "train",
+      "group_key": "56b065657596e23ea853"
+    },
+    "NG133002": {
+      "split": "train",
+      "group_key": "56b065657596e23ea853"
+    },
+    "NG134001": {
+      "split": "train",
+      "group_key": "e8a20676edadd98e0787"
+    },
+    "NG134005": {
+      "split": "train",
+      "group_key": "e8a20676edadd98e0787"
+    },
+    "NG139001": {
+      "split": "test",
+      "group_key": "2ee991606435c0b559cc"
+    },
+    "NG139002": {
+      "split": "test",
+      "group_key": "2ee991606435c0b559cc"
+    },
+    "NG140002": {
+      "split": "val",
+      "group_key": "3ea8dc608740eb9d14e7"
+    },
+    "NG140001": {
+      "split": "val",
+      "group_key": "3ea8dc608740eb9d14e7"
+    },
+    "NG156003": {
+      "split": "train",
+      "group_key": "e656182c90171d2ede3b"
+    },
+    "NG156002": {
+      "split": "train",
+      "group_key": "e656182c90171d2ede3b"
+    },
+    "NG156001": {
+      "split": "train",
+      "group_key": "e656182c90171d2ede3b"
+    },
+    "NG159003": {
+      "split": "train",
+      "group_key": "ab37eba3cc3e9d2ff677"
+    },
+    "NG159001": {
+      "split": "train",
+      "group_key": "ab37eba3cc3e9d2ff677"
+    },
+    "NG159006": {
+      "split": "train",
+      "group_key": "ab37eba3cc3e9d2ff677"
+    },
+    "NG159002": {
+      "split": "train",
+      "group_key": "ab37eba3cc3e9d2ff677"
+    },
+    "NG159004": {
+      "split": "train",
+      "group_key": "ab37eba3cc3e9d2ff677"
+    },
+    "NG159005": {
+      "split": "train",
+      "group_key": "ab37eba3cc3e9d2ff677"
+    },
+    "NG161005": {
+      "split": "train",
+      "group_key": "e708033dd472f8c2c304"
+    },
+    "NG161001": {
+      "split": "train",
+      "group_key": "e708033dd472f8c2c304"
+    },
+    "NG161003": {
+      "split": "train",
+      "group_key": "e708033dd472f8c2c304"
+    },
+    "NG161002": {
+      "split": "train",
+      "group_key": "e708033dd472f8c2c304"
+    },
+    "NG161006": {
+      "split": "train",
+      "group_key": "e708033dd472f8c2c304"
+    },
+    "NG161004": {
+      "split": "train",
+      "group_key": "e708033dd472f8c2c304"
+    },
+    "NG162001": {
+      "split": "test",
+      "group_key": "fd689acba75bf51f84d4"
+    },
+    "NG162004": {
+      "split": "test",
+      "group_key": "fd689acba75bf51f84d4"
+    },
+    "NG162005": {
+      "split": "test",
+      "group_key": "fd689acba75bf51f84d4"
+    },
+    "NG162003": {
+      "split": "test",
+      "group_key": "fd689acba75bf51f84d4"
+    },
+    "NG162002": {
+      "split": "test",
+      "group_key": "fd689acba75bf51f84d4"
+    },
+    "NG162006": {
+      "split": "test",
+      "group_key": "fd689acba75bf51f84d4"
+    },
+    "NG164001": {
+      "split": "train",
+      "group_key": "dd2a272d9893dcf9e3a1"
+    },
+    "NG164002": {
+      "split": "train",
+      "group_key": "dd2a272d9893dcf9e3a1"
+    },
+    "NG164006": {
+      "split": "train",
+      "group_key": "dd2a272d9893dcf9e3a1"
+    },
+    "NG164004": {
+      "split": "train",
+      "group_key": "dd2a272d9893dcf9e3a1"
+    },
+    "NG164003": {
+      "split": "train",
+      "group_key": "dd2a272d9893dcf9e3a1"
+    },
+    "NG164005": {
+      "split": "train",
+      "group_key": "dd2a272d9893dcf9e3a1"
+    },
+    "NG165001": {
+      "split": "train",
+      "group_key": "265f4ae6437f7ce4c65d"
+    },
+    "NG165004": {
+      "split": "train",
+      "group_key": "265f4ae6437f7ce4c65d"
+    },
+    "NG165002": {
+      "split": "train",
+      "group_key": "265f4ae6437f7ce4c65d"
+    },
+    "NG165005": {
+      "split": "train",
+      "group_key": "265f4ae6437f7ce4c65d"
+    },
+    "NG165003": {
+      "split": "train",
+      "group_key": "265f4ae6437f7ce4c65d"
+    },
+    "NG165006": {
+      "split": "train",
+      "group_key": "265f4ae6437f7ce4c65d"
+    },
+    "NG168002": {
+      "split": "train",
+      "group_key": "c7612d88c0ba28f7c82d"
+    },
+    "NG168010": {
+      "split": "train",
+      "group_key": "c7612d88c0ba28f7c82d"
+    },
+    "NG169003": {
+      "split": "test",
+      "group_key": "1065c893376d0c8fa6e6"
+    },
+    "NG169001": {
+      "split": "test",
+      "group_key": "1065c893376d0c8fa6e6"
+    },
+    "NG169002": {
+      "split": "test",
+      "group_key": "1065c893376d0c8fa6e6"
+    },
+    "NP146001": {
+      "split": "test",
+      "group_key": "1065c893376d0c8fa6e6"
+    },
+    "NG169004": {
+      "split": "test",
+      "group_key": "1065c893376d0c8fa6e6"
+    },
+    "NG170005": {
+      "split": "train",
+      "group_key": "71f159e92013a022d982"
+    },
+    "NG170004": {
+      "split": "train",
+      "group_key": "71f159e92013a022d982"
+    },
+    "NG170006": {
+      "split": "train",
+      "group_key": "71f159e92013a022d982"
+    },
+    "NG171005": {
+      "split": "train",
+      "group_key": "9cb3286712fb8fd2b8c7"
+    },
+    "NG171004": {
+      "split": "train",
+      "group_key": "9cb3286712fb8fd2b8c7"
+    },
+    "NG171006": {
+      "split": "train",
+      "group_key": "9cb3286712fb8fd2b8c7"
+    },
+    "NG172005": {
+      "split": "train",
+      "group_key": "e1833c390b08f341c7c3"
+    },
+    "NG172006": {
+      "split": "train",
+      "group_key": "e1833c390b08f341c7c3"
+    },
+    "NG172004": {
+      "split": "train",
+      "group_key": "e1833c390b08f341c7c3"
+    },
+    "NG173001": {
+      "split": "val",
+      "group_key": "6d9b3047874038b45b9d"
+    },
+    "NP174001": {
+      "split": "val",
+      "group_key": "35ff5aa20d85a1b3bd9b"
+    },
+    "NG174001": {
+      "split": "val",
+      "group_key": "35ff5aa20d85a1b3bd9b"
+    },
+    "NG177005": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177004": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177006": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177008": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177007": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177003": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177001": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NG177002": {
+      "split": "train",
+      "group_key": "4a1b947d300f5302c5a5"
+    },
+    "NP020002": {
+      "split": "train",
+      "group_key": "45fb4d50842b7d1599dd"
+    },
+    "NP021001": {
+      "split": "train",
+      "group_key": "45fb4d50842b7d1599dd"
+    },
+    "NP020001": {
+      "split": "train",
+      "group_key": "45fb4d50842b7d1599dd"
+    },
+    "NP142001": {
+      "split": "train",
+      "group_key": "7c1a42992fff1fb51d01"
+    },
+    "NP143001": {
+      "split": "train",
+      "group_key": "0e1ea2b6a68cd8ea8fb5"
+    },
+    "NP144001": {
+      "split": "train",
+      "group_key": "8125f1b481eb04acf1d7"
+    },
+    "NP147002": {
+      "split": "train",
+      "group_key": "2d5d3b6e812707240391"
+    },
+    "NP147001": {
+      "split": "train",
+      "group_key": "2d5d3b6e812707240391"
+    },
+    "NP175001": {
+      "split": "train",
+      "group_key": "b27d0ca66a3659c5d1a9"
+    },
+    "NP175002": {
+      "split": "train",
+      "group_key": "b27d0ca66a3659c5d1a9"
+    },
+    "NP176001": {
+      "split": "train",
+      "group_key": "1cd8ce6ff50fe3a27d92"
+    },
+    "RG010038": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RD010043": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010030": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010031": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RD010022": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010026": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RD010023": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010020": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010033": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010035": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010022": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010029": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010023": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RD010032": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010039": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010024": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010036": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010037": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010021": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RD010042": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010034": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010032": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010027": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010028": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG010025": {
+      "split": "train",
+      "group_key": "d10108e128c7fee32694"
+    },
+    "RG011031": {
+      "split": "test",
+      "group_key": "14c571e65e6d37e560fe"
+    },
+    "RG011037": {
+      "split": "test",
+      "group_key": "14c571e65e6d37e560fe"
+    },
+    "RG011033": {
+      "split": "test",
+      "group_key": "14c571e65e6d37e560fe"
+    },
+    "RD011032": {
+      "split": "test",
+      "group_key": "14c571e65e6d37e560fe"
+    },
+    "RG011036": {
+      "split": "test",
+      "group_key": "14c571e65e6d37e560fe"
+    },
+    "RD012043": {
+      "split": "val",
+      "group_key": "0a90dfc4e4ffd13a2380"
+    },
+    "RD012042": {
+      "split": "val",
+      "group_key": "0a90dfc4e4ffd13a2380"
+    },
+    "RG030036": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030031": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030033": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030013": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030038": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030016": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030024": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030034": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030045": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030044": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030049": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030054": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030018": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030044": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030058": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030004": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030040": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030000": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030033": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030043": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030057": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030017": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030011": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030021": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030022": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030050": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030046": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030057": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030014": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030039": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030030": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030054": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030003": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030041": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030009": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030003": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030053": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030032": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030051": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030056": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030006": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030019": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030042": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030012": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030004": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030031": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030043": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030013": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030032": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030055": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030023": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030048": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030011": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030051": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030014": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030002": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030037": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030041": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030015": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030001": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030001": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030006": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030053": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030047": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030005": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030055": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030034": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030007": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030052": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030042": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030052": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RG030008": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD030002": {
+      "split": "train",
+      "group_key": "8ed9fcc8a82389f14f5b"
+    },
+    "RD031013": {
+      "split": "test",
+      "group_key": "b48d0fdfbf36925ebfa8"
+    },
+    "RD031012": {
+      "split": "test",
+      "group_key": "b48d0fdfbf36925ebfa8"
+    },
+    "RD032013": {
+      "split": "test",
+      "group_key": "98813301884f0df18701"
+    },
+    "RD032012": {
+      "split": "test",
+      "group_key": "98813301884f0df18701"
+    },
+    "RD032011": {
+      "split": "test",
+      "group_key": "98813301884f0df18701"
+    },
+    "RD033023": {
+      "split": "test",
+      "group_key": "50f0f0a7895c5047ba1d"
+    },
+    "RG050002": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050013": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050003": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050012": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050002": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050001": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050014": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RG050003": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050004": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RD050011": {
+      "split": "test",
+      "group_key": "d3e619e4984556147596"
+    },
+    "RG060019": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060013": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060017": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060014": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060011": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RD060013": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060016": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RD060014": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RD060012": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RD060011": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060018": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060012": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG060010": {
+      "split": "train",
+      "group_key": "1684246d115ae2cb2bdb"
+    },
+    "RG061024": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061021": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061020": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061023": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061023": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061027": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061026": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061022": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061034": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061025": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061024": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061032": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061029": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061022": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061028": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061031": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG061021": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RD061033": {
+      "split": "test",
+      "group_key": "91d56b35a0d5415e763a"
+    },
+    "RG070002": {
+      "split": "test",
+      "group_key": "202badad802de9ce1ccd"
+    },
+    "RG070001": {
+      "split": "test",
+      "group_key": "202badad802de9ce1ccd"
+    }
+  },
+  "elapsed_seconds": 28.7,
+  "policy": "All matching normalized location names and shared camera IDs stay together. Names containing 시루봉 or 춘갑봉 conservatively merge to mountain-name regions even without verified coordinates. This is name-based conservative grouping, not certified geographic separation. New evaluation split; not comparable directly to old test. No model scores used in split optimization.",
+  "solver_satisfied_requested_gap": true,
+  "exact_optimum_proven": false
+}

@@ -1,0 +1,495 @@
+{
+  "model_sha256": "c9ee1bd0eb4832866e925377efee759fc2e1179dd3148f9385783e507f5af639",
+  "evaluation_split": "validation_only",
+  "input_size": 512,
+  "max_detections": 100,
+  "grid": [
+    {
+      "threshold": 0.05,
+      "macro_mask_f1": 0.24254272139359148,
+      "hazard_mask_precision": 0.13607711315106116,
+      "hazard_mask_recall": 0.3804385340494834,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.10130418104263254,
+          "recall": 0.24752475247524752,
+          "f1": 0.1437684201502739
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.18280371282868843,
+          "recall": 0.5882352941176471,
+          "f1": 0.2789264740507886
+        },
+        {
+          "name": "flame",
+          "precision": 0.12412344558186253,
+          "recall": 0.3055555555555556,
+          "f1": 0.1765346143136571
+        },
+        {
+          "name": "cloud",
+          "precision": 0.23579430305966745,
+          "recall": 0.6805555555555556,
+          "f1": 0.35023985960582577
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.22218718979205254,
+          "recall": 0.7222222222222222,
+          "f1": 0.33982830734114144
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.1057658393585145,
+          "recall": 0.385156699780738,
+          "f1": 0.16595865289986222
+        }
+      ]
+    },
+    {
+      "threshold": 0.075,
+      "macro_mask_f1": 0.2830007116341287,
+      "hazard_mask_precision": 0.1744822154849406,
+      "hazard_mask_recall": 0.3350697814879527,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.11639134570818513,
+          "recall": 0.19801980198019803,
+          "f1": 0.14660924969611153
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.2551774390150727,
+          "recall": 0.5294117647058824,
+          "f1": 0.3443685884572647
+        },
+        {
+          "name": "flame",
+          "precision": 0.15187786173156406,
+          "recall": 0.2777777777777778,
+          "f1": 0.1963818977151686
+        },
+        {
+          "name": "cloud",
+          "precision": 0.28837509325161087,
+          "recall": 0.6527777777777778,
+          "f1": 0.40003034221922446
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.293114234450633,
+          "recall": 0.7222222222222222,
+          "f1": 0.4169920470768835
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.1364368719534986,
+          "recall": 0.3333333333333333,
+          "f1": 0.19362214464011973
+        }
+      ]
+    },
+    {
+      "threshold": 0.1,
+      "macro_mask_f1": 0.30818652387893275,
+      "hazard_mask_precision": 0.21476211280552157,
+      "hazard_mask_recall": 0.3028699928816411,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.14223977444330366,
+          "recall": 0.1782178217821782,
+          "f1": 0.1582091550998046
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.315412228802693,
+          "recall": 0.4803921568627451,
+          "f1": 0.380801020011247
+        },
+        {
+          "name": "flame",
+          "precision": 0.18663433517056804,
+          "recall": 0.25,
+          "f1": 0.21371926133301067
+        },
+        {
+          "name": "cloud",
+          "precision": 0.3436554361960004,
+          "recall": 0.6388888888888888,
+          "f1": 0.4469165088769301
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.34163550489301636,
+          "recall": 0.7222222222222222,
+          "f1": 0.4638529142480314
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.1454612200860324,
+          "recall": 0.2564102564102564,
+          "f1": 0.18562028370457256
+        }
+      ]
+    },
+    {
+      "threshold": 0.125,
+      "macro_mask_f1": 0.33160644852545457,
+      "hazard_mask_precision": 0.2522599399521486,
+      "hazard_mask_recall": 0.2809959165708402,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.1415083140013168,
+          "recall": 0.14200735755565785,
+          "f1": 0.1417573965708982
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.38085892350331146,
+          "recall": 0.45098039215686275,
+          "f1": 0.4129641469077471
+        },
+        {
+          "name": "flame",
+          "precision": 0.23441258235181758,
+          "recall": 0.25,
+          "f1": 0.24195550538112273
+        },
+        {
+          "name": "cloud",
+          "precision": 0.38925582196537684,
+          "recall": 0.6388888888888888,
+          "f1": 0.4837669580235607
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.3837362984738242,
+          "recall": 0.7222222222222222,
+          "f1": 0.5011813319303738
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.17498524944674254,
+          "recall": 0.2564102564102564,
+          "f1": 0.208013352339025
+        }
+      ]
+    },
+    {
+      "threshold": 0.15,
+      "macro_mask_f1": 0.3454790451238032,
+      "hazard_mask_precision": 0.2791177369619036,
+      "hazard_mask_recall": 0.26403718803252874,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.1579662749386813,
+          "recall": 0.12871287128712872,
+          "f1": 0.14184703060245912
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.42726484093691575,
+          "recall": 0.4411764705882353,
+          "f1": 0.43410923001797586
+        },
+        {
+          "name": "flame",
+          "precision": 0.25212209501011384,
+          "recall": 0.2222222222222222,
+          "f1": 0.23622980265209914
+        },
+        {
+          "name": "cloud",
+          "precision": 0.426287722882282,
+          "recall": 0.625,
+          "f1": 0.5068637652705847
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.41531578657888585,
+          "recall": 0.7222222222222222,
+          "f1": 0.5273675041823024
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.20276978866060302,
+          "recall": 0.2564102564102564,
+          "f1": 0.22645693801739752
+        }
+      ]
+    },
+    {
+      "threshold": 0.2,
+      "macro_mask_f1": 0.34271807324083503,
+      "hazard_mask_precision": 0.31354334880243856,
+      "hazard_mask_recall": 0.21335123708449277,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.18316100130980137,
+          "recall": 0.1188118811881188,
+          "f1": 0.14413018113351198
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.501278507599085,
+          "recall": 0.38235294117647056,
+          "f1": 0.4338127892452259
+        },
+        {
+          "name": "flame",
+          "precision": 0.25619053749842924,
+          "recall": 0.1388888888888889,
+          "f1": 0.1801259023906805
+        },
+        {
+          "name": "cloud",
+          "precision": 0.4815386078773344,
+          "recall": 0.6192257896407618,
+          "f1": 0.5417710190803179
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.459143743068007,
+          "recall": 0.6944444444444444,
+          "f1": 0.5527966132568661
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.2353891197822053,
+          "recall": 0.1794871794871795,
+          "f1": 0.20367193433840772
+        }
+      ]
+    },
+    {
+      "threshold": 0.25,
+      "macro_mask_f1": 0.3480537018472563,
+      "hazard_mask_precision": 0.3931968619070762,
+      "hazard_mask_recall": 0.1719892406681487,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.2172789209232721,
+          "recall": 0.09900990099009901,
+          "f1": 0.1360324042924342
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.5663554381269179,
+          "recall": 0.3431372549019608,
+          "f1": 0.4273539563918128
+        },
+        {
+          "name": "flame",
+          "precision": 0.3959562266710387,
+          "recall": 0.07382056611238628,
+          "f1": 0.12444085471057233
+        },
+        {
+          "name": "cloud",
+          "precision": 0.5376645652701082,
+          "recall": 0.5972222222222222,
+          "f1": 0.5658806323585455
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.5318048247105815,
+          "recall": 0.6944444444444444,
+          "f1": 0.6023390436815435
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.32905097157867247,
+          "recall": 0.1794871794871795,
+          "f1": 0.23227531964862974
+        }
+      ]
+    },
+    {
+      "threshold": 0.35,
+      "macro_mask_f1": 0.3322932935033548,
+      "hazard_mask_precision": 0.42244097576541995,
+      "hazard_mask_recall": 0.12625132096503333,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.27812718611382664,
+          "recall": 0.06868884030159295,
+          "f1": 0.11016926794277271
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 0.705804701252715,
+          "recall": 0.28228734481572926,
+          "f1": 0.4032817304174246
+        },
+        {
+          "name": "flame",
+          "precision": 0.2833910399297181,
+          "recall": 0.027777777777777776,
+          "f1": 0.0505961579915173
+        },
+        {
+          "name": "cloud",
+          "precision": 0.6307011642973404,
+          "recall": 0.5277777777777778,
+          "f1": 0.5746674313103284
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.654923903069424,
+          "recall": 0.6666666666666666,
+          "f1": 0.6607431157242657
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.5349788442914946,
+          "recall": 0.11870818454479234,
+          "f1": 0.1943020576338202
+        }
+      ]
+    },
+    {
+      "threshold": 0.5,
+      "macro_mask_f1": 0.30129983650819175,
+      "hazard_mask_precision": 0.688315510713192,
+      "hazard_mask_recall": 0.08793105422628332,
+      "per_class": [
+        {
+          "name": "black_smoke",
+          "precision": 0.6498109467879976,
+          "recall": 0.04950495049504951,
+          "f1": 0.09200093656346772
+        },
+        {
+          "name": "white_gray_smoke",
+          "precision": 1.0,
+          "recall": 0.18651043440602263,
+          "f1": 0.3143848195475691
+        },
+        {
+          "name": "flame",
+          "precision": 0.4151355853515782,
+          "recall": 0.027777777777777776,
+          "f1": 0.05207133041129746
+        },
+        {
+          "name": "cloud",
+          "precision": 0.6986650051277169,
+          "recall": 0.4166666666666667,
+          "f1": 0.5220158741387968
+        },
+        {
+          "name": "fog_haze",
+          "precision": 0.7193214451166039,
+          "recall": 0.6666666666666666,
+          "f1": 0.691993857668418
+        },
+        {
+          "name": "chimney_smoke",
+          "precision": 0.5622877629085623,
+          "recall": 0.07692307692307693,
+          "f1": 0.13533220071960134
+        }
+      ]
+    }
+  ],
+  "default_025": {
+    "threshold": 0.25,
+    "macro_mask_f1": 0.3480537018472563,
+    "hazard_mask_precision": 0.3931968619070762,
+    "hazard_mask_recall": 0.1719892406681487,
+    "per_class": [
+      {
+        "name": "black_smoke",
+        "precision": 0.2172789209232721,
+        "recall": 0.09900990099009901,
+        "f1": 0.1360324042924342
+      },
+      {
+        "name": "white_gray_smoke",
+        "precision": 0.5663554381269179,
+        "recall": 0.3431372549019608,
+        "f1": 0.4273539563918128
+      },
+      {
+        "name": "flame",
+        "precision": 0.3959562266710387,
+        "recall": 0.07382056611238628,
+        "f1": 0.12444085471057233
+      },
+      {
+        "name": "cloud",
+        "precision": 0.5376645652701082,
+        "recall": 0.5972222222222222,
+        "f1": 0.5658806323585455
+      },
+      {
+        "name": "fog_haze",
+        "precision": 0.5318048247105815,
+        "recall": 0.6944444444444444,
+        "f1": 0.6023390436815435
+      },
+      {
+        "name": "chimney_smoke",
+        "precision": 0.32905097157867247,
+        "recall": 0.1794871794871795,
+        "f1": 0.23227531964862974
+      }
+    ]
+  },
+  "candidate": {
+    "threshold": 0.25,
+    "macro_mask_f1": 0.3480537018472563,
+    "hazard_mask_precision": 0.3931968619070762,
+    "hazard_mask_recall": 0.1719892406681487,
+    "per_class": [
+      {
+        "name": "black_smoke",
+        "precision": 0.2172789209232721,
+        "recall": 0.09900990099009901,
+        "f1": 0.1360324042924342
+      },
+      {
+        "name": "white_gray_smoke",
+        "precision": 0.5663554381269179,
+        "recall": 0.3431372549019608,
+        "f1": 0.4273539563918128
+      },
+      {
+        "name": "flame",
+        "precision": 0.3959562266710387,
+        "recall": 0.07382056611238628,
+        "f1": 0.12444085471057233
+      },
+      {
+        "name": "cloud",
+        "precision": 0.5376645652701082,
+        "recall": 0.5972222222222222,
+        "f1": 0.5658806323585455
+      },
+      {
+        "name": "fog_haze",
+        "precision": 0.5318048247105815,
+        "recall": 0.6944444444444444,
+        "f1": 0.6023390436815435
+      },
+      {
+        "name": "chimney_smoke",
+        "precision": 0.32905097157867247,
+        "recall": 0.1794871794871795,
+        "f1": 0.23227531964862974
+      }
+    ]
+  },
+  "automatically_applied": false,
+  "operational_use": false,
+  "warning": "Exploratory threshold selection on small camera-ID split validation; not probability calibration, not independent spatial validation. Test data not used."
+}
