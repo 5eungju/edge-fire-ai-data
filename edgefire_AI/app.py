@@ -88,3 +88,17 @@ def get_chemical(cid:str):
 if __name__=='__main__':
  import uvicorn
  uvicorn.run(app,host=os.environ.get('AI_HOST','127.0.0.1'),port=int(os.environ.get('AI_PORT','8001')))
+
+from vision_api import router as vision_router
+app.include_router(vision_router)
+
+# 개인 통합본의 POST 경로는 서버 간 인증키로 보호합니다.
+@app.middleware('http')
+async def local_post_auth(request, call_next):
+ if request.method == 'POST':
+  import secrets
+  expected=os.environ.get('LOCAL_API_TOKEN')
+  provided=request.headers.get('x-api-key','')
+  if not expected or not secrets.compare_digest(expected,provided):
+   return JSONResponse(status_code=401,content={'detail':'로컬 API 인증이 필요합니다.'})
+ return await call_next(request)

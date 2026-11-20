@@ -1,0 +1,221 @@
+{
+  "task": "existing wildfire annotation classification",
+  "same_sample_and_incident_split": true,
+  "sample_rows": 12762,
+  "train_rows": 8757,
+  "test_rows": 4005,
+  "train_incidents": 58,
+  "test_incidents": 20,
+  "results": {
+    "random_forest": {
+      "macro_f1": 0.1932830268583205,
+      "accuracy": 0.8941323345817728,
+      "balanced_accuracy": 0.1996035499613725
+    },
+    "majority_baseline": {
+      "macro_f1": 0.19031413612565445,
+      "accuracy": 0.9076154806491885
+    },
+    "hist_gradient_boosting": {
+      "macro_f1": 0.1863931488715427,
+      "accuracy": 0.7263420724094881,
+      "balanced_accuracy": 0.18678145748447797,
+      "classification_report": {
+        "매우 낮음": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 18.0
+        },
+        "낮음": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 7.0
+        },
+        "보통": {
+          "precision": 0.013651877133105802,
+          "recall": 0.031746031746031744,
+          "f1-score": 0.01909307875894988,
+          "support": 126.0
+        },
+        "높음": {
+          "precision": 0.9105562579013906,
+          "recall": 0.7925722145804677,
+          "f1-score": 0.8474775702309163,
+          "support": 3635.0
+        },
+        "매우 높음": {
+          "precision": 0.04660194174757282,
+          "recall": 0.1095890410958904,
+          "f1-score": 0.0653950953678474,
+          "support": 219.0
+        },
+        "accuracy": 0.7263420724094881,
+        "macro avg": {
+          "precision": 0.19416201535641384,
+          "recall": 0.18678145748447797,
+          "f1-score": 0.1863931488715427,
+          "support": 4005.0
+        },
+        "weighted avg": {
+          "precision": 0.8294127239033819,
+          "recall": 0.7263420724094881,
+          "f1-score": 0.7733603549559468,
+          "support": 4005.0
+        }
+      }
+    },
+    "logistic_regression": {
+      "macro_f1": 0.08344715680575333,
+      "accuracy": 0.15255930087390762,
+      "balanced_accuracy": 0.22141255514849378,
+      "classification_report": {
+        "매우 낮음": {
+          "precision": 0.006600660066006601,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.012944983818770227,
+          "support": 18.0
+        },
+        "낮음": {
+          "precision": 0.0015313935681470138,
+          "recall": 0.2857142857142857,
+          "f1-score": 0.0030464584920030465,
+          "support": 7.0
+        },
+        "보통": {
+          "precision": 0.02727272727272727,
+          "recall": 0.07142857142857142,
+          "f1-score": 0.039473684210526314,
+          "support": 126.0
+        },
+        "높음": {
+          "precision": 0.9006734006734006,
+          "recall": 0.14718019257221457,
+          "f1-score": 0.2530148971388035,
+          "support": 3635.0
+        },
+        "매우 높음": {
+          "precision": 0.06812933025404157,
+          "recall": 0.2694063926940639,
+          "f1-score": 0.10875576036866359,
+          "support": 219.0
+        },
+        "accuracy": 0.15255930087390762,
+        "macro avg": {
+          "precision": 0.20084150236686465,
+          "recall": 0.22141255514849378,
+          "f1-score": 0.08344715680575333,
+          "support": 4005.0
+        },
+        "weighted avg": {
+          "precision": 0.8220809063785207,
+          "recall": 0.15255930087390762,
+          "f1-score": 0.23689255474381926,
+          "support": 4005.0
+        }
+      }
+    },
+    "xgboost": {
+      "macro_f1": 0.1876233175148494,
+      "accuracy": 0.6249687890137329,
+      "balanced_accuracy": 0.21246167682526523,
+      "classification_report": {
+        "매우 낮음": {
+          "precision": 0.006802721088435374,
+          "recall": 0.05555555555555555,
+          "f1-score": 0.012121212121212121,
+          "support": 18.0
+        },
+        "낮음": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 7.0
+        },
+        "보통": {
+          "precision": 0.03140096618357488,
+          "recall": 0.10317460317460317,
+          "f1-score": 0.04814814814814815,
+          "support": 126.0
+        },
+        "높음": {
+          "precision": 0.9127667540247099,
+          "recall": 0.6707015130674002,
+          "f1-score": 0.7732318426895021,
+          "support": 3635.0
+        },
+        "매우 높음": {
+          "precision": 0.06746031746031746,
+          "recall": 0.2328767123287671,
+          "f1-score": 0.10461538461538461,
+          "support": 219.0
+        },
+        "accuracy": 0.6249687890137329,
+        "macro avg": {
+          "precision": 0.20368615175140753,
+          "recall": 0.21246167682526523,
+          "f1-score": 0.1876233175148494,
+          "support": 4005.0
+        },
+        "weighted avg": {
+          "precision": 0.8331485470967172,
+          "recall": 0.6249687890137329,
+          "f1-score": 0.7090869827445588,
+          "support": 4005.0
+        }
+      }
+    },
+    "lightgbm": {
+      "macro_f1": 0.18778705600463316,
+      "accuracy": 0.6786516853932584,
+      "balanced_accuracy": 0.19572665907575745,
+      "classification_report": {
+        "매우 낮음": {
+          "precision": 0.01818181818181818,
+          "recall": 0.05555555555555555,
+          "f1-score": 0.0273972602739726,
+          "support": 18.0
+        },
+        "낮음": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 7.0
+        },
+        "보통": {
+          "precision": 0.013089005235602094,
+          "recall": 0.03968253968253968,
+          "f1-score": 0.01968503937007874,
+          "support": 126.0
+        },
+        "높음": {
+          "precision": 0.9106354060482501,
+          "recall": 0.7372764786795049,
+          "f1-score": 0.8148373365764671,
+          "support": 3635.0
+        },
+        "매우 높음": {
+          "precision": 0.05228758169934641,
+          "recall": 0.1461187214611872,
+          "f1-score": 0.07701564380264742,
+          "support": 219.0
+        },
+        "accuracy": 0.6786516853932584,
+        "macro avg": {
+          "precision": 0.19883876223300337,
+          "recall": 0.19572665907575745,
+          "f1-score": 0.18778705600463316,
+          "support": 4005.0
+        },
+        "weighted avg": {
+          "precision": 0.8298594678563057,
+          "recall": 0.6786516853932584,
+          "f1-score": 0.7445127615714854,
+          "support": 4005.0
+        }
+      }
+    }
+  },
+  "note": "One internal holdout comparison; no external validation or operational approval."
+}

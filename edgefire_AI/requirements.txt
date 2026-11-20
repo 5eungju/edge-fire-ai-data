@@ -3,3 +3,7 @@ scikit-learn==1.9.1
 joblib==1.6.0
 fastapi==0.165.0
 uvicorn==0.54.0
+
+python-multipart
+Pillow
+# Vision inference additionally uses requirements-vision-training.txt

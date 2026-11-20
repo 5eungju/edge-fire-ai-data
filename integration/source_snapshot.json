@@ -1,0 +1,11 @@
+{
+  "repository": "whdduq000000-crypto/EDGEFIRE",
+  "commit": "f97b78d10796b24ed80140520ca0d85e5bfa5af5",
+  "copied_to": "5eungju/edge-fire-ai-data",
+  "snapshot": "team_snapshot",
+  "working_copies": [
+    "edgefire_back",
+    "edgefire_front",
+    "edgefire_AI"
+  ]
+}

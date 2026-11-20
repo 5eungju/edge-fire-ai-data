@@ -1,4 +1,20 @@
-# EDGE-FIRE 산불 AI 데이터 준비
+# EDGE-FIRE 개인 통합 복사본
+
+현재 실행 안내는 [integration/README.md](integration/README.md)에 있습니다.
+
+공유팀 저장소 main f97b78d10796b24ed80140520ca0d85e5bfa5af5를 team_snapshot에 보존하고 개인 백엔드·프론트·AI를 연결했습니다. 공유 저장소는 수정하지 않았습니다.
+
+- edgefire_AI: 전처리·학습·모델 비교·추론 Python 코드
+- edgefire_back: 이미지 저장·SQLite 기록·AI 연결 백엔드 복사본
+- edgefire_front: 실제 분석 화면과 공유팀 시연 화면
+- models: 학습 완료 첫 모델, 성능 지표와 해시
+- team_snapshot: 공유팀 원본 파일 보관
+
+두 번째 모델은 별도 학습 중입니다. 현재 모델은 연구 시제품이며 산불 발생 전 확률·안전 판정이나 실제 경보 자동화를 검증하지 않았습니다.
+
+---
+
+# 기존 데이터 준비 안내
 
 AI Hub 산불 이미지 데이터(데이터셋 71330)를 내려받고, 이미지와 세그멘테이션 라벨을 점검하는 Python 프로젝트입니다. Colab 대신 **VS Code + WSL Ubuntu**를 기준으로 구성했습니다. AI Hub는 Windows에서 API 다운로드할 때 WSL 사용을 권장합니다.
 

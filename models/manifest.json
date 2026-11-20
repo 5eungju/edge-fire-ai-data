@@ -1,0 +1,13 @@
+{
+  "model_id": "vision-pilot-v1",
+  "file": "vision_pilot_v1.pt",
+  "bytes": 6568861,
+  "sha256": "c9ee1bd0eb4832866e925377efee759fc2e1179dd3148f9385783e507f5af639",
+  "task": "smoke_fire_instance_segmentation",
+  "trained_images": 1197,
+  "input_size": 416,
+  "epochs": 10,
+  "operational_use": false,
+  "test_metrics_file": "vision_pilot_v1_metrics.json",
+  "note": "표본 학습 모델입니다. 실사용 성능을 검증하지 않았습니다."
+}

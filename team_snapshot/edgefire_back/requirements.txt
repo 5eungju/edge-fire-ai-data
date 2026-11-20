@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pydantic
+asyncpg
+redis
+websockets

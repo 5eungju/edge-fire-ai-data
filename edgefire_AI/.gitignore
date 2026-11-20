@@ -16,3 +16,9 @@ datasets/
 *.pickle
 synthetic_gas_demo.jsonl
 chemical_catalog.json
+
+*.pt
+*.onnx
+runs/
+*.sqlite
+
