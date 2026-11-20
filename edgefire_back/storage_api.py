@@ -5,6 +5,8 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks,
 from fastapi.responses import FileResponse
 from PIL import Image, UnidentifiedImageError
 import httpx
+import psutil
+from datetime import datetime
 from contextlib import contextmanager
 
 ROOT = Path(os.environ.get('STORAGE_ROOT', './local_storage')).resolve()
@@ -116,5 +118,18 @@ def training_status():
     if not path.is_file():return {'available':False}
     try:
         state=json.loads(path.read_text(encoding='utf8'))
-        return {'available':True,**{k:state.get(k) for k in ['phase','epoch','epochs','completed_epochs','batches_completed_in_epoch','updated_utc','split_counts','validation_metrics']}}
+        phase=state.get('phase','unknown')
+        alive=False
+        try:
+            process=psutil.Process(int(state.get('pid',0)))
+            started=datetime.fromisoformat(state['started_utc']).timestamp()
+            alive=process.is_running() and abs(process.create_time()-started)<10 and any(Path(arg).name in ['train_vision.py','run_model_comparison.py'] for arg in process.cmdline())
+        except (psutil.NoSuchProcess,ValueError,KeyError):
+            alive=False
+        except psutil.AccessDenied:
+            alive=None
+        if phase not in ['completed','failed','interrupted'] and alive is not True:
+            phase='stopped' if alive is False else 'unknown'
+        state['phase']=phase
+        return {'available':True,'worker_alive':alive,**{k:state.get(k) for k in ['phase','epoch','epochs','completed_epochs','batches_completed_in_epoch','updated_utc','split_counts','validation_metrics','candidate_index','candidate_total','candidate_name']}}
     except (OSError,ValueError):return {'available':False}

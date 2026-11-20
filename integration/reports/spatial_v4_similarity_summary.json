@@ -1,0 +1,12 @@
+{
+  "manifest_sha256": "ecc509563574f2af89dfddc1408bcbd1f69b1c5ceb727723f614bce4f5674feb",
+  "inventory_location_name_count": 86,
+  "inventory_location_name_overlap_count": 0,
+  "selected_location_name_overlap_count": 0,
+  "selected_overlap_location_names": [],
+  "selected_images_with_overlapping_location_name": 0,
+  "cross_split_visual_similarity_candidates": 0,
+  "images_hashed": 3564,
+  "elapsed_seconds": 136.3,
+  "interpretation": "Location-name matches and dHash+tiny RGB similarity are review flags, not proof of identical physical locations or duplicate images. No files removed. Camera-ID split is not a verified spatial holdout."
+}

@@ -1,11 +1,15 @@
 """AI 폴더만 검사합니다. 외부 서버나 데이터 다운로드를 실행하지 않습니다."""
-import unittest
+import unittest,os
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 import app as service
 
 class ContractTests(unittest.TestCase):
- def setUp(self):self.client=TestClient(service.app)
+ def setUp(self):
+  token_patch=patch.dict(os.environ,{'LOCAL_API_TOKEN':'test-only-secret'});token_patch.start();self.addCleanup(token_patch.stop)
+  self.client=TestClient(service.app,headers={'X-API-Key':'test-only-secret'})
+ def test_private_post_requires_token(self):
+  self.assertEqual(TestClient(service.app).post('/api/v1/ai/assess',json={'node_id':'N1'}).status_code,401)
  def test_gas_only_is_not_inferred(self):
   with patch.object(service,'model',None):
    response=self.client.post('/api/v1/ai/assess',json={'node_id':'GAS-Node-02','gas_data':{'CO':85,'H2':38,'VOC':100}})

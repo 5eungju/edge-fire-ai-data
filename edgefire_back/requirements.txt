@@ -5,3 +5,4 @@ httpx
 python-multipart
 Pillow
 websockets
+psutil==7.2.2

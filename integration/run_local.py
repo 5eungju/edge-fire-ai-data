@@ -4,7 +4,8 @@ from pathlib import Path
 import psutil, httpx
 
 BASE=Path(__file__).resolve().parents[1]
-ROOT=Path(os.environ.get('EDGEFIRE_RUNTIME_ROOT','E:/AI_Work/edgefire_private_storage')).resolve()
+DEFAULT_ROOT=Path('E:/AI_Work/edgefire_private_storage') if Path('E:/').exists() else BASE/'local_storage'
+ROOT=Path(os.environ.get('EDGEFIRE_RUNTIME_ROOT',str(DEFAULT_ROOT))).resolve()
 
 def configuration():
     ROOT.mkdir(parents=True,exist_ok=True)
@@ -15,10 +16,10 @@ def configuration():
           'vision_model_id':'vision-pilot-v1','processes':{}},indent=2),encoding='utf8')
     return path,json.loads(path.read_text(encoding='utf8'))
 
-def alive(pid,folder):
+def alive(pid,folder,command=None):
     try:
         process=psutil.Process(pid)
-        return Path(process.cwd()).resolve()==folder.resolve() and process.is_running()
+        return Path(process.cwd()).resolve()==folder.resolve() and process.is_running() and (command is None or all(part in process.cmdline() for part in command[1:]))
     except (psutil.NoSuchProcess,psutil.AccessDenied):
         return False
 
@@ -29,7 +30,7 @@ def main():
       'VISION_MODEL_PATH':config['vision_model_path'],'VISION_MODEL_ID':config['vision_model_id'],
       'AI_BASE_URL':'http://127.0.0.1:8101','BACKEND_BASE_URL':'http://127.0.0.1:8100',
       'NEXT_TELEMETRY_DISABLED':'1','PYTHONUTF8':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1','YOLO_AUTOINSTALL':'false'})
-    training_status=BASE.parents[1]/'outputs/vision_training_v2_status.json'
+    training_status=Path(config.get('training_status_path',str(BASE.parents[1]/'outputs/vision_training_v2_status.json')))
     if training_status.is_file():env['TRAINING_STATUS_PATH']=str(training_status)
     for name,file in [('MODEL_PATH','environment_model.joblib'),('GAS_MODEL_PATH','gas_simulation.joblib'),('CHEMICAL_CATALOG_PATH','chemical_catalog.json')]:
         if (ROOT/'models'/file).is_file():env[name]=str(ROOT/'models'/file)
@@ -39,7 +40,7 @@ def main():
       'frontend':(BASE/'edgefire_front',['node',str(BASE/'edgefire_front/node_modules/next/dist/bin/next'),'start','--hostname','127.0.0.1','--port','3100'])}
     for name,(folder,command) in services.items():
         pid=config.get('processes',{}).get(name,0)
-        running=bool(pid and alive(pid,folder))
+        running=bool(pid and alive(pid,folder,command))
         if args.action=='stop' and running:
             process=psutil.Process(pid)
             for child in process.children(recursive=True):child.terminate()
@@ -61,6 +62,8 @@ def main():
                 except httpx.HTTPError:pass
                 time.sleep(0.5)
             else:raise RuntimeError('서비스 시작 실패: '+url+'; SSD logs 폴더 확인')
+        for name,(folder,command) in services.items():
+            if not alive(config['processes'][name],folder,command):raise RuntimeError('실행 프로세스 확인 실패: '+name)
         print('화면: http://127.0.0.1:3100')
     if args.action=='status':
         try:

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "yolo26n-seg.pt",
+    "sha256": "361fbfabab285c3237700b6bb91d7ecfa602cd945fffda8dbe1242829b71e73f",
+    "bytes": 6719965,
+    "parameters": 3126280,
+    "pretrained_classes": 80,
+    "initialization": "Ultralytics generic COCO pretrained; not existing wildfire fine-tune"
+  },
+  {
+    "name": "yolo11n-seg.pt",
+    "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152",
+    "bytes": 6182636,
+    "parameters": 2876848,
+    "pretrained_classes": 80,
+    "initialization": "Ultralytics generic COCO pretrained; not existing wildfire fine-tune"
+  }
+]

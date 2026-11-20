@@ -1,0 +1,50 @@
+{
+  "approved_links": [
+    {
+      "camera_a": "BC010032",
+      "camera_b": "BC003031",
+      "reviewed_by": "visual_review",
+      "reason": "Matching distinctive skyline, buildings or forest/roof geometry in side-by-side review; same background despite different location names. Group conservatively; physical coordinates not certified.",
+      "representative_image_ids": [
+        "7096c01c7862dcc01e9dbb28",
+        "d1b225df784ac4759f02e835"
+      ],
+      "candidate_pair_count": 21,
+      "location_labels": [
+        "시청옥상_BC010032",
+        "구라미휴게소_BC003031"
+      ]
+    },
+    {
+      "camera_a": "RD020033",
+      "camera_b": "ND126001",
+      "reviewed_by": "visual_review",
+      "reason": "Matching distinctive skyline, buildings or forest/roof geometry in side-by-side review; same background despite different location names. Group conservatively; physical coordinates not certified.",
+      "representative_image_ids": [
+        "bdb51225d5ce028fac721364",
+        "5d8f6741f624cf3f1812cb64"
+      ],
+      "candidate_pair_count": 8,
+      "location_labels": [
+        "강원도강릉시시루봉정상입구_RD020033",
+        "강원도강릉시저동_ND126001"
+      ]
+    },
+    {
+      "camera_a": "RD020033",
+      "camera_b": "ND113002",
+      "reviewed_by": "visual_review",
+      "reason": "Matching distinctive skyline, buildings or forest/roof geometry in side-by-side review; same background despite different location names. Group conservatively; physical coordinates not certified.",
+      "representative_image_ids": [
+        "9426fea815e7bd794d854807",
+        "822f7c95b3a892208237f993"
+      ],
+      "candidate_pair_count": 5,
+      "location_labels": [
+        "강원도강릉시시루봉정상입구_RD020033",
+        "강원도강릉시저동_ND113002"
+      ]
+    }
+  ],
+  "automatic_metric_links_allowed": false
+}

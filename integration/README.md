@@ -2,7 +2,7 @@
 
 ## 저장공간과 ID
 
-이미지·분석 결과·ID는 `E:/AI_Work/edgefire_private_storage`에 저장합니다. `metadata.sqlite`는 기록, `objects/`는 이미지, `runtime.json`은 로컬 인증키와 설정입니다. 이 파일들은 GitHub에 올리지 않습니다. `EDGEFIRE_RUNTIME_ROOT` 환경변수로 위치를 바꿀 수 있습니다.
+이미지·분석 결과·ID는 E: 드라이브가 있으면 `E:/AI_Work/edgefire_private_storage`, 없으면 저장소의 local_storage에 저장합니다. `metadata.sqlite`는 기록, `objects/`는 이미지, `runtime.json`은 로컬 인증키와 설정입니다. 이 파일들은 GitHub에 올리지 않습니다. `EDGEFIRE_RUNTIME_ROOT` 환경변수로 위치를 바꿀 수 있습니다.
 
 프로젝트 PRJ_, 저장공간 STO_, 사용자 소유자 USR_, 카메라 CAM_ ID는 UUID로 생성해 유지합니다. 외부 서비스 가입 계정이나 실제 센서 하드웨어 ID는 아닙니다. 실제 센서는 담당자가 제공한 장치 ID와 추가 매핑해야 합니다.
 
@@ -64,6 +64,10 @@ flowchart LR
 첫 모델 파일은 models/vision_pilot_v1.pt이며 models/manifest.json의 SHA256으로 확인합니다. 기존 환경 분류·합성 가스·화학물성은 별도 모델과 카탈로그가 필요합니다. 합성 가스 모델은 실측 가스 위험을 검증하지 않았습니다.
 
 ## 검증과 원본 보존
+
+새 모델 비교는 [MODEL_SELECTION.md](../edgefire_AI/MODEL_SELECTION.md)에 설명합니다. 검사한 V4 공간 데이터에서 두 후보를 순차 학습하고 검증 결과만으로 선정한 뒤 선정 모델의 시험셋을 평가합니다. 기존 학습이 진행 중이면 대기합니다.
+
+Windows에서 진행상태 파일 교체가 일시 거부되어 두 번째 학습이 5회차 도중 중단된 일을 수정했습니다. 4회차 체크포인트에서 재개했으며, 모니터링 파일은 재시도 후에도 실패하면 이전 기록을 유지하고 학습을 계속합니다. 실제 모델·체크포인트 저장 오류는 숨기지 않습니다. 화면은 PID·생성 시각·실행 명령을 확인해 죽은 프로세스를 진행 중으로 표시하지 않습니다. 관련 테스트와 복구 기록은 integration/reports/training_v2_recovery.json에 있습니다.
 
 추가 조사에서 카메라 분할 간 같은 장소명과 시각 유사 사례를 확인했습니다. 기존 실험은 독립 장소 검증으로 간주하지 않습니다. 다음 데이터·평가 계획은 [장소 평가 안내](../edgefire_AI/SPATIAL_EVALUATION.md)를 참고하세요. 학습 진행과 함께 더 엄격한 장소·마스크 전처리를 준비 중입니다.
 

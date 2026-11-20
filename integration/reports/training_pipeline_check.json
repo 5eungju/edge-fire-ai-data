@@ -1,0 +1,17 @@
+{
+  "purpose": "Execution check only; not model-quality evaluation",
+  "training_images": 18,
+  "validation_images": 9,
+  "epochs": 1,
+  "input_size": 320,
+  "completed": true,
+  "validation_only": true,
+  "test_images_not_evaluated": true,
+  "checkpoint_saved": true,
+  "operating_point_report_completed": true,
+  "benchmark_procedure_completed": true,
+  "models_checked": [
+    "YOLO26n-seg",
+    "YOLO11n-seg"
+  ]
+}

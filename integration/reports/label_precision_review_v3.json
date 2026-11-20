@@ -1,0 +1,11 @@
+{
+  "repaired_count": 1,
+  "issues": [
+    {
+      "id": "3b402aa4eee29b29e6b93b94",
+      "split": "train",
+      "reason": "invalid_polygon_geometry: Self-intersection[0.547322905491096 0.45874999098311]"
+    }
+  ],
+  "policy": "Only regenerate derived YOLO text from unchanged valid original polygons; image files and original JSON unchanged."
+}

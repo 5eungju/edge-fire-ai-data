@@ -1,8 +1,8 @@
 """실행 중인 API의 연동 계약을 검사합니다: py smoke_test.py [http://host:port]"""
-import json,sys,urllib.request,urllib.error
-base=(sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8001').rstrip('/')
+import json,sys,urllib.request,urllib.error,os
+base=(sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8101').rstrip('/')
 def request(path,data=None):
- req=urllib.request.Request(base+path,data=json.dumps(data).encode() if data is not None else None,headers={'Content-Type':'application/json'})
+ req=urllib.request.Request(base+path,data=json.dumps(data).encode() if data is not None else None,headers={'Content-Type':'application/json',**({'X-API-Key':os.environ['LOCAL_API_TOKEN']} if os.environ.get('LOCAL_API_TOKEN') else {})})
  try:
   with urllib.request.urlopen(req,timeout=20) as r:return r.status,json.load(r)
  except urllib.error.HTTPError as e:return e.code,json.load(e)

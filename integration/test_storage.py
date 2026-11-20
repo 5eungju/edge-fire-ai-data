@@ -1,4 +1,4 @@
-import os, sys, tempfile, unittest, io
+import os, sys, tempfile, unittest, io, json
 from pathlib import Path
 from unittest.mock import patch
 from PIL import Image
@@ -26,6 +26,13 @@ class StorageContract(unittest.TestCase):
         self.assertEqual(image.content,raw)
         self.assertEqual(self.client.post('/api/v1/storage/jobs/'+job['id']+'/retry',headers=self.headers).status_code,409)
         self.assertFalse((Path(TEMP.name).parent/'outside.png').exists())
+    def test_dead_training_worker_is_not_reported_as_running(self):
+        path=Path(TEMP.name)/'training.json'
+        path.write_text(json.dumps({'phase':'training','pid':99999999,'epoch':5,'started_utc':'2026-11-20T00:00:00+00:00'}))
+        with patch.dict(os.environ,{'TRAINING_STATUS_PATH':str(path)}):
+            result=self.client.get('/api/v1/storage/training-status',headers=self.headers).json()
+        self.assertEqual(result['phase'],'stopped')
+        self.assertFalse(result['worker_alive'])
     def test_invalid_image_and_unavailable_job(self):
         self.assertEqual(self.client.post('/api/v1/storage/jobs',headers=self.headers,files={'image':('a.jpg',b'not an image','image/jpeg')}).status_code,422)
         self.assertEqual(self.client.get('/api/v1/storage/jobs/no-job',headers=self.headers).status_code,404)

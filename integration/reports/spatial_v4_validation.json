@@ -1,0 +1,18 @@
+{
+  "manifest_sha256": "ecc509563574f2af89dfddc1408bcbd1f69b1c5ceb727723f614bce4f5674feb",
+  "passed": true,
+  "images_decoded": 3564,
+  "counts": {
+    "train": 2543,
+    "val": 490,
+    "test": 531
+  },
+  "camera_overlap": 0,
+  "conservative_place_overlap": 0,
+  "component_overlap": 0,
+  "duplicate_source_sha256": 0,
+  "serialized_polygon_geometry_valid": true,
+  "frame_gap_and_clip_cap_verified": true,
+  "file_and_manifest_counts_match": true,
+  "plan_sha256": "812084b3a1766e567365eec522e4ae81514ebed3c38a53984fcdd04b399bd171"
+}

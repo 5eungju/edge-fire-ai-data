@@ -1,5 +1,5 @@
 """카메라 ID 분리 이후에도 장소명/시각 유사성이 겹치는지 조사합니다."""
-import argparse,json,sqlite3,re,unicodedata,time
+import argparse,json,sqlite3,re,unicodedata,time,hashlib
 from collections import defaultdict,Counter
 from pathlib import Path,PurePosixPath
 from PIL import Image
@@ -37,6 +37,6 @@ def main():
     mse=float(np.mean((pixels_a-pixels_b)**2))
     if mse<.006:pairs.append({'train_id':row_a['id'],'evaluation_id':row_b['id'],'evaluation_split':row_b['split'],'dhash_distance':distance,'tiny_rgb_mse':mse,'same_location_name':place(row_a['source_member'])==place(row_b['source_member'])})
  pairs.sort(key=lambda x:(x['tiny_rgb_mse'],x['dhash_distance']));(out/'visual_similarity_candidates.json').write_text(json.dumps(pairs,indent=2),encoding='utf8')
- summary={'inventory_location_name_count':len(locations),'inventory_location_name_overlap_count':len(overlaps),'selected_location_name_overlap_count':len(selected_overlap),'selected_overlap_location_names':sorted(selected_overlap),'selected_images_with_overlapping_location_name':sum(1 for r in records if place(r['source_member']) in selected_overlap),'cross_split_visual_similarity_candidates':len(pairs),'images_hashed':len(images),'elapsed_seconds':round(time.monotonic()-started,1),'interpretation':'Location-name matches and dHash+tiny RGB similarity are review flags, not proof of identical physical locations or duplicate images. No files removed. Camera-ID split is not a verified spatial holdout.'}
+ summary={'manifest_sha256':hashlib.sha256((root/'pilot_manifest.jsonl').read_bytes()).hexdigest(),'inventory_location_name_count':len(locations),'inventory_location_name_overlap_count':len(overlaps),'selected_location_name_overlap_count':len(selected_overlap),'selected_overlap_location_names':sorted(selected_overlap),'selected_images_with_overlapping_location_name':sum(1 for r in records if place(r['source_member']) in selected_overlap),'cross_split_visual_similarity_candidates':len(pairs),'images_hashed':len(images),'elapsed_seconds':round(time.monotonic()-started,1),'interpretation':'Location-name matches and dHash+tiny RGB similarity are review flags, not proof of identical physical locations or duplicate images. No files removed. Camera-ID split is not a verified spatial holdout.'}
  (out/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf8');print('QUALITY_AUDIT_COMPLETE',json.dumps(summary,ensure_ascii=False),flush=True);db.close()
 if __name__=='__main__':main()

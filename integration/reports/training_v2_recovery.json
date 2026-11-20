@@ -1,0 +1,15 @@
+{
+  "cause": "Windows access denied while replacing monitoring JSON",
+  "training_interrupted_at_epoch": 5,
+  "last_completed_checkpoint_epoch": 4,
+  "recovered_from_checkpoint": true,
+  "resume_from_epoch": 5,
+  "fix": "Atomic monitoring JSON retries sharing violations; if monitoring remains unavailable, retain old status and keep training. Checkpoint/model failures still propagate.",
+  "status_liveness_check": "PID, creation time and worker command verified before showing active training.",
+  "tests": {
+    "status_io": 2,
+    "ai_suite": 27,
+    "storage_suite": 4,
+    "frontend_build": "passed"
+  }
+}

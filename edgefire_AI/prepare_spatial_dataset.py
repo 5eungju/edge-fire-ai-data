@@ -15,6 +15,7 @@ from shapely.validation import explain_validity
 
 from prepare_vision_dataset import CLASS_NAMES, entry_from_row, polygons
 from split_zip_reader import ZipReader
+from status_io import write_status
 
 
 def filename_resolution(declared, expected):
@@ -23,6 +24,12 @@ def filename_resolution(declared, expected):
     if declared.replace('백색백색회색연기', '백색회색연기') == expected:
         return {'declared': declared, 'resolved': expected, 'rule': 'repeated_white_smoke_token'}
     raise ValueError('unresolved_label_filename')
+
+
+def serialize_segments(segments):
+    text = '\n'.join(str(cid) + ' ' + ' '.join(format(value, '.17g') for point in points for value in point)
+                     for cid, points in segments)
+    return text + '\n' if text else ''
 
 
 def validate_geometry(segments):
@@ -65,9 +72,7 @@ def main():
 
     def save_status():
         status.update(counts=dict(accepted), elapsed_seconds=round(time.monotonic() - started, 1), quota_results=quota_results)
-        temporary = output / 'status.tmp'
-        temporary.write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding='utf8')
-        temporary.replace(output / 'status.json')
+        write_status(output / 'status.json', status)
 
     save_status()
     with (output / 'rejected.jsonl').open('w', encoding='utf8') as rejected:
@@ -116,8 +121,8 @@ def main():
                             identifier = hashlib.sha256((row['role'] + '/' + row['key']).encode()).hexdigest()[:24]
                             target = pilot / 'images' / split / (identifier + '.jpg')
                             image.save(target, quality=90, subsampling=0)
-                            text = '\n'.join(str(cid) + ' ' + ' '.join(f'{v:.7f}' for point in pts for v in point) for cid, pts in segments)
-                            (pilot / 'labels' / split / (identifier + '.txt')).write_text(text + '\n' if text else '', encoding='utf8')
+                            text = serialize_segments(segments)
+                            (pilot / 'labels' / split / (identifier + '.txt')).write_text(text, encoding='utf8')
                             (pilot / 'annotations_original' / split / (identifier + '.json')).write_bytes(label_bytes)
                         records.append({'id': identifier, 'source_archive': row['role'], 'source_member': row['name'],
                                         'raw_sha256': digest, 'group_id': row['group_id'], 'site_group': row['site_group'],

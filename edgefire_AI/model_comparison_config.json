@@ -1,0 +1,11 @@
+{
+  "dataset_root": "E:/AI_Work/edgefire_vision_spatial_v4",
+  "epochs": 12,
+  "imgsz": 512,
+  "batch": 4,
+  "threads": 6,
+  "models": [
+    {"name": "yolo26n_spatial", "weights": "E:/AI_Work/pretrained/yolo26n-seg.pt"},
+    {"name": "yolo11n_spatial", "weights": "E:/AI_Work/pretrained/yolo11n-seg.pt"}
+  ]
+}

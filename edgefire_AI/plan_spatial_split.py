@@ -25,9 +25,16 @@ class Components:
   if a!=b:self.parent[max(a,b)]=min(a,b)
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--index',default='E:/AI_Work/edgefire_vision/vision_index.sqlite');p.add_argument('--output',default='E:/AI_Work/edgefire_spatial_plan');a=p.parse_args();out=Path(a.output);out.mkdir(exist_ok=True);started=time.monotonic();db=sqlite3.connect('file:'+a.index+'?mode=ro',uri=True);components=Components();aggregate=Counter();original_names=defaultdict(set)
+ p=argparse.ArgumentParser();p.add_argument('--reviewed-visual-links');p.add_argument('--index',default='E:/AI_Work/edgefire_vision/vision_index.sqlite');p.add_argument('--output',default='E:/AI_Work/edgefire_spatial_plan');a=p.parse_args();out=Path(a.output);out.mkdir(exist_ok=True);started=time.monotonic();db=sqlite3.connect('file:'+a.index+'?mode=ro',uri=True);components=Components();aggregate=Counter();original_names=defaultdict(set)
  for name,camera,collection in db.execute("SELECT name,group_id,collection FROM members WHERE role IN ('TS','VS')"):
   loc=conservative_place(name);components.union('camera:'+camera,'place:'+loc);aggregate[(camera,loc,collection)]+=1;original_names[loc].add(place(name))
+ reviewed_links=[]
+ if a.reviewed_visual_links:
+  reviewed_links=json.loads(Path(a.reviewed_visual_links).read_text(encoding='utf8'))['approved_links']
+  available={camera for camera,_,_ in aggregate}
+  for link in reviewed_links:
+   assert link['reviewed_by']=='visual_review' and link['camera_a'] in available and link['camera_b'] in available
+   components.union('camera:'+link['camera_a'],'camera:'+link['camera_b'])
  group_places=defaultdict(set);group_cameras=defaultdict(set);group_counts=defaultdict(Counter)
  for (camera,loc,collection),count in aggregate.items():
   group=components.find('camera:'+camera);group_places[group].add(loc);group_cameras[group].add(camera);group_counts[group][collection]+=count
@@ -53,6 +60,6 @@ def main():
   details.append({'group_key':key,'split':split,'places':sorted(group_places[g]),'camera_ids':sorted(group_cameras[g]),'collection_counts':dict(group_counts[g])})
   for camera in group_cameras[g]:mapping[camera]={'split':split,'group_key':key}
  assert len(mapping)==len({k[0] for k in aggregate})
- report={'solver_status':int(result.status),'solver_message':result.message,'solver_satisfied_requested_gap':bool(result.success),'exact_optimum_proven':bool(result.success and (result.mip_gap or 0)<1e-10),'objective':float(result.fun),'relative_gap':float(result.mip_gap) if result.mip_gap is not None else None,'target_ratios':dict(zip(folds,ratios.tolist())),'spatial_components':n,'camera_count':len(mapping),'collection_counts_by_split':{s:dict(v) for s,v in split_counts.items()},'coverage_group_counts':{c:int(np.sum(matrix[:,j]>0)) for j,c in enumerate(collections)},'component_assignments':details,'place_name_aliases':{loc:sorted(values) for loc,values in original_names.items() if len(values)>1},'camera_mapping':mapping,'elapsed_seconds':round(time.monotonic()-started,1),'policy':'All matching normalized location names and shared camera IDs stay together. Names containing 시루봉 or 춘갑봉 conservatively merge to mountain-name regions even without verified coordinates. This is name-based conservative grouping, not certified geographic separation. New evaluation split; not comparable directly to old test. No model scores used in split optimization.'}
+ report={'reviewed_background_links':reviewed_links,'solver_status':int(result.status),'solver_message':result.message,'solver_satisfied_requested_gap':bool(result.success),'exact_optimum_proven':bool(result.success and (result.mip_gap or 0)<1e-10),'objective':float(result.fun),'relative_gap':float(result.mip_gap) if result.mip_gap is not None else None,'target_ratios':dict(zip(folds,ratios.tolist())),'spatial_components':n,'camera_count':len(mapping),'collection_counts_by_split':{s:dict(v) for s,v in split_counts.items()},'coverage_group_counts':{c:int(np.sum(matrix[:,j]>0)) for j,c in enumerate(collections)},'component_assignments':details,'place_name_aliases':{loc:sorted(values) for loc,values in original_names.items() if len(values)>1},'camera_mapping':mapping,'elapsed_seconds':round(time.monotonic()-started,1),'policy':'All matching normalized location names and shared camera IDs stay together. Names containing 시루봉 or 춘갑봉 conservatively merge to mountain-name regions even without verified coordinates. This is name-based conservative grouping, not certified geographic separation. New evaluation split; not comparable directly to old test. No model scores used in split optimization.'}
  (out/'spatial_split_plan.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8');print('SPATIAL_PLAN_COMPLETE',n,len(mapping),report['solver_message'],flush=True);db.close()
 if __name__=='__main__':main()

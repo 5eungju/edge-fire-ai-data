@@ -1,0 +1,284 @@
+{
+  "counts": {
+    "train": 2543,
+    "val": 490,
+    "test": 531
+  },
+  "object_counts": {
+    "cloud": 972,
+    "white_gray_smoke": 1285,
+    "chimney_smoke": 663,
+    "fog_haze": 613,
+    "flame": 783,
+    "black_smoke": 1343
+  },
+  "selection_reasons": {
+    "invalid_polygon_geometry: Self-intersection[0 0.627138888888889]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.537958333333333 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.249759259259259]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.728802083333333 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0]": 2,
+    "invalid_polygon_geometry: Self-intersection[1 0.0528425925925926]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.563162037037037]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.440421875 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.409953703703704]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0 0.0244907407407407]": 1,
+    "exact_duplicate_image": 6,
+    "invalid_polygon_geometry: Ring Self-intersection[0.710854166666667 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.442388454281325 0.545010785565154]": 1,
+    "frame_gap_under_60": 9663,
+    "invalid_polygon_geometry: Ring Self-intersection[0 0.383546296296296]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.0405555555555556]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.353442814039747 0.341142653803996]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.9994140625 0.0733472222222222]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.541990740740741]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.437234375 0.255805555555556]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.456569148006135 0.633182996820785]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.193417439777017 0.0960079463543265]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.30615625 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.641884030677282 0.00436789434079092]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.52362037037037]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.345890625 0]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.54359375 0]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.1548203125 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.456447916666667 0.251118158357439]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.458300695943147 0.255117558895206]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.182739583333333 0]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.0471145833333333 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.230333333333333 0]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0 0.179648148148148]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.776484375 0]": 3,
+    "invalid_polygon_geometry: Self-intersection[0.881074994889616 0.157005769056055]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0 0.0474814814814815]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.74734343579544 0.324838166497694]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.878601995124973 0.150151377217554]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.051078125 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.165462962962963]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.249731481481481]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.141416666666667 0]": 2,
+    "clip_cap": 22271,
+    "invalid_polygon_geometry: Self-intersection[0.633989056839837 0.141924632581503]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.126314803230222 0.364727526596585]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.440890261112834 0.722323335505264]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.462384311920477 0.563270151729902]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.372568269173661 0.152951681728793]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.573481008259628 0.605354024384905]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.0690989583333333 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.691025883473644 0.0349439584021129]": 1,
+    "multipart_or_rle_mask_requires_review": 1,
+    "invalid_polygon_geometry: Self-intersection[0.56340036525974 0.721710898943776]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.56852651336478 0.232703703703704]": 2,
+    "invalid_polygon_geometry: Self-intersection[0.506578138888889 0.38952787654321]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.685296875 0.407953703703704]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.678297178073241 0.271852929445599]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.746385416666667 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.0639616689162675 0.412189071676003]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.685689740502943 0.466703703703704]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.472086799743593 0.314555366850357]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.582112620017232 0.44652355783834]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.336407407407407]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.350888888888889]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.163740740740741]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.602872734345654 0.26803105429336]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[1 0.353805555555556]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.0133333333333333]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.00865740740740741]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.638942834891556 0.9788968381266]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.379302083333333 0]": 2,
+    "invalid_polygon_geometry: Self-intersection[0 0.0136851851851852]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.577765816561774 1.30005660649977e-06]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.680269879853085 0.965159750120946]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.295962962962963]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.360773148148148]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.298157407407407]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.576515625 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.541946352102973 0.629074880850812]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0 0.501222222222222]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.529266116773963 0.737289063741853]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.42565625 0]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.183755208333333 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.161893518518519]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.273425925925926]": 1,
+    "invalid_polygon_geometry: Self-intersection[1 0.146824074074074]": 1,
+    "invalid_polygon_geometry: Self-intersection[0 0.259342592592593]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.597202150255119 0.267925976470216]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.92001588871308 0.10516678387248]": 1,
+    "invalid_polygon_geometry: Ring Self-intersection[0.749640625 0]": 1,
+    "invalid_polygon_geometry: Self-intersection[0.472223958333333 0.302305555555556]": 1
+  },
+  "quota_results": [
+    {
+      "split": "train",
+      "collection": "NegativeDB_구름",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "NegativeDB_굴뚝연기",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "NegativeDB_안개연무",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "PositiveRealDB_백색회색연기",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "PositiveRealDB_화염",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "PositiveRealDB_흑색연기",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "PositiveSyntheticDB_백색회색연기",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "PositiveSyntheticDB_화염",
+      "accepted": 143,
+      "target": 300
+    },
+    {
+      "split": "train",
+      "collection": "PositiveSyntheticDB_흑색연기",
+      "accepted": 300,
+      "target": 300
+    },
+    {
+      "split": "val",
+      "collection": "NegativeDB_구름",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "NegativeDB_굴뚝연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "NegativeDB_안개연무",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "PositiveRealDB_백색회색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "PositiveRealDB_화염",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "PositiveRealDB_흑색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "PositiveSyntheticDB_백색회색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "PositiveSyntheticDB_화염",
+      "accepted": 10,
+      "target": 60
+    },
+    {
+      "split": "val",
+      "collection": "PositiveSyntheticDB_흑색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "NegativeDB_구름",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "NegativeDB_굴뚝연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "NegativeDB_안개연무",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "PositiveRealDB_백색회색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "PositiveRealDB_화염",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "PositiveRealDB_흑색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "PositiveSyntheticDB_백색회색연기",
+      "accepted": 60,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "PositiveSyntheticDB_화염",
+      "accepted": 53,
+      "target": 60
+    },
+    {
+      "split": "test",
+      "collection": "PositiveSyntheticDB_흑색연기",
+      "accepted": 58,
+      "target": 60
+    }
+  ],
+  "camera_overlap": 0,
+  "site_group_overlap": 0,
+  "geometry_self_intersections_checked": true,
+  "resolved_filename_aliases": 2,
+  "plan_sha256": "812084b3a1766e567365eec522e4ae81514ebed3c38a53984fcdd04b399bd171",
+  "required_initialization": "Generic pretrained backbone only. Previous wildfire-finetuned models may have seen these evaluation sites.",
+  "limitations": [
+    "Conservative name-based location grouping; geographic coordinates not independently verified.",
+    "Collection ratios may be uneven because spatial groups cannot be broken.",
+    "Visual near-duplicate review remains necessary."
+  ]
+}
