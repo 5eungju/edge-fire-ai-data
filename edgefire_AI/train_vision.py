@@ -3,6 +3,7 @@ import argparse, json, os, time, traceback, hashlib
 from pathlib import Path
 from datetime import datetime, timezone
 from status_io import write_status
+from json_numbers import dumps as numeric_dumps
 from training_policy import validate_data_policy, validate_generic_pretrained
 
 def main():
@@ -93,12 +94,12 @@ def main():
     if pred.masks is not None:_=pred.masks.xyn
     timings.append((time.perf_counter()-started)*1000)
    result['benchmark']={'p50_ms':float(np.percentile(timings,50)),'p95_ms':float(np.percentile(timings,95)),'images':len(paths),'threads':1,'scope':'Local file load, model prediction and polygon conversion; excludes HTTP/queue latency.'}
-  (Path(model.trainer.save_dir)/('heldout_test_metrics.json' if args.eval_split=='test' else 'validation_metrics.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2,default=str),encoding='utf8')
+  (Path(model.trainer.save_dir)/('heldout_test_metrics.json' if args.eval_split=='test' else 'validation_metrics.json')).write_text(numeric_dumps(result,ensure_ascii=False,indent=2),encoding='utf8')
   if args.baseline_metrics:
    baseline=json.loads(args.baseline_metrics.read_text(encoding='utf8'))
    comparison={'baseline_model':baseline['model'],'candidate_model':result['model'],'evaluation':'Same previously inspected test; exploratory comparison, not a fresh blind test.','metrics':{k:{'baseline':baseline['metrics'][k],'candidate':v,'difference':v-baseline['metrics'][k]} for k,v in result['metrics'].items() if k in baseline['metrics']},'per_class':result['per_class'],'operationally_validated':False}
    comparison_path=args.comparison_output or Path(model.trainer.save_dir)/'model_comparison.json'
-   comparison_path.parent.mkdir(parents=True,exist_ok=True);comparison_path.write_text(json.dumps(comparison,ensure_ascii=False,indent=2),encoding='utf8')
+   comparison_path.parent.mkdir(parents=True,exist_ok=True);comparison_path.write_text(numeric_dumps(comparison,ensure_ascii=False,indent=2),encoding='utf8')
   update(phase='completed',result=result)
  except BaseException as exc:
   update(phase='interrupted' if isinstance(exc,KeyboardInterrupt) else 'failed',error=str(exc),traceback=traceback.format_exc());raise

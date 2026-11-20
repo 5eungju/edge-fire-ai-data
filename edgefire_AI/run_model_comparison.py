@@ -16,6 +16,7 @@ import psutil
 from filelock import FileLock
 from model_selection import select_candidate
 from status_io import write_status
+from json_numbers import dumps as numeric_dumps
 from training_policy import validate_data_policy, validate_generic_pretrained
 
 BASE = Path(__file__).resolve().parent
@@ -71,7 +72,7 @@ def main():
             frozen_policy.write_text(json.dumps(policy,indent=2),encoding='utf8')
             hashfile=frozen/'sha256.json'
             if not hashfile.exists():
-                for name in ['train_vision.py','status_io.py','training_policy.py','generic_pretrained_manifest.json','model_selection.py']:
+                for name in ['train_vision.py','status_io.py','json_numbers.py','training_policy.py','generic_pretrained_manifest.json','model_selection.py']:
                     shutil.copy2(BASE/name,frozen/name)
                 hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in frozen.iterdir() if p.is_file()}
                 hashfile.write_text(json.dumps(hashes,indent=2),encoding='utf8')
@@ -167,7 +168,7 @@ def main():
                     'metrics': {k:float(v) for k,v in metrics.results_dict.items()}, 'per_class': metrics.summary(),
                     'test_used_for_selection': False, 'operationally_validated': False,
                     'deployment_decision': 'review_required'}
-            (output/'selected_model_test_metrics.json').write_text(json.dumps(test, ensure_ascii=False, indent=2), encoding='utf8')
+            (output/'selected_model_test_metrics.json').write_text(numeric_dumps(test, ensure_ascii=False, indent=2), encoding='utf8')
             update(phase='completed', selected_model=winner['name'], test_report=str(output/'selected_model_test_metrics.json'))
         except BaseException as exc:
             update(phase='interrupted' if isinstance(exc,KeyboardInterrupt) else 'failed',
