@@ -38,10 +38,13 @@ def main():
     parser.add_argument('--output',type=Path,required=True);parser.add_argument('--follow',action='store_true')
     parser.add_argument('--extra-shards',type=Path,action='append',default=[],help='Read-only prior shard directories after relocating the producer')
     parser.add_argument('--candidate-limit',type=int,default=256)
+    parser.add_argument('--sqlite-cache-mib',type=int,default=128,help='Connection-local page cache; avoids repeated small reads in large similarity indexes')
     args=parser.parse_args()
     if args.candidate_limit<1:raise ValueError('Candidate limit must be positive')
+    if not 1<=args.sqlite_cache_mib<=2048:raise ValueError('SQLite cache must be between 1 and 2048 MiB')
     args.output.mkdir(parents=True,exist_ok=True)
     db=sqlite3.connect(args.output/'quality.sqlite')
+    db.execute(f'PRAGMA cache_size=-{args.sqlite_cache_mib*1024}')
     db.execute('PRAGMA journal_mode=WAL')  # Permit independent bounded read snapshots during auditing.
     db.executescript('''CREATE TABLE IF NOT EXISTS shards(name TEXT PRIMARY KEY,fingerprint TEXT);
       CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT);
@@ -57,6 +60,7 @@ def main():
     if previous_source and previous_source[0]!=source_identity:raise ValueError('Audit source directory changed')
     db.execute("INSERT OR IGNORE INTO settings VALUES('source',?)",(source_identity,));db.commit()
     state={'pid':os.getpid(),'phase':'auditing_completed_shards','training_ready':False,
+           'sqlite_cache_mib':args.sqlite_cache_mib,
            'candidate_limit_per_image':args.candidate_limit,'interpretation':'Review candidates only. Capped searches are incomplete; sources are preserved.'}
     started=time.monotonic()
     def update(**extra):

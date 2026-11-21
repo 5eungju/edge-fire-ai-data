@@ -45,3 +45,10 @@ or I/O failures stop the run. This does not provide a separate physical backup.
 
 Existing spatial split review blocks remain in force. Exported shards still
 require quality review and corrected site grouping before training admission.
+
+The live full-quality auditor uses `--sqlite-cache-mib 512` after profiling
+excessive repeated small SQLite index reads with the default page cache. This
+setting changes memory caching only: CRC checks, label validation, perceptual
+thresholds and candidate search limits are unchanged. The uncapped reader has a
+separate 64 MiB page cache. State remains in C: and comparisons resume from
+committed shards after restart.

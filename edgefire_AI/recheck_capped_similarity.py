@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--output',type=Path,required=True);parser.add_argument('--follow',action='store_true')
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=True)
     source=sqlite3.connect((args.source/'quality.sqlite').resolve().as_uri()+'?mode=ro',uri=True,timeout=30)
+    source.execute('PRAGMA cache_size=-65536')  # 64 MiB connection-local cache; same audit comparisons.
     if source.execute('PRAGMA journal_mode').fetchone()[0].lower()!='wal':
         raise RuntimeError('Live quality DB must use WAL so this reader cannot block its writer')
     db=sqlite3.connect(args.output/'recheck.sqlite')
