@@ -52,3 +52,12 @@ setting changes memory caching only: CRC checks, label validation, perceptual
 thresholds and candidate search limits are unchanged. The uncapped reader has a
 separate 64 MiB page cache. State remains in C: and comparisons resume from
 committed shards after restart.
+
+`audit_export_metadata.py` supplements the pixel/similarity audit by checking
+every exported original annotation's declared dimensions against the actual
+source dimensions recorded during decoding. It also checks camera IDs, output
+size/aspect ratio and empty exported object lists, and indexes image IDs and
+cameras for final candidate review. Run it with the same `--source`, both E:
+`--extra-shards` directories, a C: `--output`, and `--follow`. Issues are recorded
+for exclusion/review; annotations are never silently rewritten. Its full-export
+completion flag must also be true before claiming the automated scans finished.
