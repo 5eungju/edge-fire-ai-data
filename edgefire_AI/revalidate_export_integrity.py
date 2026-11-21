@@ -2,7 +2,8 @@
 
 Only derived shard ZIPs can be replaced. Damaged copies are renamed and retained,
 and replacements are built on C: from CRC/SHA-verified source archive members.
-The source archives and filesystem structures are never modified by this tool.
+Original archive contents are never written. Derived copies are renamed through
+normal filesystem operations; this tool performs no raw-sector writes or repairs.
 """
 import argparse
 import copy

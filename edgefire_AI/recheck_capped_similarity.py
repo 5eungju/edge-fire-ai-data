@@ -10,13 +10,21 @@ from status_io import write_status
 
 
 def candidate_indices(hashes,colors,splits,rowids,value,color,split,after):
-    xor=hashes^np.uint64(value)
+    """Return exact matches from the ascending ORDER BY rowid snapshot.
+
+    Earlier snapshots were already checked. Slice them out before expensive
+    vector operations, rather than recomputing every old distance on each pass.
+    """
+    start=int(np.searchsorted(rowids,after,side='right'))
+    indices=np.flatnonzero((splits[start:]!=split)&np.all(np.abs(colors[start:]-color)<.05,axis=1))+start
+    if not len(indices):return indices
+    xor=hashes[indices]^np.uint64(value)
     if hasattr(np,'bitwise_count'):
         distances=np.bitwise_count(xor)
     else:
         lookup=np.array([n.bit_count() for n in range(256)],dtype=np.uint8)
         distances=lookup[xor.view(np.uint8).reshape(-1,8)].sum(axis=1)
-    return np.flatnonzero((distances<=4)&(splits!=split)&(rowids>after)&np.all(np.abs(colors-color)<.05,axis=1))
+    return indices[distances<=4]
 
 
 def main():

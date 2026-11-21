@@ -93,3 +93,9 @@ with `fsync` before renaming it and committing accepted IDs on C:. A delayed
 write error therefore leaves an unadmitted partial instead of a committed shard.
 This improves write-error detection; it is not a physical backup or a promise
 against all device failures.
+
+The uncapped recheck now slices the ascending row-ID snapshot at each image's
+last completed checkpoint before filtering colors and computing Hamming
+distances. Earlier pairs are not recomputed on every follow pass. Scalar
+exhaustive-search equivalence tests, including gaps and late checkpoints, confirm
+the same candidate results without adding a search cap.
