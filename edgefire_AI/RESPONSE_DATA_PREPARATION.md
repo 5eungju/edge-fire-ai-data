@@ -13,6 +13,43 @@
 현재 숫자 모델의 입력이 아니다. 물성 단위와 0으로 기록된 연료 값의 의미는
 별도로 검토해야 한다.
 
+## 후속 정리 및 연구 모델 비교
+
+전체 추출은 246,345건, 사건 101개다. 정답은 `높음`에 크게 편중되어 있으며
+제공된 학습/검증 분할 사이에 사건 7개가 겹친다. 연구용 파생 데이터에서는
+사건 해시 분할을 사용한다. `매우높음`의 띄어쓰기를 통일하고 `중간`을
+`보통`과 같은 중간 단계로 명시적으로 병합했다. 애매한 중간~높음 표현,
+척도가 불명확한 숫자, 매우 낮음 단일 사례 등 54건은 원본 정답을 유지한 채
+이번 4단계 실험에서 제외했다. 매우 낮음을 다른 단계로 바꾸지 않았다.
+
+동일 23개 입력에 서로 다른 정답이 붙은 6건은 모두 제외하고, 같은 분할의
+동일 입력 반복 13건은 한 사례만 남겼다. 최종 연구용 데이터는 246,272건이다.
+출처와 제외 사유 CSV, 정규화 규칙, 분할별 사건·클래스 수를 함께 저장한다.
+
+```powershell
+py edgefire_AI/clean_response_data.py --source E:/AI_Work/edgefire_response_v1/response_samples.sqlite --output E:/AI_Work/edgefire_response_clean_v1
+py edgefire_AI/train_response_models.py --data E:/AI_Work/edgefire_response_clean_v1 --output E:/AI_Work/edgefire_response_models_v1
+```
+
+히스토그램 그래디언트 부스팅과 가중 교차엔트로피를 사용하는 신경망
+MLP(23→96→48→4, SiLU, dropout 0.15)를 비교한다. 랜덤포레스트는 사용하지
+않는다. MLP 정규화 평균·표준편차와 클래스 가중치는 학습 분할에서만 계산한다.
+고정 사건 검증 분할의 macro F1로 모델을 선택하고, 선택 모델만 시험 분할을
+평가한다. 다수 클래스만 예측하는 기준선과 클래스별 recall을 함께 보고한다.
+시험 성능으로 모델을 다시 고르지 않는다.
+
+현재 비교는 단위·0값 의미가 모두 확정된 실측 센서 검증이 아니라 주석 정답을
+학습하는 연구 실험이다. 보고서와 모델에는 실사용 미검증과 추가 검토 필요를
+명시하며, API의 실제 위험 판단 모델을 자동으로 교체하지 않는다.
+
+첫 비교 실험의 검증 macro F1은 다수 클래스 기준선 0.2352, 부스팅 0.1602,
+MLP 0.0898이었다. 두 후보 모두 기준선을 넘지 못해 배포 대상으로 채택하지
+않았다. 부스팅의 시험 macro F1은 0.1594였다. 학습이 완료됐다는 사실과
+사용 가능한 성능을 확보했다는 주장은 다르다. 추가 입력 정보의 시점·의미와
+주석 일관성을 검토해야 하며, 사건 종료 후 결과를 입력에 추가해 수치를
+높이지 않는다. 이미 평가한 시험 결과는 후속 후보 선택 기준으로 사용하지
+않는다.
+
 ```powershell
 py edgefire_AI/prepare_response_data.py --source "C:/Users/tmdwn/Downloads/38.산불 확산 위험 대응방안 추론 데이터" --output E:/AI_Work/edgefire_response_v1
 py edgefire_AI/audit_response_data.py --root E:/AI_Work/edgefire_response_v1

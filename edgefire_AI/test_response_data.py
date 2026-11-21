@@ -5,9 +5,17 @@ import json
 from pathlib import Path
 from prepare_response_data import canonical_id,features_from_source,extract
 from audit_response_data import audit,incident_split
+from clean_response_data import normalize_target
 
 
 class ResponseDataTests(unittest.TestCase):
+    def test_only_explicit_label_aliases_are_merged(self):
+        self.assertEqual(normalize_target('매우높음'),'매우 높음')
+        self.assertEqual(normalize_target('중간'),'보통')
+        self.assertIsNone(normalize_target('중간에서 높음'))
+        self.assertIsNone(normalize_target('5'))
+        self.assertIsNone(normalize_target('매우 낮음'))
+
     def test_pairing_uses_event_position_and_time(self):
         self.assertEqual(canonical_id('/GN20220305_S_P0036_T113.json'),canonical_id('/GN20220305_T_P0036_T113.json'))
 

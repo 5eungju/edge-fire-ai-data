@@ -1,0 +1,392 @@
+{
+  "scope": "Four-class dataset-annotated response risk; not an ignition probability",
+  "selected_model": "histogram_boosting",
+  "selection_rule": "Highest incident-disjoint validation macro F1",
+  "test_used_for_selection": false,
+  "operationally_validated": false,
+  "deployment_decision": "rejected_failed_validation_baseline",
+  "dataset_sha256": "accd2bd1286e781b1011e4c16657f8f416910a99b584fad28ebda13f3d4c8717",
+  "feature_names": [
+    "fuel_conditions.canopy_coverage",
+    "fuel_conditions.canopy_height",
+    "fuel_conditions.fuel_average_age",
+    "fuel_conditions.fuel_density",
+    "fuel_conditions.fuel_moisture",
+    "fuel_conditions.surface_fuel_depth",
+    "terrain_conditions.curvature",
+    "terrain_conditions.elevation",
+    "terrain_conditions.hydrological_features",
+    "terrain_conditions.slope",
+    "terrain_conditions.slope_aspect",
+    "terrain_conditions.terrain_complexity",
+    "terrain_conditions.topographic_position_index",
+    "weather_conditions.atmospheric_pressure",
+    "weather_conditions.humidity_percent",
+    "weather_conditions.observation_height",
+    "weather_conditions.past_rainfall_7days",
+    "weather_conditions.rainfall",
+    "weather_conditions.surface_temperature",
+    "weather_conditions.temperature",
+    "weather_conditions.visibility",
+    "weather_conditions.wind_direction",
+    "weather_conditions.wind_speed"
+  ],
+  "classes": [
+    "낮음",
+    "보통",
+    "높음",
+    "매우 높음"
+  ],
+  "split_counts": {
+    "train": 227264,
+    "val": 7997,
+    "test": 11011
+  },
+  "event_counts": {
+    "train": 76,
+    "val": 7,
+    "test": 18
+  },
+  "validation": {
+    "majority_baseline": {
+      "accuracy": 0.8879579842440916,
+      "macro_f1": 0.23516359782752683,
+      "per_class": {
+        "낮음": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 52.0
+        },
+        "보통": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 176.0
+        },
+        "높음": {
+          "precision": 0.8879579842440916,
+          "recall": 1.0,
+          "f1-score": 0.9406543913101073,
+          "support": 7101.0
+        },
+        "매우 높음": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 668.0
+        },
+        "accuracy": 0.8879579842440916,
+        "macro avg": {
+          "precision": 0.2219894960610229,
+          "recall": 0.25,
+          "f1-score": 0.23516359782752683,
+          "support": 7997.0
+        },
+        "weighted avg": {
+          "precision": 0.7884693817828303,
+          "recall": 0.8879579842440916,
+          "f1-score": 0.8352615771780758,
+          "support": 7997.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          52,
+          0
+        ],
+        [
+          0,
+          0,
+          176,
+          0
+        ],
+        [
+          0,
+          0,
+          7101,
+          0
+        ],
+        [
+          0,
+          0,
+          668,
+          0
+        ]
+      ]
+    },
+    "histogram_boosting": {
+      "accuracy": 0.27672877328998374,
+      "macro_f1": 0.16019705359184788,
+      "per_class": {
+        "낮음": {
+          "precision": 0.0069605568445475635,
+          "recall": 0.11538461538461539,
+          "f1-score": 0.01312910284463895,
+          "support": 52.0
+        },
+        "보통": {
+          "precision": 0.023931623931623933,
+          "recall": 0.1590909090909091,
+          "f1-score": 0.041604754829123326,
+          "support": 176.0
+        },
+        "높음": {
+          "precision": 0.9303232998885173,
+          "recall": 0.2350373186875088,
+          "f1-score": 0.37526700393479484,
+          "support": 7101.0
+        },
+        "매우 높음": {
+          "precision": 0.1222728362502997,
+          "recall": 0.7634730538922155,
+          "f1-score": 0.21078735275883448,
+          "support": 668.0
+        },
+        "accuracy": 0.27672877328998374,
+        "macro avg": {
+          "precision": 0.2708720792287471,
+          "recall": 0.3182464742638122,
+          "f1-score": 0.16019705359184788,
+          "support": 7997.0
+        },
+        "weighted avg": {
+          "precision": 0.8368735678243646,
+          "recall": 0.27672877328998374,
+          "f1-score": 0.3518296982345538,
+          "support": 7997.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          6,
+          11,
+          14,
+          21
+        ],
+        [
+          32,
+          28,
+          47,
+          69
+        ],
+        [
+          807,
+          1054,
+          1669,
+          3571
+        ],
+        [
+          17,
+          77,
+          64,
+          510
+        ]
+      ]
+    },
+    "neural_mlp": {
+      "accuracy": 0.08978366887582843,
+      "macro_f1": 0.08982151082560615,
+      "per_class": {
+        "낮음": {
+          "precision": 0.005780346820809248,
+          "recall": 0.038461538461538464,
+          "f1-score": 0.010050251256281407,
+          "support": 52.0
+        },
+        "보통": {
+          "precision": 0.029405405405405406,
+          "recall": 0.7727272727272727,
+          "f1-score": 0.056654863570089566,
+          "support": 176.0
+        },
+        "높음": {
+          "precision": 0.8428571428571429,
+          "recall": 0.016617377834107872,
+          "f1-score": 0.03259218340008286,
+          "support": 7101.0
+        },
+        "매우 높음": {
+          "precision": 0.1600831600831601,
+          "recall": 0.6916167664670658,
+          "f1-score": 0.25998874507597075,
+          "support": 668.0
+        },
+        "accuracy": 0.08978366887582843,
+        "macro avg": {
+          "precision": 0.2595315137916294,
+          "recall": 0.37985573887249624,
+          "f1-score": 0.08982151082560615,
+          "support": 7997.0
+        },
+        "weighted avg": {
+          "precision": 0.7624784358822253,
+          "recall": 0.08978366887582843,
+          "f1-score": 0.05196991935580833,
+          "support": 7997.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          2,
+          43,
+          0,
+          7
+        ],
+        [
+          5,
+          136,
+          1,
+          34
+        ],
+        [
+          287,
+          4313,
+          118,
+          2383
+        ],
+        [
+          52,
+          133,
+          21,
+          462
+        ]
+      ]
+    }
+  },
+  "selected_test": {
+    "accuracy": 0.3180455907728635,
+    "macro_f1": 0.15936389850595334,
+    "per_class": {
+      "낮음": {
+        "precision": 0.0096579476861167,
+        "recall": 0.3116883116883117,
+        "f1-score": 0.01873536299765808,
+        "support": 77.0
+      },
+      "보통": {
+        "precision": 0.03330161750713606,
+        "recall": 0.41916167664670656,
+        "f1-score": 0.06170118995152049,
+        "support": 334.0
+      },
+      "높음": {
+        "precision": 0.8809205244848809,
+        "recall": 0.3291012696191143,
+        "f1-score": 0.4791848617176128,
+        "support": 10003.0
+      },
+      "매우 높음": {
+        "precision": 0.07863247863247863,
+        "recall": 0.07705192629815745,
+        "f1-score": 0.077834179357022,
+        "support": 597.0
+      },
+      "accuracy": 0.3180455907728635,
+      "macro avg": {
+        "precision": 0.25062814207765305,
+        "recall": 0.2842507960630725,
+        "f1-score": 0.15936389850595334,
+        "support": 11011.0
+      },
+      "weighted avg": {
+        "precision": 0.8056178365620806,
+        "recall": 0.31804559077286354,
+        "f1-score": 0.4415406409256245,
+        "support": 11011.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        24,
+        35,
+        14,
+        4
+      ],
+      [
+        80,
+        140,
+        100,
+        14
+      ],
+      [
+        2300,
+        3890,
+        3292,
+        521
+      ],
+      [
+        81,
+        139,
+        331,
+        46
+      ]
+    ]
+  },
+  "neural_history": [
+    {
+      "epoch": 1,
+      "loss": 1.3752000477910882,
+      "validation_macro_f1": 0.08292202897600776
+    },
+    {
+      "epoch": 2,
+      "loss": 1.362715730798711,
+      "validation_macro_f1": 0.08982151082560615
+    },
+    {
+      "epoch": 3,
+      "loss": 1.3588576173822633,
+      "validation_macro_f1": 0.08705782722963819
+    },
+    {
+      "epoch": 4,
+      "loss": 1.3550806907961583,
+      "validation_macro_f1": 0.08331377879932594
+    },
+    {
+      "epoch": 5,
+      "loss": 1.3529790516673126,
+      "validation_macro_f1": 0.08624595762701567
+    },
+    {
+      "epoch": 6,
+      "loss": 1.3497611215100493,
+      "validation_macro_f1": 0.08665499841581403
+    }
+  ],
+  "configuration": {
+    "seed": 42,
+    "class_weights": [
+      49.491289198606275,
+      14.586906290115532,
+      0.29662578769036396,
+      1.851890482398957
+    ],
+    "mlp_layers": [
+      23,
+      96,
+      48,
+      4
+    ],
+    "mlp_dropout": 0.15,
+    "optimizer": "AdamW",
+    "scaling_fit": "training split only"
+  },
+  "versions": {
+    "python": "3.12.4 (tags/v3.12.4:8e8a4ba, Jun  6 2024, 19:30:16) [MSC v.1940 64 bit (AMD64)]",
+    "torch": "2.15.0+cpu",
+    "sklearn": "1.9.1"
+  },
+  "limitations": [
+    "Very-low and ambiguous labels are preserved in exclusions, not re-labeled.",
+    "Middle and normal are explicitly merged as the reviewed medium category.",
+    "Zero-coded fuel values and physical units remain unverified; no sensor deployment.",
+    "The target is an annotation during a fire scenario, not a pre-ignition probability.",
+    "Strong class imbalance requires class-specific recall and majority baseline comparison."
+  ],
+  "validation_baseline_exceeded": false,
+  "post_training_acceptance_review": "Compared saved validation metrics only; no retraining or additional test selection"
+}
