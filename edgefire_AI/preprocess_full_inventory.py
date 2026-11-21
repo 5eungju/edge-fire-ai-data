@@ -133,6 +133,11 @@ def main():
             return
         archive.writestr('shard_manifest.jsonl',''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in rows))
         archive.close()
+        # Detect delayed write errors before publishing a finalized shard or
+        # committing accepted IDs on the separate state volume.
+        with temporary.open('rb+') as flushed:
+            flushed.flush()
+            os.fsync(flushed.fileno())
         destination = temporary.with_suffix('.zip')
         temporary.replace(destination)
         db.executemany('INSERT INTO accepted VALUES(?,?,?,?)',

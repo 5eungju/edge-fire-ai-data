@@ -87,3 +87,9 @@ both were recovered with matching original quality SHA values. A complete
 fresh integrity sweep is required before resuming the paused pipeline. For a
 later, separate filesystem incident use a fresh output directory or
 `--force-recheck`: prior size/mtime checkpoints must not be treated as new proof.
+
+Before resuming, new export finalization also flushes each closed partial ZIP
+with `fsync` before renaming it and committing accepted IDs on C:. A delayed
+write error therefore leaves an unadmitted partial instead of a committed shard.
+This improves write-error detection; it is not a physical backup or a promise
+against all device failures.
