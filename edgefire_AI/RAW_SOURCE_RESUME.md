@@ -107,3 +107,20 @@ selected IDs, cap flags and MSE values; the isolated candidate-query portion was
 4.36 times faster in that run. This is a query microbenchmark, not an end-to-end
 completion-time guarantee. Split/color filters, search caps and MSE thresholds
 are unchanged; capped cases still require the separate uncapped pass.
+
+`review_full_quality.py` runs only after preprocessing, pixel/similarity checks,
+the uncapped pass, metadata checks, and the final whole-export integrity sweep
+finish. It verifies ID, source SHA, site and fold coverage across their databases.
+Every flagged camera relation must be covered by explicit visual review.
+
+For a reviewed component spanning old folds, the admission mask retains its
+existing train rows before existing val rows before existing test rows. Other
+folds in that component are quarantined, never reassigned. All retained folds
+therefore remain subsets of the audited original folds: this cannot create new
+cross-fold pairs that the existing audit did not inspect. Metadata issues also
+produce exclusions. The report includes retained class coverage and verifies
+that no known cross-fold candidate pair remains wholly admitted.
+
+The images and old manifests are preserved. A later training loader must honor
+the new admission mask and an approved dataset identity; this report does not
+unblock V4, certify geographic independence, train a model or promote weights.
