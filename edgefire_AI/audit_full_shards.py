@@ -36,6 +36,7 @@ def signature(payload):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--source',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True);parser.add_argument('--follow',action='store_true')
+    parser.add_argument('--extra-shards',type=Path,action='append',default=[],help='Read-only prior shard directories after relocating the producer')
     parser.add_argument('--candidate-limit',type=int,default=256)
     args=parser.parse_args()
     if args.candidate_limit<1:raise ValueError('Candidate limit must be positive')
@@ -66,9 +67,13 @@ def main():
             elapsed_seconds=round(time.monotonic()-started,1),**extra)
         write_status(args.output/'status.json',state)
     update()
+    def available_shards():
+        paths=[path for directory in [args.source/'shards',*args.extra_shards] for path in directory.glob('*.zip')]
+        if len({path.name for path in paths})!=len(paths):raise ValueError('Duplicate shard names across directories')
+        return sorted(paths)
     try:
         while True:
-            for path in sorted((args.source/'shards').glob('*.zip')):
+            for path in available_shards():
                 fingerprint=json.dumps([path.stat().st_size,path.stat().st_mtime_ns])
                 previous=db.execute('SELECT fingerprint FROM shards WHERE name=?',(path.name,)).fetchone()
                 if previous:
@@ -122,7 +127,7 @@ def main():
                 print('AUDITED_SHARD',path.name,len(rows),flush=True)
             producer=json.loads((args.source/'status.json').read_text(encoding='utf8'))
             audited={row[0] for row in db.execute('SELECT name FROM shards')}
-            pending=[path.name for path in (args.source/'shards').glob('*.zip') if path.name not in audited]
+            pending=[path.name for path in available_shards() if path.name not in audited]
             count=db.execute('SELECT COUNT(*) FROM sketches').fetchone()[0]
             full=(producer['phase']=='export_completed_quality_review_required' and not pending and count==producer['accepted'])
             update(phase='audit_complete_candidates_review_required' if full else 'waiting_for_more_shards',producer_phase=producer['phase'],full_export_completed=full,pending_finalized_shards=len(pending))

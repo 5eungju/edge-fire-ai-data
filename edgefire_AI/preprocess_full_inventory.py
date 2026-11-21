@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--inventory', type=Path, required=True)
     parser.add_argument('--index', type=Path, default=Path('E:/AI_Work/edgefire_vision/vision_index.sqlite'))
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--existing-shards', type=Path, action='append', default=[], help='Read-only prior shard directories when relocating work off a failing volume')
     parser.add_argument('--budget-gib', type=float, default=180)
     parser.add_argument('--min-free-gib', type=float, default=50)
     parser.add_argument('--shard-images', type=int, default=1000)
@@ -56,7 +57,14 @@ def main():
     db.execute("INSERT OR IGNORE INTO settings VALUES('inventory_sha256',?)",(inventory_hash,))
     db.commit()
     # Recover a finalized shard if a previous process stopped before the DB commit.
-    for path in sorted(shard_dir.glob('*.zip')):
+    prior_shards=[path for directory in args.existing_shards for path in directory.glob('*.zip')]
+    all_shards=prior_shards+list(shard_dir.glob('*.zip'))
+    if len({path.name for path in all_shards})!=len(all_shards):
+        raise ValueError('Duplicate shard filenames across existing and active directories')
+    known={path.name for path in all_shards}
+    missing={row[0] for row in db.execute('SELECT DISTINCT shard FROM accepted')}-known
+    if missing:raise ValueError('Previously committed shard files are missing: '+str(sorted(missing)[:10]))
+    for path in sorted(all_shards):
         with zipfile.ZipFile(path) as archive:
             rows = [json.loads(line) for line in archive.read('shard_manifest.jsonl').decode('utf8').splitlines()]
         db.executemany('INSERT OR IGNORE INTO accepted VALUES(?,?,?,?)',
@@ -77,11 +85,13 @@ def main():
     accepted_count = db.execute('SELECT COUNT(*) FROM accepted').fetchone()[0]
     rejected_count = db.execute('SELECT COUNT(*) FROM rejected').fetchone()[0]
     bytes_written = sum(p.stat().st_size for p in shard_dir.iterdir() if p.is_file())
+    prior_bytes = sum(p.stat().st_size for p in prior_shards)
     started = time.monotonic()
 
     def update(phase='preprocessing', **extra):
         state.update(phase=phase,accepted=accepted_count,rejected=rejected_count,
-                     staged_in_current_shard=len(rows),export_bytes=bytes_written,
+                     staged_in_current_shard=len(rows),export_bytes=bytes_written+prior_bytes,
+                     local_export_bytes=bytes_written,prior_export_bytes=prior_bytes,
                      elapsed_seconds=round(time.monotonic()-started,1),
                      inventory_sha256=inventory_hash,**extra)
         write_status(args.output/'status.json',state)

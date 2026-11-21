@@ -2,6 +2,8 @@
 
 현재 실행 안내는 [integration/README.md](integration/README.md)에 있습니다.
 
+현재 SSD I/O 오류로 원본 압축파일 경로에 접근하지 못해 원본 전처리는 일시 중지됐습니다. 저장된 결과의 품질 검사 기록은 C:로 복구해 검사를 재개했습니다. 복구 범위와 경로 분리 옵션은 [저장장치 복구 기록](edgefire_AI/STORAGE_RECOVERY.md)을 참조하세요. 전체 학습이 시작된 상태는 아닙니다.
+
 공유팀 저장소 main f97b78d10796b24ed80140520ca0d85e5bfa5af5를 team_snapshot에 보존하고 개인 백엔드·프론트·AI를 연결했습니다. 공유 저장소는 수정하지 않았습니다.
 
 - edgefire_AI: 전처리·학습·모델 비교·추론 Python 코드
