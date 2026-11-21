@@ -130,3 +130,32 @@ and at the final short batch, rather than forcing a disk sync after every image.
 An interrupted batch can be repeated safely because candidates and checkpoints
 are idempotent. Integration tests cover a 53-image batch sequence, its final
 three rows, and a fully cached second run without losing any candidate pairs.
+
+## Completed full-data milestone (2026-11-22)
+
+The 630,000-image catalog produced 598,500 valid exports in 600 ZIPs, totaling
+238,835,390,510 bytes (222.433 GiB). Thirteen original compressed images failed
+the earlier source CRC audit. Preprocessing excluded 14,713 exact duplicates,
+16,737 invalid polygon geometries and 37 unsupported/empty/multipart masks.
+Every exported image/label/annotation member passed the final integrity sweep;
+all 598,500 images also completed pixel, label, metadata and similarity checks.
+The uncapped pass checked all 55,324 capped cases against the final snapshot.
+
+Visual review confirmed two additional daytime camera links from matching roads,
+fields, roofs and forest edges. Six nighttime camera comparisons were not
+approved as geographic links: near-black frames provide no identifying scene
+landmarks. Their 1,502 candidate pairs involve only six evaluation frames, which
+were excluded individually while retaining the other nighttime examples.
+
+The reviewed admission mask retains 440,207 train, 79,218 validation and 54,826
+test images (574,251 total). It quarantines 24,243 evaluation images from reviewed
+background components plus the six ambiguous night frames; all files are still
+preserved. All six classes remain present in every retained fold, and none of
+the 8,140 known candidate pairs remains across admitted folds.
+
+The frozen review decisions are in `reviewed_background_links_full_v1.json` and
+the complete counts/hashes are in `reports/full_preparation_quality_20261122.json`.
+Runtime `admission.sqlite` and `quarantine.jsonl` stay in the C: review folder.
+These complete data preparation and review, not full-model training: a training
+loader must use the mask and an approved new dataset identity. Old V4/pilot
+metrics remain invalid for this filtered holdout; no weights were promoted.

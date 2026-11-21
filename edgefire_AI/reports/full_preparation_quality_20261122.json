@@ -1,0 +1,124 @@
+{
+  "phase": "full_quality_review_completed_with_quarantine_overlay",
+  "automated_scans_completed": true,
+  "admission_overlay_complete": true,
+  "training_ready": false,
+  "training_block_reason": "A training loader must honor this admission mask and a newly approved dataset identity; the old V4 dataset remains blocked. No model was trained or promoted by this review.",
+  "processed_images": 598500,
+  "preprocessing_rejected": 31487,
+  "original_split_counts": {
+    "train": 440207,
+    "val": 79218,
+    "test": 79075
+  },
+  "retained_split_counts": {
+    "train": 440207,
+    "val": 79218,
+    "test": 54826
+  },
+  "quarantined_split_counts": {
+    "test": 24249
+  },
+  "quarantine_reason_counts": {
+    "reviewed_cross_fold_background_component": 24243,
+    "low_information_similarity_in_evaluation": 6
+  },
+  "retained_class_image_counts": {
+    "train": {
+      "white_gray_smoke": 176630,
+      "black_smoke": 92139,
+      "cloud": 77388,
+      "chimney_smoke": 47168,
+      "flame": 94076,
+      "fog_haze": 35955
+    },
+    "val": {
+      "flame": 16280,
+      "white_gray_smoke": 40163,
+      "cloud": 10065,
+      "black_smoke": 7707,
+      "chimney_smoke": 12614,
+      "fog_haze": 3093
+    },
+    "test": {
+      "flame": 5281,
+      "white_gray_smoke": 30569,
+      "chimney_smoke": 4992,
+      "black_smoke": 9436,
+      "cloud": 5209,
+      "fog_haze": 4223
+    }
+  },
+  "retained_class_object_counts": {
+    "train": {
+      "white_gray_smoke": 240809,
+      "black_smoke": 150499,
+      "cloud": 112025,
+      "chimney_smoke": 81522,
+      "flame": 102255,
+      "fog_haze": 49319
+    },
+    "val": {
+      "flame": 16958,
+      "white_gray_smoke": 47100,
+      "cloud": 12807,
+      "black_smoke": 13257,
+      "chimney_smoke": 12678,
+      "fog_haze": 3151
+    },
+    "test": {
+      "flame": 6067,
+      "white_gray_smoke": 36915,
+      "chimney_smoke": 9070,
+      "black_smoke": 15683,
+      "cloud": 5850,
+      "fog_haze": 4484
+    }
+  },
+  "all_six_classes_present_in_each_retained_split": true,
+  "known_candidate_pairs_reviewed": 8140,
+  "known_candidate_pairs_retained_across_folds": 0,
+  "confirmed_background_candidate_pairs": 6638,
+  "ambiguous_low_information_pairs": 1502,
+  "ambiguous_evaluation_frames_quarantined": 6,
+  "unused_review_links_with_no_exported_camera": [],
+  "admission_sha256": "c0c48e10fcafa89faa46a35e2ab05915c56cb879ab3e5c05d448b47059e2aed5",
+  "inventory_sha256": "3279284f09945c000e65676c010ab5c9b5a46a0aeb0b65ce47fcb6ab4f128d39",
+  "reviewed_links_sha256": "a2bc32d4be546179f49f84180a1b55a3944e11bbecb4aba4cfe2f5350903da1e",
+  "integrity_verified_images": 598500,
+  "derived_images_repaired": 2,
+  "policy": "No image changes folds; retained folds are subsets of the original ones. Visually reviewed connected components retain existing train rows before val before test. No model scores used.",
+  "limitations": "Threshold-based similarity review is not proof of universal scene uniqueness or certified geographic separation. Old pilot metrics are not valid metrics for this filtered holdout.",
+  "elapsed_seconds": 14.9,
+  "report_schema": 1,
+  "completed_local_date": "2026-11-22",
+  "original_catalog_images": 630000,
+  "excluded_source_archive_crc_failures": 13,
+  "eligible_source_images": 629987,
+  "preprocessing_rejection_categories": {
+    "exact_duplicate_image": 14713,
+    "invalid_polygon_geometry": 16737,
+    "multipart_or_rle_mask_requires_review": 37
+  },
+  "finalized_shards": 600,
+  "finalized_export_bytes": 238835390510,
+  "finalized_export_GiB": 222.433,
+  "export_corpus_sha256": "fda6ada1903a967a955f41bc7d1fe768703bc109167a291f015d956f9f6ce4cc",
+  "metadata_issue_images": 0,
+  "all_capped_images_rechecked": 55324,
+  "admitted_images": 574251,
+  "original_archive_paths_restored": false,
+  "full_dataset_model_training": "not_started",
+  "original_archive_deletion_performed": false,
+  "artifact_notes": "Raw archives remain accessed through recovered read-only extents; derived ZIPs and the admission mask are retained. No model weights were trained or promoted in this milestone.",
+  "dataset_name": "지역안전재난(산불) 방재의 고도화를 위한 대규모 인공지능 데이터베이스 구축",
+  "original_archive_count": 9,
+  "original_archive_bytes": 712142501593,
+  "derived_shard_locations": {
+    "prior_E_export": "E:/AI_Work/edgefire_full_export_v1/shards",
+    "C_resume_workspace_relative": "outputs/storage_recovery_20261121/active/preprocess/shards",
+    "new_E_export": "E:/AI_Work/edgefire_full_export_recovered_v2/shards"
+  },
+  "admission_mask_workspace_relative": "outputs/storage_recovery_20261121/active/reviewed_full_export_v1/admission.sqlite",
+  "quarantine_list_workspace_relative": "outputs/storage_recovery_20261121/active/reviewed_full_export_v1/quarantine.jsonl"
+}

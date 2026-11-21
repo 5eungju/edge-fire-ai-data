@@ -59,6 +59,34 @@ def stable_fold_policy(camera_rows,links):
 def read_only(path):return sqlite3.connect(path.resolve().as_uri()+'?mode=ro',uri=True)
 
 
+def resolve_candidate_reviews(pairs,policies,nonlinks):
+    """Do not call two featureless dark scenes the same physical background.
+
+    Explicit ambiguous decisions exclude only flagged evaluation frames, rather
+    than merging whole cameras. All source images remain available for review.
+    """
+    decisions={}
+    for decision in nonlinks:
+        if (decision.get('reviewed_by')!='visual_review'
+                or decision.get('decision')!='low_information_ambiguous'
+                or decision.get('action')!='quarantine_flagged_evaluation_frames'
+                or not decision.get('reason')):
+            raise ValueError('Ambiguous candidates require an explicit visual decision')
+        decisions[tuple(sorted([decision['camera_a'],decision['camera_b']]))]=decision
+    exclusions=set();unknown=[];confirmed=0;ambiguous=0
+    priority={'train':0,'val':1,'test':2}
+    for a,b,sa,sb,ca,cb in pairs:
+        if tuple(sorted([ca,cb])) in decisions:
+            fa,fb=policies[sa]['original_split'],policies[sb]['original_split']
+            if fa==fb:raise ValueError('Expected a cross-fold ambiguous candidate')
+            exclusions.add(b if priority[fa]<priority[fb] else a);ambiguous+=1
+        elif policies[sa]['canonical_site']==policies[sb]['canonical_site']:
+            confirmed+=1
+        else:
+            unknown.append({'a':a,'b':b,'camera_a':ca,'camera_b':cb})
+    return exclusions,unknown,confirmed,ambiguous
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--pipeline',type=Path,required=True,help='Root containing active preprocess/quality/uncapped/metadata/integrity folders')
@@ -76,7 +104,7 @@ def main():
     args.output.mkdir(parents=True,exist_ok=True)
     final=args.output/'admission.sqlite';temporary=args.output/'admission.sqlite.partial'
     if final.exists() or temporary.exists():raise FileExistsError('Preserve prior review; choose a new output directory')
-    links_bytes=args.reviewed_links.read_bytes();links=json.loads(links_bytes)['approved_links']
+    links_bytes=args.reviewed_links.read_bytes();review_doc=json.loads(links_bytes);links=review_doc['approved_links']
     meta=read_only(root/'metadata/metadata.sqlite')
     meta.execute('ATTACH DATABASE ? AS p',((root/'preprocess/progress.sqlite').resolve().as_uri()+'?mode=ro',))
     meta.execute('ATTACH DATABASE ? AS q',((root/'quality/quality.sqlite').resolve().as_uri()+'?mode=ro',))
@@ -85,6 +113,9 @@ def main():
     meta.execute('PRAGMA main.cache_size=-65536')
     meta.execute('PRAGMA p.cache_size=-65536')
     meta.execute('PRAGMA q.cache_size=-131072')
+    inventory_sha=meta.execute("SELECT value FROM p.settings WHERE key='inventory_sha256'").fetchone()[0]
+    if review_doc.get('inventory_sha256',inventory_sha)!=inventory_sha or review_doc.get('reviewed_image_count',count)!=count:
+        raise ValueError('Visual review belongs to a different frozen export')
     for query in [
         'SELECT id FROM images EXCEPT SELECT id FROM p.accepted',
         'SELECT id FROM p.accepted EXCEPT SELECT id FROM images',
@@ -101,8 +132,8 @@ def main():
     pairs=meta.execute('''WITH pairs AS (SELECT a,b FROM q.candidates UNION SELECT a,b FROM u.candidates)
        SELECT pairs.a,pairs.b,x.site,y.site,x.camera,y.camera FROM pairs
        JOIN images x ON x.id=pairs.a JOIN images y ON y.id=pairs.b''').fetchall()
-    unknown=[{'a':a,'b':b,'camera_a':ca,'camera_b':cb} for a,b,sa,sb,ca,cb in pairs
-             if policies[sa]['canonical_site']!=policies[sb]['canonical_site']]
+    ambiguous_exclusions,unknown,confirmed_pairs,ambiguous_pairs=resolve_candidate_reviews(
+        pairs,policies,review_doc.get('reviewed_nonlinks',[]))
     if unknown:
         write_status(args.output/'status.json',{'phase':'additional_visual_review_required','training_ready':False,'unreviewed_candidate_pairs':len(unknown),'examples':unknown[:20]})
         raise ValueError('Candidate camera links still require visual review')
@@ -119,6 +150,7 @@ def main():
         for identifier,camera,site,split,objects in meta.execute('SELECT id,camera,site,split,objects FROM images ORDER BY id'):
             originals[split]+=1;policy=policies[site];why=list(issues.get(identifier,[]))
             if not policy['keep']:why.append('reviewed_cross_fold_background_component')
+            if identifier in ambiguous_exclusions:why.append('low_information_similarity_in_evaluation')
             keep=not why
             admission.execute('INSERT INTO images VALUES(?,?,?,?,?)',(identifier,int(keep),split,policy['canonical_site'],json.dumps(sorted(why))))
             admission_hash.update((identifier+'|'+str(int(keep))+'|'+split+'|'+policy['canonical_site']+'\n').encode())
@@ -145,6 +177,8 @@ def main():
              'retained_class_object_counts':{s:dict(c) for s,c in class_objects.items()},
              'all_six_classes_present_in_each_retained_split':all(len(class_images[s])==6 for s in ['train','val','test']),
              'known_candidate_pairs_reviewed':len(pairs),'known_candidate_pairs_retained_across_folds':unresolved,
+             'confirmed_background_candidate_pairs':confirmed_pairs,'ambiguous_low_information_pairs':ambiguous_pairs,
+             'ambiguous_evaluation_frames_quarantined':len(ambiguous_exclusions),
              'unused_review_links_with_no_exported_camera':unused,'admission_sha256':digest,
              'inventory_sha256':meta.execute("SELECT value FROM p.settings WHERE key='inventory_sha256'").fetchone()[0],
              'reviewed_links_sha256':hashlib.sha256(links_bytes).hexdigest(),
