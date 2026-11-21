@@ -124,3 +124,9 @@ that no known cross-fold candidate pair remains wholly admitted.
 The images and old manifests are preserved. A later training loader must honor
 the new admission mask and an approved dataset identity; this report does not
 unblock V4, certify geographic independence, train a model or promote weights.
+
+The uncapped checker commits progress/candidates every 25 newly checked images
+and at the final short batch, rather than forcing a disk sync after every image.
+An interrupted batch can be repeated safely because candidates and checkpoints
+are idempotent. Integration tests cover a 53-image batch sequence, its final
+three rows, and a fully cached second run without losing any candidate pairs.

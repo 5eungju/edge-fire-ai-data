@@ -61,7 +61,7 @@ def main():
                     capped_images_in_snapshot=len(capped),images_checked_through_snapshot=0,through_rowid=through)
                 write_status(args.output/'status.json',state)
                 done=dict(db.execute('SELECT id,through_rowid FROM progress'))
-                reviewed=0
+                reviewed=0;pending_checkpoints=0
                 for identifier in capped:
                     prior=done.get(identifier,0)
                     if prior>=through:reviewed+=1;continue
@@ -78,12 +78,17 @@ def main():
                             if mse<.006:
                                 a,b=sorted((identifier,other))
                                 db.execute('INSERT OR IGNORE INTO candidates VALUES(?,?,?,?)',(a,b,(int(hashes[i])^int(dhash,16)).bit_count(),mse))
-                    db.execute('INSERT OR REPLACE INTO progress VALUES(?,?)',(identifier,through));db.commit();reviewed+=1
-                    if reviewed%25==0 or reviewed==len(capped):
+                    db.execute('INSERT OR REPLACE INTO progress VALUES(?,?)',(identifier,through));reviewed+=1;pending_checkpoints+=1
+                    if pending_checkpoints>=25 or reviewed==len(capped):
+                        db.commit();pending_checkpoints=0
                         state.update(phase='rechecking_without_candidate_cap',sketches_in_snapshot=len(ids),
                             capped_images_in_snapshot=len(capped),images_checked_through_snapshot=reviewed,
                             through_rowid=through,candidate_pairs=db.execute('SELECT COUNT(*) FROM candidates').fetchone()[0])
                         write_status(args.output/'status.json',state)
+                # Persist the final short batch, including runs whose last IDs
+                # were already checked. An interruption repeats at most a batch.
+                db.commit()
+                state['images_checked_through_snapshot']=reviewed
             status=json.loads((args.source/'status.json').read_text(encoding='utf8'))
             final=status.get('full_export_completed',False) and status.get('images_audited',0)==snapshot_count
             state.update(phase='uncapped_recheck_complete_review_required' if final else 'waiting_for_new_sketches',
