@@ -28,6 +28,9 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--existing-shards', type=Path, action='append', default=[], help='Read-only prior shard directories when relocating work off a failing volume')
     parser.add_argument('--raw-recovery-map', type=Path, help='Explicit read-only exFAT archive extent map; requires output on a different volume')
+    parser.add_argument('--shard-output', type=Path, help='Separate destination directory for new ZIP shards; state remains under --output')
+    parser.add_argument('--allow-recovery-source-shards', action='store_true', help='Explicitly permit new shards on source volume after live source allocation checks')
+    parser.add_argument('--min-state-free-gib', type=float, default=5, help='Free-space floor for state volume when shards are stored separately')
     parser.add_argument('--budget-gib', type=float, default=180)
     parser.add_argument('--min-free-gib', type=float, default=50)
     parser.add_argument('--shard-images', type=int, default=1000)
@@ -35,9 +38,17 @@ def main():
     args = parser.parse_args()
     if args.shard_images < 1 or args.budget_gib <= 0:
         raise ValueError('Invalid storage configuration')
+    shard_dir = args.shard_output or args.output/'shards'
+    if args.raw_recovery_map:
+        recovery_config = json.loads(args.raw_recovery_map.read_text(encoding='utf-8'))
+        source_drive = recovery_config['source_drive'].upper()
+        if args.output.resolve().drive.upper() == source_drive:
+            raise ValueError('Recovery state must remain off the source volume')
+        if shard_dir.resolve().drive.upper() == source_drive and not args.allow_recovery_source_shards:
+            raise ValueError('Source-volume shards require explicit allocation-guard opt-in')
     args.output.mkdir(parents=True, exist_ok=True)
-    shard_dir = args.output/'shards'
-    shard_dir.mkdir(exist_ok=True)
+    if not args.raw_recovery_map:
+        shard_dir.mkdir(parents=True, exist_ok=True)
     state = {'pid':os.getpid(),'phase':'waiting_for_full_inventory','training_ready':False,
              'image_count_cap':args.max_images or None,'budget_gib':args.budget_gib,
              'min_free_gib':args.min_free_gib,'scope':'Full source inventory; not pilot quotas'}
@@ -65,12 +76,19 @@ def main():
     known={path.name for path in all_shards}
     missing={row[0] for row in db.execute('SELECT DISTINCT shard FROM accepted')}-known
     if missing:raise ValueError('Previously committed shard files are missing: '+str(sorted(missing)[:10]))
-    for path in sorted(all_shards):
+    state.update(phase='checking_existing_shards',existing_shards_total=len(all_shards),existing_shards_checked=0)
+    write_status(args.output/'status.json',state)
+    for shard_index,path in enumerate(sorted(all_shards),1):
         with zipfile.ZipFile(path) as archive:
             rows = [json.loads(line) for line in archive.read('shard_manifest.jsonl').decode('utf8').splitlines()]
         db.executemany('INSERT OR IGNORE INTO accepted VALUES(?,?,?,?)',
                        [(r['id'],r['raw_sha256'],path.name,r['split']) for r in rows])
+        if shard_index%25==0:
+            state['existing_shards_checked']=shard_index
+            write_status(args.output/'status.json',state)
     db.commit()
+    state.update(phase='checking_source_archives',existing_shards_checked=len(all_shards))
+    write_status(args.output/'status.json',state)
     source = sqlite3.connect(args.index.resolve().as_uri()+'?mode=ro',uri=True)
     source.row_factory = sqlite3.Row
     fingerprint = json.loads(source.execute("SELECT value FROM settings WHERE key='fingerprint'").fetchone()[0])
@@ -78,8 +96,13 @@ def main():
     if args.raw_recovery_map:
         from raw_recovery_reader import open_recovered_readers
         readers, recovery_volume = open_recovered_readers(args.raw_recovery_map, fingerprint, args.output)
+        if shard_dir.resolve().drive.upper() == recovery_config['source_drive'].upper():
+            recovery_volume.assert_source_allocated()
+        shard_dir.mkdir(parents=True, exist_ok=True)
         state.update(source_access='read_only_recovered_extents', source_filesystem_restored=False,
                      recovery_map_sha256=hashlib.sha256(args.raw_recovery_map.read_bytes()).hexdigest())
+        state.update(shard_output=str(shard_dir.resolve()), state_output=str(args.output.resolve()),
+                     source_volume_shards_opt_in=args.allow_recovery_source_shards)
     else:
         for files in fingerprint.values():
             for row in files:
@@ -125,11 +148,12 @@ def main():
                 row = json.loads(line)
                 if row['preparation_status']!='pending_pixel_and_label_validation' or row['id'] in completed:
                     continue
-                free = shutil.disk_usage(args.output).free
+                free = shutil.disk_usage(shard_dir).free
+                state_free = shutil.disk_usage(args.output).free
                 staged_bytes = temporary.stat().st_size if archive is not None else 0
-                if free < args.min_free_gib*1024**3 or bytes_written+staged_bytes >= args.budget_gib*1024**3:
+                if free < args.min_free_gib*1024**3 or bytes_written+staged_bytes >= args.budget_gib*1024**3 or (args.shard_output and state_free < args.min_state_free_gib*1024**3):
                     finish_shard()
-                    update('paused_storage_limit',free_bytes=free)
+                    update('paused_storage_limit',free_bytes=free,state_free_bytes=state_free)
                     return
                 if args.max_images and accepted_count>=args.max_images:
                     finish_shard()
@@ -167,6 +191,8 @@ def main():
                               'output_width':image.width,'output_height':image.height,
                               'filename_resolution':resolution,'clipped_boundary_points':clipped}
                     if archive is None:
+                        if recovery_volume is not None and shard_dir.resolve().drive.upper() == recovery_config['source_drive'].upper():
+                            state['source_clusters_allocation_checked'] = recovery_volume.assert_source_allocated()
                         temporary = shard_dir/('shard_'+uuid.uuid4().hex+'.partial')
                         archive = zipfile.ZipFile(temporary,'w',compression=zipfile.ZIP_STORED)
                     prefix = row['split']+'/'+row['id']

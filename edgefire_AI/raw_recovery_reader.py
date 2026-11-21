@@ -1,7 +1,8 @@
 """Read ZIPs through recovered exFAT extents, without modifying the source volume.
 
-This is an explicit recovery mode, not a filesystem repair. Configuration and all
-outputs must be stored on a different volume. Member reads retain ZIP CRC checks.
+This is an explicit recovery mode, not a filesystem repair. Configuration and
+state stay off the source volume. Source-volume shards need explicit allocation
+guards in the caller. Member reads retain ZIP CRC checks.
 """
 import array
 import io
@@ -42,6 +43,48 @@ class RawVolume:
 
     def close(self):
         self.handle.close()
+
+    def assert_source_allocated(self):
+        """Check the live allocation bitmap before permitting opt-in source writes.
+
+        The existing FOUND files can alias original extents. This check does not
+        restore those originals or make deleting any recovered files safe.
+        """
+        import numpy as np
+        boot = self.read(0, 512)
+        if struct.unpack_from('<I', boot, 100)[0] != self.config['volume_serial']:
+            raise OSError('Source identity changed during recovery')
+        root = struct.unpack_from('<I', boot, 96)[0]
+        active = struct.unpack_from('<H', boot, 106)[0] & 1
+        bitmap = None
+        seen = set()
+        while 2 <= root < self.cluster_count+2 and root not in seen:
+            seen.add(root)
+            data = self.read(self.heap+(root-2)*self.cluster_size, self.cluster_size)
+            for pos in range(0, len(data), 32):
+                entry = data[pos:pos+32]
+                if entry[0] == 0x81 and (entry[1]&1) == active:
+                    bitmap = {'cluster':struct.unpack_from('<I',entry,20)[0],
+                              'bytes':struct.unpack_from('<Q',entry,24)[0], 'flags':1}
+                    break
+            if bitmap is not None: break
+            root = self.fat[root]
+        if bitmap is None: raise OSError('Active source allocation bitmap unavailable')
+        bits = np.unpackbits(np.frombuffer(RawArchive(self, bitmap).read(), dtype=np.uint8), bitorder='little')
+        if len(bits) < self.cluster_count: raise OSError('Truncated allocation bitmap')
+        if not hasattr(self, '_source_indexes'):
+            indexes = []
+            for entry in self.config['archives'].values():
+                archive = RawArchive(self, entry)
+                count = (archive.size+self.cluster_size-1)//self.cluster_size
+                indexes.append(np.arange(entry['cluster']-2, entry['cluster']-2+count, dtype=np.int64)
+                               if archive.mapping is None else np.frombuffer(archive.mapping,dtype=np.uint32).astype(np.int64)-2)
+            self._source_indexes = np.concatenate(indexes)
+            if len(np.unique(self._source_indexes)) != len(self._source_indexes):
+                raise OSError('Original archive extents overlap each other')
+        if np.any(bits[self._source_indexes] == 0):
+            raise OSError('Original archive extents marked free; source-volume writes forbidden')
+        return int(len(self._source_indexes))
 
 
 class RawArchive(io.RawIOBase):
