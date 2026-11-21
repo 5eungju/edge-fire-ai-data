@@ -61,3 +61,29 @@ cameras for final candidate review. Run it with the same `--source`, both E:
 `--extra-shards` directories, a C: `--output`, and `--follow`. Issues are recorded
 for exclusion/review; annotations are never silently rewritten. Its full-export
 completion flag must also be true before claiming the automated scans finished.
+
+## Fresh export integrity check after the earlier filesystem incident
+
+The annotation scan found a damaged local ZIP header in an older E: export that
+had already been audited before filesystem recovery. Its size and timestamp had
+not changed. Those attributes alone do not prove content survived a repair.
+Fresh allocation checks found no active file/directory overlaps or free-marked
+active extents, and all source archive clusters remained allocated. The exact
+time/cause of the derived-byte damage is not established.
+
+`revalidate_export_integrity.py` checks every finalized export member's CRC,
+compares image SHA-256 against existing quality sketches where present, and
+records a fresh whole-shard SHA-256. A damaged derived image is reconstructed
+from its original archive only after original CRC and raw SHA checks. Every
+reconstructed member must match the old export CRC and every cached image SHA
+must match, with the committed manifest unchanged. Replacements are built and
+fully checked on C:. Damaged exports are retained with a `.corrupt-preserved-20261122`
+suffix; no original archive is renamed or deleted. A successful byte-identical
+repair updates only the affected cache fingerprint; the old sketches remain
+valid. All producers and auditors must be stopped while repairing.
+
+The first repaired shard contained four damaged members affecting two images;
+both were recovered with matching original quality SHA values. A complete
+fresh integrity sweep is required before resuming the paused pipeline. For a
+later, separate filesystem incident use a fresh output directory or
+`--force-recheck`: prior size/mtime checkpoints must not be treated as new proof.
