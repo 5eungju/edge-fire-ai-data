@@ -99,3 +99,11 @@ last completed checkpoint before filtering colors and computing Hamming
 distances. Earlier pairs are not recomputed on every follow pass. Scalar
 exhaustive-search equivalence tests, including gaps and late checkpoints, confirm
 the same candidate results without adding a search cap.
+
+The pixel auditor now uses a scalar covering index for candidate filtering and
+fetches RGB sketches only for candidates within the Hamming threshold. An
+80-image read-only production-snapshot comparison returned exactly the same
+selected IDs, cap flags and MSE values; the isolated candidate-query portion was
+4.36 times faster in that run. This is a query microbenchmark, not an end-to-end
+completion-time guarantee. Split/color filters, search caps and MSE thresholds
+are unchanged; capped cases still require the separate uncapped pass.

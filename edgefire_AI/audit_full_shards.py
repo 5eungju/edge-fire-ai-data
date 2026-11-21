@@ -33,6 +33,23 @@ def signature(payload):
     return value,tiny,tiny.mean(axis=(0,1))
 
 
+def find_candidates(db,value,color,split,limit):
+    """Filter through the scalar covering index before fetching any RGB blobs."""
+    found={};capped=False
+    for band,bucket in hash_bands(value):
+        matches=db.execute('''SELECT s.id,s.dhash FROM bands b
+          JOIN sketches s INDEXED BY sketch_filter_cover ON s.id=b.id
+          WHERE b.band=? AND b.value=? AND s.split!=?
+          AND ABS(s.r-?)<.05 AND ABS(s.g-?)<.05 AND ABS(s.b-?)<.05 LIMIT ?''',
+          (band,bucket,split,*[float(c) for c in color],limit+1)).fetchall()
+        if len(matches)>limit:capped=True
+        for other,dhash in matches:
+            if other in found:continue
+            if len(found)>=limit:capped=True;break
+            found[other]=dhash
+    return found,capped
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--source',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True);parser.add_argument('--follow',action='store_true')
@@ -53,6 +70,7 @@ def main():
       CREATE TABLE IF NOT EXISTS bands(band INTEGER,value INTEGER,id TEXT);
       CREATE INDEX IF NOT EXISTS band_lookup ON bands(band,value);
       CREATE INDEX IF NOT EXISTS jpeg_lookup ON sketches(jpeg_sha);
+      CREATE INDEX IF NOT EXISTS sketch_filter_cover ON sketches(id,split,r,g,b,dhash);
       CREATE TABLE IF NOT EXISTS candidates(a TEXT,b TEXT,distance INTEGER,mse REAL,kind TEXT,PRIMARY KEY(a,b));
       CREATE TABLE IF NOT EXISTS capped(id TEXT PRIMARY KEY);''')
     source_identity=str(args.source.resolve())
@@ -101,25 +119,19 @@ def main():
                             if cid not in range(6) or len(xy)<6 or len(xy)%2 or not all(np.isfinite(xy)) or any(v<0 or v>1 for v in xy):
                                 raise ValueError('Stored label geometry/coordinate schema invalid')
                         value,tiny,color=signature(payload);jpeg_sha=hashlib.sha256(payload).hexdigest()
-                        found={};capped=False
-                        for band,bucket in hash_bands(value):
-                            matches=db.execute('''SELECT s.id,s.dhash,s.rgb FROM bands b JOIN sketches s ON s.id=b.id
-                              WHERE b.band=? AND b.value=? AND s.split!=? AND ABS(s.r-?)<.05 AND ABS(s.g-?)<.05 AND ABS(s.b-?)<.05 LIMIT ?''',
-                              (band,bucket,split,*[float(c) for c in color],args.candidate_limit+1)).fetchall()
-                            if len(matches)>args.candidate_limit:capped=True
-                            for other,dhash,rgb in matches:
-                                if other in found:continue
-                                if len(found)>=args.candidate_limit:capped=True;break
-                                found[other]=(dhash,rgb)
+                        found,capped=find_candidates(db,value,color,split,args.candidate_limit)
                         if capped:db.execute('INSERT OR IGNORE INTO capped VALUES(?)',(identifier,))
-                        for other,(dhash,rgb) in found.items():
-                            distance=(value^int(dhash,16)).bit_count()
-                            if distance>4:continue
-                            pixels=np.frombuffer(rgb,dtype=np.float32).reshape(16,16,3)
-                            mse=float(np.mean((tiny-pixels)**2))
-                            if mse<.006:
-                                a,b=sorted((identifier,other))
-                                db.execute('INSERT OR IGNORE INTO candidates VALUES(?,?,?,?,?)',(a,b,distance,mse,'perceptual_review'))
+                        near={other:(value^int(dhash,16)).bit_count() for other,dhash in found.items()}
+                        identifiers=[other for other,distance in near.items() if distance<=4]
+                        for start in range(0,len(identifiers),256):
+                            batch=identifiers[start:start+256]
+                            marks=','.join('?' for _ in batch)
+                            for other,rgb in db.execute('SELECT id,rgb FROM sketches WHERE id IN ('+marks+')',batch).fetchall():
+                                pixels=np.frombuffer(rgb,dtype=np.float32).reshape(16,16,3)
+                                mse=float(np.mean((tiny-pixels)**2))
+                                if mse<.006:
+                                    a,b=sorted((identifier,other))
+                                    db.execute('INSERT OR IGNORE INTO candidates VALUES(?,?,?,?,?)',(a,b,near[other],mse,'perceptual_review'))
                         # Exact output duplicates are checked independently of the perceptual search cap.
                         for (other,) in db.execute('SELECT id FROM sketches WHERE jpeg_sha=? AND split!=?',(jpeg_sha,split)).fetchall():
                             a,b=sorted((identifier,other));db.execute('INSERT OR REPLACE INTO candidates VALUES(?,?,?,?,?)',(a,b,0,0.,'exact_output_duplicate'))
