@@ -27,6 +27,7 @@ def main():
     parser.add_argument('--index', type=Path, default=Path('E:/AI_Work/edgefire_vision/vision_index.sqlite'))
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--existing-shards', type=Path, action='append', default=[], help='Read-only prior shard directories when relocating work off a failing volume')
+    parser.add_argument('--raw-recovery-map', type=Path, help='Explicit read-only exFAT archive extent map; requires output on a different volume')
     parser.add_argument('--budget-gib', type=float, default=180)
     parser.add_argument('--min-free-gib', type=float, default=50)
     parser.add_argument('--shard-images', type=int, default=1000)
@@ -73,12 +74,19 @@ def main():
     source = sqlite3.connect(args.index.resolve().as_uri()+'?mode=ro',uri=True)
     source.row_factory = sqlite3.Row
     fingerprint = json.loads(source.execute("SELECT value FROM settings WHERE key='fingerprint'").fetchone()[0])
-    for files in fingerprint.values():
-        for row in files:
-            actual = Path(row['path']).stat()
-            if actual.st_size!=row['bytes'] or actual.st_mtime_ns!=row['mtime_ns']:
-                raise ValueError('Source archive changed; repeat integrity review')
-    readers = {role:ZipReader(files[-1]['path']) for role,files in fingerprint.items()}
+    recovery_volume = None
+    if args.raw_recovery_map:
+        from raw_recovery_reader import open_recovered_readers
+        readers, recovery_volume = open_recovered_readers(args.raw_recovery_map, fingerprint, args.output)
+        state.update(source_access='read_only_recovered_extents', source_filesystem_restored=False,
+                     recovery_map_sha256=hashlib.sha256(args.raw_recovery_map.read_bytes()).hexdigest())
+    else:
+        for files in fingerprint.values():
+            for row in files:
+                actual = Path(row['path']).stat()
+                if actual.st_size!=row['bytes'] or actual.st_mtime_ns!=row['mtime_ns']:
+                    raise ValueError('Source archive changed; repeat integrity review')
+        readers = {role:ZipReader(files[-1]['path']) for role,files in fingerprint.items()}
     completed = {row[0] for row in db.execute('SELECT id FROM accepted UNION SELECT id FROM rejected')}
     digests = {row[0] for row in db.execute('SELECT raw_sha256 FROM accepted')}
     rows, archive, temporary, stream = [], None, None, None
@@ -189,6 +197,8 @@ def main():
     finally:
         for reader in readers.values():
             reader.close()
+        if recovery_volume is not None:
+            recovery_volume.close()
         source.close()
         db.close()
 
