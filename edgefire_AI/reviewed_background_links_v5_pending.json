@@ -77,7 +77,61 @@
         "강원도강릉시대전동_RD010022",
         "강원도강릉시장현동_ND183002"
       ]
+    },
+    {
+      "camera_a": "ND190002",
+      "camera_b": "ND183002",
+      "reviewed_by": "visual_review",
+      "reason": "Matching road bends, green field boundaries, foreground trees and distant skyline in two reviewed pairs. Group conservatively before training; physical coordinates are not certified.",
+      "representative_image_ids": [
+        "e28d033eef7f4a2f3e2f70d1",
+        "f2f5e3db2f0c6ba4f992df5f"
+      ],
+      "reviewed_pair_ids": [
+        [
+          "e28d033eef7f4a2f3e2f70d1",
+          "f2f5e3db2f0c6ba4f992df5f"
+        ],
+        [
+          "ef09f6093b09842c14104157",
+          "f1d1e8aa3742b88af1e8298c"
+        ]
+      ],
+      "reviewed_pair_count": 2,
+      "evidence_sheet_sha256": "e9987c56ba0041db1e4b15c37d8918746caf77ee30816ac738d6b19994c3a110",
+      "location_labels": [
+        "강원도강릉시장현동_ND183002",
+        "강원도강릉시죽헌저수지_ND190002"
+      ]
+    },
+    {
+      "camera_a": "NG135001",
+      "camera_b": "NG123001",
+      "reviewed_by": "visual_review",
+      "reason": "Matching reservoir shoreline, railing geometry, forested ridgelines and reflections in two reviewed pairs. Group conservatively before training; physical coordinates are not certified.",
+      "representative_image_ids": [
+        "09734fc79b91980f2f23a0c2",
+        "57f6dae57f327f00bc5bf63f"
+      ],
+      "reviewed_pair_ids": [
+        [
+          "09734fc79b91980f2f23a0c2",
+          "57f6dae57f327f00bc5bf63f"
+        ],
+        [
+          "57f6dae57f327f00bc5bf63f",
+          "65f162f8cc85395bd08a2c4a"
+        ]
+      ],
+      "reviewed_pair_count": 2,
+      "evidence_sheet_sha256": "e9987c56ba0041db1e4b15c37d8918746caf77ee30816ac738d6b19994c3a110",
+      "location_labels": [
+        "강원도강릉시경포저수지_NG135001",
+        "강원도강릉시칠성저수지_NG123001"
+      ]
     }
   ],
-  "automatic_metric_links_allowed": false
+  "automatic_metric_links_allowed": false,
+  "full_quality_audit_completed": false,
+  "split_rebuild_status": "Pending completion and review of the full export audit; V4 remains blocked"
 }
