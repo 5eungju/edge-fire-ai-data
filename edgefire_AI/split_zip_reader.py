@@ -1,7 +1,11 @@
 """ZIP/ZIP64 분할 압축을 병합·전체 해제 없이 읽습니다. 원본은 읽기 전용입니다."""
 from dataclasses import dataclass
 from pathlib import Path
-import struct,zlib
+import struct,zlib,hashlib
+
+class MemberIntegrityError(ValueError):
+ def __init__(self,message,compressed_sha256):
+  super().__init__(message);self.compressed_sha256=compressed_sha256
 
 @dataclass
 class Entry:
@@ -78,9 +82,11 @@ class ZipReader:
   if h[0]!=b'PK\x03\x04':raise ValueError('Invalid local member header')
   raw=self.span(entry.disk,entry.offset+30+h[-2]+h[-1],entry.compressed)
   if entry.method==8:
-   decoder=zlib.decompressobj(-15);data=decoder.decompress(raw,max_bytes+1)
-   if len(data)>max_bytes or decoder.unconsumed_tail or not decoder.eof:raise ValueError('Invalid or oversized deflate stream')
+   decoder=zlib.decompressobj(-15)
+   try:data=decoder.decompress(raw,max_bytes+1)
+   except zlib.error as exc:raise MemberIntegrityError('Deflate stream error: '+str(exc),hashlib.sha256(raw).hexdigest()) from exc
+   if len(data)>max_bytes or decoder.unconsumed_tail or not decoder.eof:raise MemberIntegrityError('Invalid or oversized deflate stream',hashlib.sha256(raw).hexdigest())
   elif entry.method==0:data=raw
   else:raise ValueError('Unsupported compression method')
-  if len(data)!=entry.uncompressed or zlib.crc32(data)&0xffffffff!=entry.crc:raise ValueError('Member CRC/size mismatch')
+  if len(data)!=entry.uncompressed or zlib.crc32(data)&0xffffffff!=entry.crc:raise MemberIntegrityError('Member CRC/size mismatch',hashlib.sha256(raw).hexdigest())
   return data
