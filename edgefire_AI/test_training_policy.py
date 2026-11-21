@@ -7,6 +7,14 @@ from training_policy import validate_data_policy, validate_generic_pretrained
 
 
 class PolicyTests(unittest.TestCase):
+    def test_later_review_can_block_a_previously_audited_dataset(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);data=root/'pilot_yolo_seg/dataset.yaml'
+            (root/'subsequent_review.json').write_text(json.dumps({'training_allowed':False}),encoding='utf8')
+            records=[{'site_group':s,'split':s} for s in ['train','val','test']]
+            with self.assertRaisesRegex(ValueError,'Later spatial review'):
+                validate_data_policy(data,records)
+
     def test_visual_review_is_a_required_gate(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

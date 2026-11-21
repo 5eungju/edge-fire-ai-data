@@ -72,7 +72,7 @@ def main():
             frozen_policy.write_text(json.dumps(policy,indent=2),encoding='utf8')
             hashfile=frozen/'sha256.json'
             if not hashfile.exists():
-                for name in ['train_vision.py','status_io.py','json_numbers.py','training_policy.py','generic_pretrained_manifest.json','model_selection.py']:
+                for name in ['train_vision.py','status_io.py','json_numbers.py','training_policy.py','spatial_review_blocks.json','generic_pretrained_manifest.json','model_selection.py']:
                     shutil.copy2(BASE/name,frozen/name)
                 hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in frozen.iterdir() if p.is_file()}
                 hashfile.write_text(json.dumps(hashes,indent=2),encoding='utf8')

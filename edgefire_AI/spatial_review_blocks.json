@@ -1,0 +1,8 @@
+{
+  "812084b3a1766e567365eec522e4ae81514ebed3c38a53984fcdd04b399bd171": {
+    "training_allowed": false,
+    "reason": "Later full-export visual review found matching terrain, road and treeline between RD010022 (train) and ND183002 (test). Rebuild the site split and review remaining candidates before new training.",
+    "camera_pair": ["RD010022", "ND183002"],
+    "historical_metrics": "Preserved exploratory measurements; independent-site test claim is no longer supported."
+  }
+}

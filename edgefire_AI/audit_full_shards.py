@@ -41,6 +41,7 @@ def main():
     if args.candidate_limit<1:raise ValueError('Candidate limit must be positive')
     args.output.mkdir(parents=True,exist_ok=True)
     db=sqlite3.connect(args.output/'quality.sqlite')
+    db.execute('PRAGMA journal_mode=WAL')  # Permit independent bounded read snapshots during auditing.
     db.executescript('''CREATE TABLE IF NOT EXISTS shards(name TEXT PRIMARY KEY,fingerprint TEXT);
       CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT);
       CREATE TABLE IF NOT EXISTS sites(site TEXT PRIMARY KEY,split TEXT);

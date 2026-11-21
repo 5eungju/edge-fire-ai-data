@@ -1,6 +1,9 @@
 from pathlib import Path
 import json, csv, subprocess, sys, hashlib
 import torch
+spatial_plan = json.loads(Path("/content/edgefire_colab/dataset/validation.json").read_text())["plan_sha256"]
+if spatial_plan == "812084b3a1766e567365eec522e4ae81514ebed3c38a53984fcdd04b399bd171":
+    raise RuntimeError("This pilot split was superseded by later matching-background evidence. Do not repeat training until the split is rebuilt and audited.")
 assert torch.cuda.is_available(), "GPU runtime required"
 base = Path("/content/drive/MyDrive/EDGEFIRE/runs")
 first = base/"pilot_3564_yolo26n_gpu_autorun"

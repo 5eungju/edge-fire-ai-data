@@ -23,6 +23,10 @@ with zipfile.ZipFile(local) as z:
         if not (root/member.filename).resolve().is_relative_to(root.resolve()):
             raise ValueError("Unsafe ZIP member")
     z.extractall(root)
+import json
+spatial_plan = json.loads((root/"dataset/validation.json").read_text())["plan_sha256"]
+if spatial_plan == "812084b3a1766e567365eec522e4ae81514ebed3c38a53984fcdd04b399bd171":
+    raise RuntimeError("Later visual review found cross-split matching backgrounds in this pilot ZIP. Rebuild and audit the site split before new training; preserve existing checkpoints.")
 print("Package verified and extracted. Ready for GPU training.")
 run_dir = Path("/content/drive/MyDrive/EDGEFIRE/runs/pilot_3564_yolo26n_gpu_autorun")
 command = [sys.executable, "-u", "/content/edgefire_colab/code/train_colab.py", "--dataset", str(root/"dataset"), "--save-dir", str(run_dir), "--model", "yolo26n-seg.pt", "--epochs", "30"]

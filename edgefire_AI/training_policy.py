@@ -17,8 +17,17 @@ def validate_data_policy(data, records):
         if groups[a] & groups[b]:
             raise ValueError('Spatial component leakage')
     root = data.parent.parent
+    later_review = root/'subsequent_review.json'
+    if later_review.exists() and not json.loads(later_review.read_text(encoding='utf8')).get('training_allowed',True):
+        raise ValueError('Later spatial review blocks training; rebuild the split before new experiments')
     digest = hashlib.sha256((root / 'pilot_manifest.jsonl').read_bytes()).hexdigest()
     validation = json.loads((root / 'validation.json').read_text(encoding='utf8'))
+    registry = Path(__file__).with_name('spatial_review_blocks.json')
+    if not registry.exists():
+        raise ValueError('Current spatial review registry is required for new spatial training')
+    blocks = json.loads(registry.read_text(encoding='utf8'))
+    if validation.get('plan_sha256') in blocks:
+        raise ValueError('Later spatial review blocks training: '+blocks[validation['plan_sha256']]['reason'])
     quality = json.loads((root / 'quality_audit/summary.json').read_text(encoding='utf8'))
     if not validation.get('passed') or validation.get('manifest_sha256') != digest:
         raise ValueError('Spatial file/geometry validation is missing or stale')

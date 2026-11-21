@@ -1,0 +1,28 @@
+{
+  "training_allowed": false,
+  "blocked_plan_sha256": "812084b3a1766e567365eec522e4ae81514ebed3c38a53984fcdd04b399bd171",
+  "reason": "Later full-export visual review found matching terrain, road and treeline between RD010022 (train) and ND183002 (test). Rebuild the site split and review remaining candidates before new training.",
+  "pilot_affected_counts": {
+    "RD010022_train": 5,
+    "ND183002_test": 2
+  },
+  "scope": "Later evidence invalidates independent-site claims; historical metrics remain unchanged",
+  "reviewed_pairs": [
+    [
+      "14aa28ba51cb9fc3ecf0ce82",
+      "8e08b6b4055800ba8aae8341"
+    ],
+    [
+      "0f1c86522ef91ae02e01c545",
+      "8e08b6b4055800ba8aae8341"
+    ],
+    [
+      "931761245e1ee9968453f623",
+      "f99c331f41f38e9ed3edf8c5"
+    ],
+    [
+      "931761245e1ee9968453f623",
+      "f7d5a22d84d2b96df767e552"
+    ]
+  ]
+}
