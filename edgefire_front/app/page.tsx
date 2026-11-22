@@ -41,6 +41,47 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
 
   const [storageJob, setStorageJob] = useState<any>(null);
   const [storageConnected, setStorageConnected] = useState(false);
+  const [chemicalCid, setChemicalCid] = useState('');
+  const [useReferenceCase, setUseReferenceCase] = useState(false);
+  const [assessmentId, setAssessmentId] = useState('');
+  const [assessmentResult, setAssessmentResult] = useState<any>(null);
+  const [assessmentError, setAssessmentError] = useState('');
+  const [assessmentBusy, setAssessmentBusy] = useState(false);
+  useEffect(() => {
+    if (!assessmentId) return;
+    let active = true;
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/edgefire/assessments/${assessmentId}`, {cache:'no-store'});
+        if (!response.ok) throw new Error('통합 분석 결과를 읽을 수 없습니다.');
+        const job = await response.json();
+        if (!active) return;
+        if (job.status === 'COMPLETED') { setAssessmentResult(job.result); setAssessmentBusy(false); setAssessmentId(''); }
+        if (job.status === 'FAILED') { setAssessmentError(job.error || '분석 실패'); setAssessmentBusy(false); setAssessmentId(''); }
+      } catch (error) { if (active) { setAssessmentError(String(error)); setAssessmentBusy(false); } }
+    };
+    poll(); const timer = setInterval(poll, 2000);
+    return () => { active = false; clearInterval(timer); };
+  }, [assessmentId]);
+  async function runAssessment() {
+    setAssessmentBusy(true); setAssessmentError(''); setAssessmentResult(null); setAssessmentId('');
+    try {
+      const payload:any = {vision_job_id:storageJob.id};
+      if (chemicalCid.trim()) payload.chemical_cid = chemicalCid.trim();
+      if (useReferenceCase) {
+        const response = await fetch('/api/edgefire/model-examples', {cache:'no-store'});
+        if (!response.ok) throw new Error('학습 사례를 읽을 수 없습니다.');
+        const examples = await response.json();
+        if (!examples.cases?.length) throw new Error('등록된 학습 사례가 없습니다.');
+        payload.reference_case_id = examples.cases[0].id;
+        if (!payload.chemical_cid && examples.chemical_cids?.length) payload.chemical_cid = examples.chemical_cids[0];
+      }
+      const response = await fetch('/api/edgefire/assessments', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      const job = await response.json();
+      if (!response.ok) throw new Error(job.detail || '통합 분석을 시작할 수 없습니다.');
+      setAssessmentId(job.id);
+    } catch (error) { setAssessmentError(String(error)); setAssessmentBusy(false); }
+  }
   useEffect(() => {
     let active = true;
     async function refresh() {
@@ -167,7 +208,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
       {/* 🚨 AI 화재 확증 팝업 모달 */}
       {showAlertModal && (
         <div className="absolute inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-gray-900 border-2 border-red-500 rounded-xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 animate-pulse">
+          <div className="bg-gray-900 border-2 border-red-500 rounded-xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-gray-700 pb-2">
               <h3 className="text-lg font-bold text-red-500 flex items-center gap-2">
                 AI 저장 이미지 분석 결과
@@ -178,6 +219,26 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
             <div className="bg-gray-800 p-3 rounded border border-gray-700 text-xs text-orange-400">
               • 모델: {storageJob?.result?.model_id || "대기 중"}<br />
               • 학습 중 스냅샷의 연구용 결과입니다. 가스 수치와 위험 단계는 시연값입니다.
+            </div>
+            <div className="text-xs text-gray-200 flex flex-col gap-2">
+              <label>화학물질 CID (알고 있는 경우)
+                <input aria-label="화학물질 CID" value={chemicalCid} onChange={event => setChemicalCid(event.target.value)} className="ml-2 w-28 bg-gray-800 border border-gray-600 rounded p-1" />
+              </label>
+              <label className="flex gap-2 items-center"><input type="checkbox" checked={useReferenceCase} onChange={event => setUseReferenceCase(event.target.checked)} />학습 데이터 예시로 연결 시험 (현재 이미지와 다른 사건)</label>
+              <button onClick={runAssessment} disabled={assessmentBusy} className="bg-blue-700 disabled:opacity-50 rounded p-2">{assessmentBusy ? '저장소에서 통합 분석 중…' : '저장소 통합 분석'}</button>
+              {assessmentError && <p className="text-red-300">{assessmentError}</p>}
+              {assessmentResult && <div className="bg-gray-800 p-2 rounded flex flex-col gap-2">
+                <p>{assessmentResult.input_kind === 'historical_training_case' ? '학습 사례 시험 결과 · 실제 현장 판단 아님' : '입력 정보 기준 연구용 결과'}</p>
+                <p>대응 모델: {assessmentResult.response?.status === 'INSUFFICIENT_INPUT' ? '기상·지형·화재 상태 등 추가 입력 필요' : assessmentResult.response?.status === 'REJECTED_FAILED_VALIDATION_BASELINE' ? '검증 기준선 미달로 위험도 출력 차단' : `데이터 주석 위험도 ${assessmentResult.response?.annotated_risk}`}</p>
+                <p>화학 분석: {assessmentResult.chemical?.status === 'NO_MATERIAL_ID' ? '물질 CID 미입력' : assessmentResult.chemical?.name}</p>
+                {Object.entries(assessmentResult.chemical?.predictions || {}).map(([name,value]:[string,any]) => <p key={name}>{name}: {typeof value.value === 'number' ? value.value.toFixed(3) : value.status} {value.target_transform === 'log10' ? '(log10)' : ''} · 원자료 단위 미검증</p>)}
+                {assessmentResult.historical_references?.slice(0,1).map((reference:any) => <div key={reference.id}>
+                  <p>과거 대응 사례 인용 ({reference.event_id}): {reference.recommendation.decision}</p>
+                  <p>{reference.recommendation.primary_reason}</p>
+                  <details><summary>데이터 출처</summary><p className="break-all">{reference.source} · {reference.member}</p></details>
+                </div>)}
+                <p>가스·열화상 측정값 없음 · 자동 신고·방송은 실행하지 않음</p>
+              </div>}
             </div>
             <div className="flex gap-2 justify-end mt-2">
               <button onClick={() => setShowAlertModal(false)} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-xs">닫기</button>

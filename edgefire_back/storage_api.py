@@ -15,9 +15,11 @@ import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'edgefire_AI'))
 from storage_queue import StorageQueue
+from multi_model_storage import model_status, reference_examples, validate_request
 
 ROOT = Path(os.environ.get('STORAGE_ROOT', './local_storage')).resolve()
 QUEUE = StorageQueue(ROOT)
+ASSESSMENTS = StorageQueue(ROOT / 'assessments')
 db = QUEUE.db
 Image.MAX_IMAGE_PIXELS = 30_000_000
 
@@ -29,6 +31,35 @@ def authorized(x_api_key: str | None = Header(default=None)):
 
 
 router = APIRouter(prefix='/api/v1/storage', dependencies=[Depends(authorized)])
+
+
+@router.get('/models')
+def models():
+    return model_status(ROOT)
+
+
+@router.get('/model-examples')
+def model_examples():
+    return reference_examples(ROOT)
+
+
+@router.post('/assessments', status_code=202)
+def create_assessment(payload: dict):
+    try:
+        validate_request(payload)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    if model_status(ROOT)['status'] != 'RESEARCH_MODELS_REGISTERED':
+        raise HTTPException(409, '모델 학습·등록이 아직 완료되지 않았습니다.')
+    return ASSESSMENTS.enqueue(json.dumps(payload,ensure_ascii=False,allow_nan=False).encode('utf-8'), 'application/json')
+
+
+@router.get('/assessments/{job_id}')
+def assessment(job_id: str):
+    try:
+        return ASSESSMENTS.get(job_id)
+    except KeyError:
+        raise HTTPException(404, '통합 분석 기록이 없습니다.')
 
 
 @router.get('/forecast')

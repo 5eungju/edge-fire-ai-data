@@ -12,6 +12,12 @@ from main import app
 
 class StorageContract(unittest.TestCase):
     def setUp(self):self.client=TestClient(app);self.headers={'X-API-Key':'test-only-secret'}
+    def test_assessment_routes_require_auth_and_registered_models(self):
+        self.assertEqual(self.client.get('/api/v1/storage/models').status_code,401)
+        status=self.client.get('/api/v1/storage/models',headers=self.headers).json()
+        self.assertEqual(status['status'],'TRAINING_OR_NOT_REGISTERED')
+        self.assertEqual(self.client.post('/api/v1/storage/assessments',headers=self.headers,json={}).status_code,409)
+        self.assertEqual(self.client.post('/api/v1/storage/assessments',headers=self.headers,json={'chemical_cid':'../file'}).status_code,422)
     def test_auth_and_stable_ids(self):
         self.assertEqual(self.client.get('/api/v1/storage/config').status_code,401)
         a=self.client.get('/api/v1/storage/config',headers=self.headers).json()

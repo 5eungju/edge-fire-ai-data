@@ -1,0 +1,71 @@
+{
+  "chemical_label_records": 18099,
+  "response_rows": 246272,
+  "response_features": 55,
+  "chemical": {
+    "flash_point": {
+      "selected_model": "histogram_boosting",
+      "validation_mae": {
+        "median_baseline": 46.14095142476934,
+        "neural_mlp": 28.688108847721924,
+        "histogram_boosting": 28.097246067173202
+      },
+      "test_mae": 24.564007498038652,
+      "test_r2": 0.5834425208973903,
+      "split_counts": {
+        "train": 6351,
+        "val": 1409,
+        "test": 1242
+      }
+    },
+    "heat_of_combustion": {
+      "selected_model": "neural_mlp",
+      "validation_mae": {
+        "median_baseline": 2567.800831975,
+        "neural_mlp": 411.8991659338141,
+        "histogram_boosting": 571.3908961664882
+      },
+      "test_mae": 538.2353300439886,
+      "test_r2": 0.8753264620664137,
+      "split_counts": {
+        "train": 3227,
+        "val": 676,
+        "test": 620
+      }
+    },
+    "vapor_pressure": {
+      "selected_model": "histogram_boosting",
+      "validation_mae": {
+        "median_baseline": 2.353287558736928,
+        "neural_mlp": 1.2230800378980293,
+        "histogram_boosting": 1.150434436206181
+      },
+      "test_mae": 1.4307797567021696,
+      "test_r2": 0.5611178135604711,
+      "split_counts": {
+        "train": 8345,
+        "val": 1770,
+        "test": 2293
+      }
+    }
+  },
+  "response_validation_macro_f1": {
+    "majority_baseline": 0.23516359782752683,
+    "histogram_boosting": 0.23516359782752683,
+    "neural_mlp": 0.08982264438809891
+  },
+  "response_accepted": false,
+  "response_sentence_method": "Source-linked historical case retrieval, not generative LLM training",
+  "vision_status": {
+    "phase": "training",
+    "epoch_index": 0,
+    "epoch_cursor": 334408,
+    "train_images_per_epoch": 440207,
+    "updated_local": "2026-11-23 04:56:58"
+  },
+  "model_units_verified": false,
+  "operational_use": false,
+  "tests_passed": 15,
+  "backend_real_storage_smoke": true,
+  "browser_real_storage_smoke": true
+}

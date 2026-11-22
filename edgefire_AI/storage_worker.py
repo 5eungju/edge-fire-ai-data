@@ -96,6 +96,8 @@ def main():
     signal.signal(signal.SIGTERM, lambda *_: stop.set())
     signal.signal(signal.SIGINT, lambda *_: stop.set())
     infer = VisionPredictor(args.model, args.model_id)
+    assessment_queue = StorageQueue(args.root / 'assessments')
+    from multi_model_storage import infer_assessment
     def heartbeat():
         while not stop.is_set():
             queue.worker_status(worker_id, args.model_id)
@@ -105,9 +107,10 @@ def main():
     try:
         while not stop.is_set() and not (queue.root / 'worker.STOP').exists():
             worked = process_one(queue, infer)
+            assessment_worked = process_one(assessment_queue, lambda raw: infer_assessment(args.root, raw))
             if args.once:
                 break
-            if not worked:
+            if not worked and not assessment_worked:
                 stop.wait(.5)
     finally:
         stop.set()
