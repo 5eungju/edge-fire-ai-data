@@ -42,7 +42,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
   // 백엔드 WebSocket 소켓 실시간 수신 연동
   useEffect(() => {
     // 로컬 백엔드 관제 채널 주소
-    const wsUrl = "ws://127.0.0.1:8100/api/v1/ws/hazard";
+    const wsUrl = "ws://127.0.0.1:8000/api/v1/ws/hazard";
     let socket: WebSocket | null = null;
 
     try {
@@ -117,7 +117,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
   };
 
   return (
-    <><div style={{background:"#803400",color:"white",padding:12}}>공유팀 원본 화면 시연 · 고정 예시값 포함 · <a href="/">실제 AI 분석 화면으로 이동</a></div><div className="flex flex-col h-screen w-screen bg-gray-900 text-white p-2 gap-2 box-border relative">
+    <div className="flex flex-col h-screen w-screen bg-gray-900 text-white p-2 gap-2 box-border relative">
       {/* 비상 경보 시연 알림 팝업 */}
 {actionPopup && (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -209,7 +209,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
             <p className="text-sm text-gray-200 leading-relaxed">{alertMessage}</p>
             <div className="bg-gray-800 p-3 rounded border border-gray-700 text-xs text-orange-400">
               • AI 비전 확증: 연풍 훈연 연기 패턴 포착 (신뢰도 94.2%)<br />
-              • 실시간 수신 채널: ws://127.0.0.1:8100/api/v1/ws/hazard
+              • 실시간 수신 채널: ws://127.0.0.1:8000/api/v1/ws/hazard
             </div>
             <div className="flex gap-2 justify-end mt-2">
               <button onClick={() => setShowAlertModal(false)} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-xs">닫기</button>
@@ -341,6 +341,5 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
         <button onClick={() => handleEmergencyAction("CBS")} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2.5 px-6 rounded-lg transition active:scale-95">📱 긴급재난문자 / 알림톡 발송</button>
       </footer>
     </div>
-    </>
   );
 }

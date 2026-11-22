@@ -1,39 +1,318 @@
-'use client';
-import {useEffect,useState} from 'react';
-import './integration.css';
-type Detection={class_name:string;score:number;polygon_normalized:number[][]};
-type Job={id:string;status:string;created:number;error?:string;result?:{width:number;height:number;notice:string;model_id:string;detections:Detection[]}};
-type Config={project_id:string;storage_id:string;owner_id:string;node_id:string;ai_model_available:boolean;worker_available:boolean;model_id:string;model_status:string};
-const labels:Record<string,string>={black_smoke:'흑색 연기',white_gray_smoke:'백색·회색 연기',flame:'화염',cloud:'구름',fog_haze:'안개·연무',chimney_smoke:'굴뚝 연기'};
-const statuses:Record<string,string>={PENDING:'분석 대기',RUNNING:'분석 중',COMPLETED:'분석 완료',FAILED:'분석 실패'};
-export default function Home(){
-  const [config,setConfig]=useState<Config|null>(null),[jobs,setJobs]=useState<Job[]>([]),[selected,setSelected]=useState('');
-  const [file,setFile]=useState<File|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
-  const [training,setTraining]=useState<{available:boolean;phase?:string;epoch?:number;epochs?:number;completed_epochs?:number;epoch_cursor?:number;train_images_per_epoch?:number;gpu_name?:string;updated_local?:string;candidate_index?:number;candidate_total?:number}|null>(null);
-  async function load(){
-    fetch('/api/edgefire/config',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(setConfig).catch(()=>{});
-    fetch('/api/edgefire/training-status',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(setTraining).catch(()=>{});
-    const response=await fetch('/api/edgefire/jobs',{cache:'no-store'});
-    if(!response.ok)throw new Error('분석 기록을 가져올 수 없습니다. 서버 연결을 확인해 주세요.');
-    setJobs(await response.json());
-  }
-  useEffect(()=>{let alive=true;
-    fetch('/api/edgefire/config').then(async response=>{if(!response.ok)throw new Error('서버 연결을 확인해 주세요.');return response.json();}).then(value=>{if(alive)setConfig(value);}).catch(e=>{if(alive)setError(String(e.message));});
-    const refresh=()=>load().catch(e=>{if(alive)setError(String(e.message));});refresh();
-    const timer=setInterval(refresh,2500);return()=>{alive=false;clearInterval(timer);};
-  },[]);
-  async function upload(){if(!file)return;setBusy(true);setError('');
-    try{const body=new FormData();body.append('image',file);const response=await fetch('/api/edgefire/jobs',{method:'POST',body});const data=await response.json();if(!response.ok)throw new Error(typeof data.detail==='string'?data.detail:'업로드를 확인해 주세요.');setSelected(data.id);await load();}
-    catch(e){setError(e instanceof Error?e.message:'업로드 실패');}finally{setBusy(false);}}
-  async function retry(id:string){setBusy(true);try{const response=await fetch('/api/edgefire/jobs/'+id+'/retry',{method:'POST'});if(!response.ok)throw new Error('재시도 요청 실패');await load();}catch(e){setError(String(e));}finally{setBusy(false);}}
-  const active=jobs.find(job=>job.id===selected)||jobs[0];
-  return <main className="ef"><header><div><p className="sub">EDGE-FIRE / PERSONAL WORKSPACE</p><h1>산불 영상 AI · 저장공간 연동</h1><p className="sub">이미지 저장부터 분석 기록까지 한 화면에서 확인합니다.</p></div><span className="pill">연구 시제품</span></header>
-    {error&&<div className="error" role="alert">{error}</div>}
-    <div className="grid"><aside><section className="panel"><h2>프로젝트 연결</h2><p className="sub">프로젝트 ID</p><p className="id">{config?.project_id||'연결 대기'}</p><p className="sub">카메라 장치 ID</p><p className="id">{config?.node_id||'연결 대기'}</p><p className="sub">저장공간 ID</p><p className="id">{config?.storage_id||'연결 대기'}</p><p className="sub">{config?.ai_model_available?'시험용 모델 복사본 연결됨':'모델 연결 확인 중'} · {config?.worker_available?'저장소 워커 실행 중':'워커 연결 대기'}</p></section>
-    <section className="panel"><h2>이미지 분석</h2><p className="sub">JPEG · PNG · WEBP / 최대 10MiB</p><input type="file" accept="image/jpeg,image/png,image/webp" aria-label="분석할 이미지" onChange={event=>setFile(event.target.files?.[0]||null)}/><button disabled={!file||busy||!config} onClick={upload}>{busy?'저장 중…':'저장하고 분석하기'}</button><p className="sub" style={{marginTop:16}}>이미지와 분석 결과는 이 노트북의 C 저장소에 보관됩니다.</p></section>
-    <section className="panel"><h2>모델 학습</h2><p className="sub">{training?.available ? (training.train_images_per_epoch?`${training.gpu_name||'학습'} · ${training.epoch_cursor?.toLocaleString()||0} / ${training.train_images_per_epoch.toLocaleString()}장 · ${training.phase==='training'?'진행 중':'상태: '+training.phase}`:training.phase==='completed'?'학습 완료 · 성능 검토 대기':training.phase==='waiting_for_training'?`기존 학습 완료 대기 (${training.epoch||0}/${training.epochs||15})`:training.phase==='training_candidate'?`비교 ${training.candidate_index}/${training.candidate_total} · ${training.epoch||0}/${training.epochs||12} epoch`:training.phase==='evaluating_winner'?'선정 모델 시험 평가 중':['failed','interrupted','stopped','unknown'].includes(training.phase||'')?'학습 중단 또는 상태 확인 필요':`진행: ${training.epoch||0} / ${training.epochs||15} epoch`) : '별도 학습 상태 없음'}</p><p className="sub">현재 분석에는 학습 중 체크포인트의 고정 복사본을 사용합니다. 정식 성능 검증은 아직 완료되지 않았습니다.</p></section><p className="sub"><a href="/team-demo">공유팀 관제 화면 시연 보기</a></p></aside>
-    <section><div className="panel"><h2>분석 결과</h2>{!active?<div className="empty">아직 분석 기록이 없습니다.<br/>이미지를 업로드하면 결과가 여기에 표시됩니다.</div>:<><p className="sub">{statuses[active.status]||active.status} · {new Date(active.created*1000).toLocaleString('ko-KR')}</p><p className="id">{active.id}</p><div className="preview"><img src={'/api/edgefire/jobs/'+active.id+(active.status==='COMPLETED'?'/annotated':'/image')} alt={active.status==='COMPLETED'?'분석 영역이 표시된 이미지':'분석 원본'}/></div>
-    {active.status==='FAILED'&&<div className="error">분석에 실패했습니다. <button disabled={busy} onClick={()=>retry(active.id)}>다시 분석</button></div>}
-    {active.result&&<><div className="notice">{active.result.notice}<br/>탐지된 객체가 없어도 안전하다는 의미는 아닙니다.</div><p className="sub">모델: {active.result.model_id} · <a href={'/api/edgefire/jobs/'+active.id+'/result'} target="_blank" rel="noreferrer">저장된 결과 JSON</a></p><table><thead><tr><th>객체</th><th>모델 분류 점수</th></tr></thead><tbody>{active.result.detections.length?active.result.detections.map((item,index)=><tr key={index}><td>{labels[item.class_name]||item.class_name}</td><td>{(item.score*100).toFixed(1)}%</td></tr>):<tr><td colSpan={2}>현재 기준에서 탐지된 객체 없음</td></tr>}</tbody></table></>}
-    </>}</div><div className="panel"><h2>저장된 분석 기록</h2>{jobs.map(job=><button className="history" key={job.id} onClick={()=>setSelected(job.id)}>{statuses[job.status]||job.status} · {new Date(job.created*1000).toLocaleString('ko-KR')}<br/><small>{job.id}</small></button>)}</div></section></div></main>;
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import GasChart from "./GasChart";
+import { RISK_LEVELS, type RiskLevel } from "./riskLevels";
+
+const CesiumMap = dynamic(() => import("./CesiumMap"), { ssr: false });
+
+export default function Home() {
+  const mapRef = useRef<any>(null);
+
+  // 선택된 센서 및 실시간 관제 상태 관리
+  const [selectedSensorId, setSelectedSensorId] = useState<string>("GAS-Node-02");
+  const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [isThermal, setIsThermal] = useState<boolean>(false);
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [emergencyStatus, setEmergencyStatus] = useState<string>("● 시스템 상태: 정상");
+  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [actionPopup, setActionPopup] = useState<string | null>(null);
+  const [showDetectionCompare, setShowDetectionCompare] = useState(false);
+  // 센서별 위험 단계 (현재는 화면 테스트용 초기값)
+const [sensorRiskLevels] = useState<
+  Record<string, RiskLevel>
+>({
+  "WUI-A": 3,
+  "WUI-B": 1,
+  "GAS-Node-01": 1,
+  "GAS-Node-02": 4,
+});
+
+// 위험 단계별 배지 스타일
+const riskBadgeStyles: Record<RiskLevel, string> = {
+  1: "bg-green-900 text-green-300",
+  2: "bg-blue-900 text-blue-300",
+  3: "bg-yellow-900 text-yellow-300",
+  4: "bg-orange-900 text-orange-300",
+  5: "bg-red-900 text-red-300",
+};
+
+  const [storageJob, setStorageJob] = useState<any>(null);
+  const [storageConnected, setStorageConnected] = useState(false);
+  useEffect(() => {
+    let active = true;
+    async function refresh() {
+      try {
+        const response = await fetch('/api/edgefire/jobs', {cache: 'no-store'});
+        if (!response.ok) throw new Error('Storage unavailable');
+        const jobs = await response.json();
+        if (active) {
+          setStorageConnected(true);
+          setStorageJob(jobs.find((job: any) => job.status === 'COMPLETED') || null);
+        }
+      } catch { if (active) setStorageConnected(false); }
+    }
+    refresh();
+    const timer = setInterval(refresh, 2500);
+    return () => { active = false; clearInterval(timer); };
+  }, []);
+
+  const handleSensorClick = (sensorId: string) => {
+    setSelectedSensorId(sensorId);
+    if (mapRef.current) {
+      mapRef.current.flyToSensor(sensorId);
+    }
+    if (sensorId === "CAM-PTZ-01" && storageJob) {
+      const detections = storageJob.result?.detections || [];
+      setAlertMessage(detections.length
+        ? detections.map((d: any) => `${d.class_name}: ${(d.score * 100).toFixed(1)}%`).join(', ')
+        : '저장된 이미지에서 검출 결과가 없습니다.');
+      setShowAlertModal(true);
+    }
+  };
+
+  const handleEmergencyAction = (type: string) => {
+    let msg = "";
+    if (type === "119") msg = "🚨 [119 긴급 신고] 119 긴급 전파 시연 요청이 접수되었습니다. 실제 신고는 전송되지 않았습니다.";
+    if (type === "BROADCAST") msg = "📢 [마을 방송] 마을 방송 발령 시연 요청이 접수되었습니다. 실제 방송은 송출되지 않았습니다.";
+    if (type === "CBS") msg = "📱 [재난문자] 재난문자 및 알림톡 발송 시연 요청이 접수되었습니다. 실제 메시지는 발송되지 않았습니다.";
+
+    setLastAction(msg);
+    setEmergencyStatus("🚨 비상 경보 시연 중");
+    setActionPopup(msg);
+  };
+
+  return (
+    <div className="flex flex-col h-screen w-screen bg-gray-900 text-white p-2 gap-2 box-border relative">
+      {/* 비상 경보 시연 알림 팝업 */}
+{actionPopup && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="w-[420px] max-w-[90vw] rounded-xl border border-gray-600 bg-gray-800 p-6 shadow-2xl">
+
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500/15 text-green-400 text-xl">
+          ✓
+        </div>
+
+        <h2 className="text-lg font-semibold text-white">
+          비상 경보 시연 알림
+        </h2>
+      </div>
+
+      <p className="mb-6 text-sm leading-relaxed text-gray-300">
+        {actionPopup}
+      </p>
+
+      <div className="flex justify-end">
+        <button
+          onClick={() => setActionPopup(null)}
+          className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+        >
+          확인
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
+      {/* 1차·2차 감지 비교: 시연용 데이터 (실제 감지 이력 아님) */}
+      {showDetectionCompare && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={() => setShowDetectionCompare(false)}>
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="detection-compare-title"
+            className="w-full max-w-2xl rounded-xl border border-gray-600 bg-gray-900 p-5 shadow-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-gray-700 pb-3">
+              <div>
+                <h2 id="detection-compare-title" className="text-lg font-bold text-white">🔎 1차·2차 감지 비교</h2>
+                <p className="mt-1 text-xs text-gray-400">GAS-Node-02 · 시연용 예시 데이터 (실제 센서 수신 기록 아님)</p>
+              </div>
+              <button type="button" onClick={() => setShowDetectionCompare(false)} className="rounded px-2 py-1 text-gray-300 hover:bg-gray-700" aria-label="비교 창 닫기">✕</button>
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-lg border border-yellow-700/70 bg-gray-800 p-4">
+                <div className="flex items-center justify-between gap-2"><h3 className="font-semibold text-yellow-300">① 1차 감지</h3><span className="rounded bg-yellow-900 px-2 py-1 text-xs text-yellow-200">3단계 · 주의</span></div>
+                <p className="mt-2 text-xs text-gray-400">시연 시각 14:05</p>
+                <p className="mt-3 text-sm text-gray-200">CO <strong className="text-white">45 ppm</strong></p>
+                <p className="mt-1 text-sm text-gray-200">H₂ <strong className="text-white">20 ppm</strong></p>
+                <p className="mt-3 text-xs text-gray-400">가스 농도 상승 감지 (예시)</p>
+              </div>
+              <div className="rounded-lg border border-orange-600/70 bg-gray-800 p-4">
+                <div className="flex items-center justify-between gap-2"><h3 className="font-semibold text-orange-300">② 2차 감지</h3><span className="rounded bg-orange-900 px-2 py-1 text-xs text-orange-200">4단계 · 경계</span></div>
+                <p className="mt-2 text-xs text-gray-400">시연 시각 14:10</p>
+                <p className="mt-3 text-sm text-gray-200">CO <strong className="text-white">85 ppm</strong></p>
+                <p className="mt-1 text-sm text-gray-200">H₂ <strong className="text-white">38 ppm</strong></p>
+                <p className="mt-3 text-xs text-gray-400">추가 상승 확인 (예시)</p>
+              </div>
+            </div>
+            <div className="mt-3 rounded-lg border border-gray-700 bg-gray-800 p-4">
+              <h3 className="mb-3 text-sm font-semibold text-white">📈 1차 대비 2차 변화</h3>
+              <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                <div><p className="text-xs text-gray-400">경과 시간</p><p className="mt-1 font-bold">5분</p></div>
+                <div><p className="text-xs text-gray-400">CO 변화</p><p className="mt-1 font-bold text-orange-300">+40 ppm</p></div>
+                <div><p className="text-xs text-gray-400">H₂ 변화</p><p className="mt-1 font-bold text-orange-300">+18 ppm</p></div>
+                <div><p className="text-xs text-gray-400">위험 단계</p><p className="mt-1 font-bold text-orange-300">3 → 4단계</p></div>
+              </div>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-gray-400">※ 수치·시간·단계는 UI 검증을 위한 예시입니다. 실제 1차·2차 감지의 정의와 판정 기준, 수신 데이터 형식은 백엔드/AI 팀과 협의 후 연동해야 합니다.</p>
+            <div className="mt-4 flex justify-end"><button type="button" onClick={() => setShowDetectionCompare(false)} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-500">확인</button></div>
+          </section>
+        </div>
+      )}
+      {/* 🚨 AI 화재 확증 팝업 모달 */}
+      {showAlertModal && (
+        <div className="absolute inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-gray-900 border-2 border-red-500 rounded-xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 animate-pulse">
+            <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+              <h3 className="text-lg font-bold text-red-500 flex items-center gap-2">
+                AI 저장 이미지 분석 결과
+              </h3>
+              <button onClick={() => setShowAlertModal(false)} className="text-gray-400 hover:text-white">✕</button>
+            </div>
+            <p className="text-sm text-gray-200 leading-relaxed">{alertMessage}</p>
+            <div className="bg-gray-800 p-3 rounded border border-gray-700 text-xs text-orange-400">
+              • 모델: {storageJob?.result?.model_id || "대기 중"}<br />
+              • 학습 중 스냅샷의 연구용 결과입니다. 가스 수치와 위험 단계는 시연값입니다.
+            </div>
+            <div className="flex gap-2 justify-end mt-2">
+              <button onClick={() => setShowAlertModal(false)} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-xs">닫기</button>
+              <button onClick={() => { setShowAlertModal(false); handleEmergencyAction("BROADCAST"); }} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-xs font-bold text-white">즉시 비상 방송 발령</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 1. 상단바 (Header) */}
+      <header className="h-14 bg-gray-800 rounded-lg flex items-center justify-between px-6 border border-gray-700">
+        <h1 className="text-xl font-bold text-red-500">
+          🔥 [EDGE-FIRE] AIoT 산불 조기감지 통합 관제 시스템
+        </h1>
+        <div className="flex gap-4 text-sm text-gray-300 items-center">
+          <span>저장소: {storageConnected ? "연결됨" : "연결 대기"} · 센서 시연</span>
+          <span className={emergencyStatus.includes("정상") ? "text-green-400" : "text-red-400 font-bold animate-pulse"}>
+            {emergencyStatus}
+          </span>
+        </div>
+      </header>
+
+      {/* 2. 메인 관제 영역 */}
+      <div className="flex flex-1 gap-2 overflow-hidden">
+        {/* 좌측 패널: 위험 구역 & 센서 리스트 */}
+        <aside className="w-[20%] bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col gap-2">
+          <h2 className="font-bold text-lg border-b border-gray-700 pb-2">■ WUI 위험 구역 & 센서</h2>
+          <div className="text-xs text-gray-400 mb-1">💡 센서를 클릭하면 해당 위치로 이동합니다.</div>
+          <ul className="text-sm space-y-2 text-gray-300">
+            {([
+              { id: "WUI-A", name: "📍 WUI A구역" },
+              { id: "WUI-B", name: "📍 WUI B구역" },
+              { id: "GAS-Node-01", name: "🔥 [가스] GAS-Node-01" },
+              { id: "GAS-Node-02", name: "🔥 [가스] GAS-Node-02" },
+            ] as const).map(({ id, name }) => {
+              const level = sensorRiskLevels[id];
+              return (
+                <li
+                  key={id}
+                  onClick={() => handleSensorClick(id)}
+                  className={`p-2 rounded cursor-pointer transition flex items-center justify-between gap-2 ${
+                    selectedSensorId === id
+                      ? "bg-gray-600 border border-blue-400 font-bold"
+                      : "bg-gray-700 hover:bg-gray-600"
+                  }`}
+                >
+                  <span className="min-w-0 truncate">{name}</span>
+                  <span className={`shrink-0 text-xs px-1.5 py-0.5 rounded ${riskBadgeStyles[level]}`}>
+                    {level}단계 · {RISK_LEVELS[level].label}
+                  </span>
+                </li>
+              );
+            })}
+            <li
+              onClick={() => handleSensorClick("CAM-PTZ-01")}
+              className={`p-2 rounded cursor-pointer transition flex items-center justify-between ${
+                selectedSensorId === "CAM-PTZ-01"
+                  ? "bg-blue-900/60 border border-blue-500 font-bold"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+            >
+              <span>📷 [카메라] CAM-PTZ-01</span>
+              <span className="text-xs bg-blue-900 text-blue-300 px-1.5 py-0.5 rounded">ON</span>
+            </li>
+          </ul>
+
+          <button
+            type="button"
+            onClick={() => setShowDetectionCompare(true)}
+            className="mt-2 w-full rounded-lg border border-blue-500/60 bg-blue-900/40 px-3 py-2.5 text-sm font-semibold text-blue-100 transition hover:bg-blue-800/60"
+          >
+            🔎 1차·2차 감지 비교 보기
+          </button>
+
+          {lastAction && (
+            <div className="mt-auto p-2.5 bg-red-950/80 border border-red-700/80 rounded text-[11px] text-red-200">
+              <p className="font-bold text-red-400 mb-1">📢 최근 제어 이력</p>
+              <p className="line-clamp-2">{lastAction}</p>
+            </div>
+          )}
+        </aside>
+
+        {/* 중앙 패널: 3D GIS 관제 지도 */}
+        <main className="w-[55%] bg-gray-950 rounded-lg border border-gray-700 relative overflow-hidden">
+          <CesiumMap ref={mapRef} />
+        </main>
+
+        {/* 우측 패널: 실시간 차트 및 PTZ 비디오 */}
+        <aside className="w-[25%] flex flex-col gap-2">
+          <div className="h-1/2 bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
+            <h2 className="font-bold border-b border-gray-700 pb-2 text-sm text-gray-200 flex justify-between items-center">
+              <span>■ 실시간 가스 농도 차트</span>
+              <span className="text-xs text-yellow-400">({selectedSensorId})</span>
+            </h2>
+            <div className="flex-1 w-full h-full pt-3">
+              <GasChart selectedSensorId={selectedSensorId} />
+            </div>
+          </div>
+
+          <div className="h-1/2 bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
+            <h2 className="font-bold border-b border-gray-700 pb-2 text-sm text-gray-200 flex justify-between items-center">
+              <span>■ PTZ 카메라 영상 (CAM-PTZ-01)</span>
+              <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse">{storageJob ? "저장 분석" : "시연 영상"}</span>
+            </h2>
+            <div className="flex-1 w-full h-full pt-2 flex flex-col justify-center items-center relative overflow-hidden rounded bg-black mt-2 border border-gray-700">
+              {storageJob ? <img
+                src={`/api/edgefire/jobs/${storageJob.id}/annotated`}
+                alt="저장소 AI 분석 결과"
+                style={{ transform: `scale(${zoomLevel})` }}
+                className="w-full h-full object-contain transition-all duration-300"
+              /> : (<video
+                autoPlay loop muted playsInline
+                style={{ transform: `scale(${zoomLevel})` }}
+                className={`w-full h-full object-cover transition-all duration-300 ${isThermal ? "hue-rotate-180 invert brightness-125 contrast-200" : "opacity-80"}`}
+                src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4"
+              />)}
+              <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded backdrop-blur">
+                {storageJob ? "저장 이미지 · 연구용 | 표시 효과:" : "FOV: 45° | Tilt: -15° | Mode:"} {isThermal ? "🔥 IR Thermal" : "📷 Visible"} | Zoom: {zoomLevel}x
+              </div>
+              <div className="absolute bottom-2 right-2 bg-black/70 p-1.5 rounded-lg border border-gray-700 flex gap-1 backdrop-blur">
+                <button onClick={() => setZoomLevel((prev) => Math.min(prev + 0.5, 3))} className="bg-gray-700 text-[10px] px-2 py-1 rounded font-bold">🔍 +</button>
+                <button onClick={() => setZoomLevel((prev) => Math.max(prev - 0.5, 1))} className="bg-gray-700 text-[10px] px-2 py-1 rounded font-bold">🔍 -</button>
+                <button onClick={() => setIsThermal(!isThermal)} className={`text-[10px] px-2 py-1 rounded font-bold ${isThermal ? "bg-red-600 text-white" : "bg-gray-700"}`}>🔥 IR 열화상</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* 3. 하단 비상 경보 전파 제어반 */}
+      <footer className="h-16 bg-gray-800 rounded-lg flex items-center justify-around border border-gray-700 px-4">
+        <button onClick={() => handleEmergencyAction("119")} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg transition active:scale-95">🚨 119 긴급 전파</button>
+        <button onClick={() => handleEmergencyAction("BROADCAST")} className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 px-6 rounded-lg transition active:scale-95">📢 마을 방송 IP Relay 발령</button>
+        <button onClick={() => handleEmergencyAction("CBS")} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2.5 px-6 rounded-lg transition active:scale-95">📱 긴급재난문자 / 알림톡 발송</button>
+      </footer>
+    </div>
+  );
 }
