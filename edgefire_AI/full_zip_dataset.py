@@ -79,6 +79,20 @@ class FullZipDataset(Dataset):
     def __init__(self, active, paths, split, imgsz=512, augment=False, seed=42):
         self.paths, self.split, self.imgsz, self.augment = paths, split, imgsz, augment
         self.seed, self.epoch, self.handles = seed, 0, OrderedDict()
+        self.portable_hashes, self.verified_paths = {}, set()
+        portable = Path(active) / 'full_dataset.sqlite'
+        if portable.exists():
+            with readonly(portable) as db:
+                self.rows = [(i, paths[s], sha) for i, s, sha in db.execute(
+                    'SELECT id,shard,jpeg_sha FROM images WHERE keep=1 AND split=? ORDER BY id', (split,))]
+                self.portable_hashes = {paths[n]: sha for n, sha in db.execute('SELECT name,sha256 FROM shards')}
+        else:
+            self.rows = self.local_rows(active, paths, split)
+        self.format = Format(bbox_format='xywh', normalize=True, return_mask=True,
+                             mask_ratio=4, mask_overlap=True, batch_idx=True)
+
+    @staticmethod
+    def local_rows(active, paths, split):
         # Sequential scans avoid hundreds of thousands of random page reads into
         # the large similarity database. Only compact IDs and hashes stay in RAM.
         with readonly(Path(active) / 'reviewed_full_export_v1/admission.sqlite') as db:
@@ -86,12 +100,11 @@ class FullZipDataset(Dataset):
         with readonly(Path(active) / 'quality/quality.sqlite') as db:
             hashes = {i: sha for i, sha in db.execute('SELECT id,jpeg_sha FROM sketches') if i in allowed}
         with readonly(Path(active) / 'metadata/metadata.sqlite') as db:
-            self.rows = sorted((i, paths[s], hashes[i]) for i, s, fold in db.execute(
+            rows = sorted((i, paths[s], hashes[i]) for i, s, fold in db.execute(
                 'SELECT id,shard,split FROM images') if i in allowed and fold == split)
-        if len(self.rows) != len(allowed):
+        if len(rows) != len(allowed):
             raise ValueError('Admitted image missing from metadata or quality hashes')
-        self.format = Format(bbox_format='xywh', normalize=True, return_mask=True,
-                             mask_ratio=4, mask_overlap=True, batch_idx=True)
+        return rows
 
     def __len__(self):
         return len(self.rows)
@@ -108,6 +121,11 @@ class FullZipDataset(Dataset):
     def __getitem__(self, index):
         ident, path, expected = self.rows[index]
         if path not in self.handles:
+            if path in self.portable_hashes and path not in self.verified_paths:
+                with path.open('rb') as stream:
+                    require(hashlib.file_digest(stream, 'sha256').hexdigest() == self.portable_hashes[path],
+                            'Transferred ZIP hash differs: ' + path.name)
+                self.verified_paths.add(path)
             self.handles[path] = ZipFile(path)
             if len(self.handles) > 12:
                 self.handles.popitem(last=False)[1].close()

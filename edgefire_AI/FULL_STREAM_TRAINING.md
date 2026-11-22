@@ -46,8 +46,10 @@ shuffle seed와 RNG 상태를 복원한다. epoch 중간 저장을 다음 epoch�
 `config.json`, `data_policy.json`, `code_snapshot/`은 설정·데이터 식별자·사용 코드를 보존한다.
 코드 변경 후에는 원래 `code_snapshot/train_full_stream.py`로 재개한다.
 서로 다른 코드/데이터/학습 설정으로 기존 체크포인트를 무단 재개하지 못하도록 검사한다.
-현재 실행기는 CPU용이다. 코랩에서 이어 학습하려면 해당 데이터 접근 경로와 GPU 실행기를 별도 구성해야 한다.
-체크포인트만 코랩에 올린다고 E드라이브 데이터에 접근할 수 있는 것은 아니다.
+기존 CPU 실행은 시작 당시 `code_snapshot/` 코드로 계속 돌아간다.
+추가한 GPU 경로는 `--device cuda:0 --portable-data ...`로 실행한다.
+새 코드는 이전 CPU 체크포인트를 다른 코드·설정으로 자동 이식하지 않는다. 기존 실행은 원래 snapshot으로 재개하고,
+GPU 후보는 별도 실행 폴더에 만든다. 체크포인트만 코랩에 올린다고 E드라이브 데이터에 접근할 수 있는 것은 아니다.
 
 ## 품질 및 평가 관문
 
@@ -64,3 +66,39 @@ shuffle seed와 RNG 상태를 복원한다. epoch 중간 저장을 다음 epoch�
 검증: 제외 목록/분리 집합 적용, 변조 JPEG 거부, 결정적인 증강, optimizer·epoch 위치 복원 테스트.
 실제 YOLO 모델에서도 5단계 체크포인트에서 8단계까지 재개한 마지막 손실이 원래 실행과 일치했다.
 2장 검증 smoke test는 배선 확인용이며 모델 성능 수치로 보고하지 않는다.
+
+## 코랩 Pro / VS Code 연결 후 전체 데이터 이관
+
+2026-11-22 VS Code의 Google 공식 Colab 확장에서 Tesla T4, CUDA 사용 가능,
+GPU 메모리 14.56GiB, 코랩 임시 디스크 여유 235.58GiB를 실제 진단 셀로 확인했다.
+이 연결 확인은 전체 데이터의 GPU 학습 시작/완료를 의미하지 않는다.
+
+`export_full_portable.py`는 598,500장 전체의 ID·원래 split·제외 여부·JPEG 해시·ZIP 위치와
+600개 ZIP 해시를 1개 SQLite로 묶는다. 원래 제외 목록과 corpus의 의미 해시가 일치해야 완료된다.
+이미지를 복사하거나 새로 압축하지 않는다. 결과 DB 약 127MiB와 실제 이미지 약 222.43GiB는 별개다.
+
+```powershell
+py work/EDGEFIRE-personal/edgefire_AI/export_full_portable.py --workspace . --output outputs/full_portable_20261122
+```
+
+이관 폴더 구조는 다음과 같다. `local_transfer_sources.json`은 노트북에서 경로를 찾기 위한 파일이며 업로드에 필요 없다.
+
+```text
+MyDrive/EDGEFIRE/full_portable_20261122/
+  portable_manifest.json
+  full_dataset.sqlite
+  code/                         # 생성한 학습 코드와 고정된 검토 보고서
+  pretrained/yolo26n-seg.pt      # 등록 SHA와 대조한 일반 COCO 사전학습 파일
+  shards/                       # 기존 600개 ZIP을 이름 그대로 업로드
+```
+
+새 노트북은 `colab/EDGEFIRE_Full_GPU_Training.ipynb`이다.
+Drive 로그인은 사용자가 직접 수행한다. 모든 ZIP이 있는지 검사하고, 코랩 임시 디스크에 원형 그대로 복사해
+해시를 확인한 뒤 전체 440,207장 GPU 학습을 실행한다. 체크포인트는 Drive의 별도 `runs/` 폴더에 저장한다.
+Linux 실행 잠금은 VM 안에서만 적용되므로 다른 코랩 VM 두 개가 같은 Drive 실행 폴더에 동시에 쓰면 안 된다.
+공간이 부족하거나 ZIP이 누락되면 중단하며 소규모 데이터로 대체하지 않는다.
+임시 디스크는 런타임 종료 시 사라질 수 있으므로 원본 보관소로 사용하지 않는다.
+
+기본 GPU 후보는 512픽셀/배치8/초기3epoch이며, 아직 이 설정의 GPU 성능이나 학습 속도를 측정한 것은 아니다.
+GPU/코랩의 용량과 사용량 제한은 실제 실행 시 확인해야 한다. Colab Pro와 Google Drive 저장공간 구독은 별개다.
+추가 검증에는 휴대용 제외 목록 위·변조 거부와 복사된 ZIP SHA 거부 테스트가 포함된다.

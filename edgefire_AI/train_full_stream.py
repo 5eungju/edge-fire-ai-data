@@ -14,6 +14,7 @@ import shutil
 import signal
 import time
 import traceback
+import tempfile
 
 import numpy as np
 import torch
@@ -26,6 +27,7 @@ from ultralytics.utils import DEFAULT_CFG
 
 from full_zip_dataset import CLASSES, FullZipDataset, approve
 from training_policy import validate_generic_pretrained
+from export_full_portable import approve_portable
 
 
 def atomic_json(path, value):
@@ -54,6 +56,7 @@ def save_checkpoint(path, model, optimizer, epoch, cursor, step, config, identit
     state = dict(model=saved_model, optimizer=optimizer.state_dict(), epoch=epoch,
                  cursor=cursor, global_step=step, config=config, identity=identity,
                  torch_rng=torch.get_rng_state(), numpy_rng=np.random.get_state(), random_rng=random.getstate(),
+                 cuda_rng=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None,
                  version='8.4.216', date=time.strftime('%Y-%m-%dT%H:%M:%S'),
                  train_args=vars(model.args), full_stream_checkpoint=True)
     temp = path.with_suffix('.pt.tmp')
@@ -77,7 +80,7 @@ def validate(model, active, paths, split, config, run):
                                        names=CLASSES, channels=3)), encoding='utf8')
     validator = SegmentationValidator(dataloader=loader, save_dir=run / f'{split}_epoch_results',
         args=dict(data=str(spec), task='segment', split=split, imgsz=config['imgsz'], batch=config['batch'],
-                  device='cpu', workers=0, plots=False, save_json=False, save_txt=False, verbose=False))
+                  device=config.get('device', 'cpu'), workers=0, plots=False, save_json=False, save_txt=False, verbose=False))
     try:
         return {k: float(v) for k, v in validator(model=detached_model_copy(model).eval()).items()}
     finally:
@@ -87,6 +90,8 @@ def validate(model, active, paths, split, config, run):
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--workspace', type=Path, required=True)
+    parser.add_argument('--portable-data', type=Path)
+    parser.add_argument('--device', default='cpu', choices=['cpu', 'cuda:0'])
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--weights', default='E:/AI_Work/pretrained/yolo26n-seg.pt')
     parser.add_argument('--imgsz', type=int, default=512)
@@ -102,19 +107,31 @@ def main():
     run = args.run.resolve()
     run.mkdir(parents=True, exist_ok=True)
     # Keep a Windows file lock for the entire run, including validation.
-    import msvcrt
-    lock = (run / 'run.lock').open('a+b')
+    # On Linux keep the lock on the VM filesystem, not Drive FUSE. Different
+    # Colab VMs must use different persistent run directories.
+    lock_path = run / 'run.lock'
+    if os.name != 'nt':
+        lock_root = Path(tempfile.gettempdir()) / 'edgefire_training_locks'
+        lock_root.mkdir(exist_ok=True)
+        lock_path = lock_root / (hashlib.sha256(str(run).encode()).hexdigest() + '.lock')
+    lock = lock_path.open('a+b')
     if lock.tell() == 0:
         lock.write(b'0')
         lock.flush()
     lock.seek(0)
     try:
-        msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+        if os.name == 'nt':
+            import msvcrt
+            msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
     except OSError as exc:
         raise RuntimeError('Another process owns this run directory') from exc
     status_path = run / 'status.json'
     config = {k: getattr(args, k) for k in ('weights', 'imgsz', 'batch', 'threads', 'epochs', 'seed', 'lr', 'benchmark_steps')}
-    files = ['train_full_stream.py', 'full_zip_dataset.py', 'training_policy.py',
+    config['device'] = args.device
+    files = ['train_full_stream.py', 'full_zip_dataset.py', 'training_policy.py', 'export_full_portable.py',
              'generic_pretrained_manifest.json', 'reviewed_background_links_full_v1.json',
              'reports/full_preparation_quality_20261122.json']
     snapshot = run / 'code_snapshot'
@@ -130,10 +147,13 @@ def main():
     config['source_sha256'] = sources.hexdigest()
     assert args.imgsz % 32 == 0 and args.batch > 0 and args.epochs > 0
     torch.set_num_threads(args.threads)
+    if args.device != 'cpu' and not torch.cuda.is_available():
+        raise RuntimeError('CUDA requested but unavailable; no silent CPU fallback')
+    device = torch.device(args.device)
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
-    active, paths, identity = approve(args.workspace.resolve())
+    active, paths, identity = approve_portable(args.portable_data) if args.portable_data else approve(args.workspace.resolve())
     atomic_json(run / 'data_policy.json', dict(approved_for_this_loader=True, **identity,
                 note='Legacy V4 remains blocked. This identity requires the reviewed admission overlay.'))
     checkpoint = run / 'last.pt'
@@ -157,6 +177,7 @@ def main():
     model.args.epochs = args.epochs
     model.args.imgsz = args.imgsz
     model.names = dict(enumerate(CLASSES))
+    model.to(device)
     model.criterion = model.init_criterion()
     for _ in range(epoch):
         if hasattr(model.criterion, 'update'):
@@ -166,6 +187,8 @@ def main():
     if args.resume:
         optimizer.load_state_dict(state['optimizer'])
         torch.set_rng_state(state['torch_rng'])
+        if args.device != 'cpu' and state.get('cuda_rng') is not None:
+            torch.cuda.set_rng_state_all(state['cuda_rng'])
         np.random.set_state(state['numpy_rng'])
         random.setstate(state['random_rng'])
         del state
@@ -177,7 +200,7 @@ def main():
     run_images = 0
     base_status = dict(dataset_identity=identity['dataset_sha256'], dataset_scope='all_admitted_training_images',
                        train_images_per_epoch=len(dataset), validation_images=identity['counts']['val'],
-                       test_images=identity['counts']['test'], device='cpu', config=config,
+                       test_images=identity['counts']['test'], device=str(device), config=config,
                        benchmark_only=bool(args.benchmark_steps), model_promoted=False)
     def status(phase, **extra):
         elapsed = time.monotonic() - started
@@ -194,6 +217,7 @@ def main():
             while cursor < len(dataset):
                 indices = order[cursor:cursor + args.batch]
                 batch = dataset.collate_fn([dataset[i] for i in indices])
+                batch = {k: v.to(device) if torch.is_tensor(v) else v for k, v in batch.items()}
                 batch['img'] = batch['img'].float().div_(255)
                 optimizer.zero_grad(set_to_none=True)
                 progress = (epoch + cursor / len(dataset)) / args.epochs

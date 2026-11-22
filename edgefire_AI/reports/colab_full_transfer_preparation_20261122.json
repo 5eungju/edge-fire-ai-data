@@ -1,0 +1,31 @@
+{
+  "bytes": 59400376,
+  "sha256": "f64edce40d0c009e304d160746dcc30fc7a92f119f227e38ce464206e4464261",
+  "contains_images": false,
+  "index_images": 598500,
+  "admitted_train_images": 440207,
+  "crc_verified": true,
+  "gpu_runtime_verified": {
+    "model": "Tesla T4",
+    "cuda_available": true,
+    "torch": "2.14.1+cu130",
+    "vram_GiB": 14.56
+  },
+  "full_gpu_training_started": false,
+  "index_sha256": "4b0d52a1606d79f79f76e1040b44ed05769bf21f97f7099f1153e8adad635cb5",
+  "dataset_identity": "83f668bb0abb210c65cc537ce8a71e0a94725d363f5044d1f320fa3e2ad09af5",
+  "data_zip_count": 600,
+  "data_zip_bytes": 238835390510,
+  "full_portable_train_count_verified": 440207,
+  "checks": [
+    "admission semantic digest matches full reviewed mask",
+    "corpus digest matches original 600 verified ZIPs",
+    "actual two-image batch loaded via portable index",
+    "quarantine, ZIP tamper, JPEG tamper and optimizer resume tests passed"
+  ],
+  "limitations": [
+    "GPU runtime connection verified; full-data GPU training not started",
+    "No model metrics or service promotion from this transfer preparation",
+    "Image ZIP upload and Drive storage availability not yet verified"
+  ]
+}
