@@ -15,6 +15,8 @@ import signal
 import time
 import traceback
 import tempfile
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import torch
@@ -28,6 +30,13 @@ from ultralytics.utils import DEFAULT_CFG
 from full_zip_dataset import CLASSES, FullZipDataset, approve
 from training_policy import validate_generic_pretrained
 from export_full_portable import approve_portable
+
+
+def make_dataset(active, paths, split, imgsz, augment=False, seed=42, connection=None):
+    if connection is not None:
+        from colab_stream_client import RemoteZipDataset
+        return RemoteZipDataset(active, paths, split, imgsz, augment, seed, connection)
+    return FullZipDataset(active, paths, split, imgsz, augment, seed)
 
 
 def atomic_json(path, value):
@@ -67,8 +76,8 @@ def save_checkpoint(path, model, optimizer, epoch, cursor, step, config, identit
     os.replace(temp, path)
 
 
-def validate(model, active, paths, split, config, run):
-    dataset = FullZipDataset(active, paths, split, config['imgsz'])
+def validate(model, active, paths, split, config, run, connection=None):
+    dataset = make_dataset(active, paths, split, config['imgsz'], connection=connection)
     loader = DataLoader(dataset, batch_size=config['batch'], num_workers=0, collate_fn=dataset.collate_fn)
     # Existing marker directories satisfy the library's config check; the supplied
     # loader is the sole image source and enforces the admission overlay.
@@ -92,6 +101,8 @@ def main():
     parser.add_argument('--workspace', type=Path, required=True)
     parser.add_argument('--portable-data', type=Path)
     parser.add_argument('--device', default='cpu', choices=['cpu', 'cuda:0'])
+    parser.add_argument('--bridge-config', type=Path)
+    parser.add_argument('--fork-checkpoint', type=Path, help='Explicit, audited continuation into a new run after a code/augmentation change')
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--weights', default='E:/AI_Work/pretrained/yolo26n-seg.pt')
     parser.add_argument('--imgsz', type=int, default=512)
@@ -131,7 +142,8 @@ def main():
     status_path = run / 'status.json'
     config = {k: getattr(args, k) for k in ('weights', 'imgsz', 'batch', 'threads', 'epochs', 'seed', 'lr', 'benchmark_steps')}
     config['device'] = args.device
-    files = ['train_full_stream.py', 'full_zip_dataset.py', 'training_policy.py', 'export_full_portable.py',
+    config['transport'] = 'authenticated_laptop_bridge' if args.bridge_config else 'local_zip'
+    files = ['train_full_stream.py', 'full_zip_dataset.py', 'training_policy.py', 'export_full_portable.py', 'colab_stream_client.py',
              'generic_pretrained_manifest.json', 'reviewed_background_links_full_v1.json',
              'reports/full_preparation_quality_20261122.json']
     snapshot = run / 'code_snapshot'
@@ -153,13 +165,35 @@ def main():
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
-    active, paths, identity = approve_portable(args.portable_data) if args.portable_data else approve(args.workspace.resolve())
+    connection = None
+    if args.bridge_config:
+        from colab_stream_client import BridgeConnection, approve_remote
+        connection = BridgeConnection(args.bridge_config)
+        active, paths, identity = approve_remote(args.portable_data, connection)
+        config['transport_preprocess'] = connection.preprocess
+    else:
+        active, paths, identity = approve_portable(args.portable_data) if args.portable_data else approve(args.workspace.resolve())
     atomic_json(run / 'data_policy.json', dict(approved_for_this_loader=True, **identity,
                 note='Legacy V4 remains blocked. This identity requires the reviewed admission overlay.'))
     checkpoint = run / 'last.pt'
     if not args.resume and checkpoint.exists():
         raise ValueError('Existing run: use --resume or another output directory')
-    if not args.resume:
+    if args.fork_checkpoint:
+        if args.resume:
+            raise ValueError('Use either resume or explicit fork, never both')
+        with args.fork_checkpoint.open('rb') as stream:
+            config['parent_checkpoint_sha256'] = hashlib.file_digest(stream, 'sha256').hexdigest()
+        state = torch.load(args.fork_checkpoint, map_location='cpu', weights_only=False)
+        if not state.get('full_stream_checkpoint') or state['identity'] != identity:
+            raise ValueError('Fork requires a checkpoint from the identical reviewed full corpus')
+        for key in ('imgsz', 'batch', 'epochs', 'seed', 'lr'):
+            if state['config'][key] != config[key]:
+                raise ValueError('Fork optimizer/sampler setting changed: ' + key)
+        model = state['model'].float()
+        epoch, cursor, step = state['epoch'], state['cursor'], state['global_step']
+        config['parent_source_sha256'] = state['config']['source_sha256']
+        atomic_json(run / 'config.json', config)
+    elif not args.resume:
         validate_generic_pretrained(args.weights, Path(__file__).with_name('generic_pretrained_manifest.json'))
         pretrained = YOLO(args.weights).model
         model = SegmentationModel(cfg=pretrained.yaml, ch=3, nc=6, verbose=False)
@@ -169,6 +203,9 @@ def main():
         atomic_json(run / 'config.json', config)
     else:
         state = torch.load(checkpoint, map_location='cpu', weights_only=False)
+        for key in ('parent_checkpoint_sha256', 'parent_source_sha256'):
+            if key in state['config']:
+                config[key] = state['config'][key]
         if state['identity'] != identity or state['config'] != config:
             raise ValueError('Resume configuration or reviewed dataset identity differs')
         model = state['model'].float()
@@ -184,7 +221,7 @@ def main():
             model.criterion.update()
     model.train()
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=.0005)
-    if args.resume:
+    if args.resume or args.fork_checkpoint:
         optimizer.load_state_dict(state['optimizer'])
         torch.set_rng_state(state['torch_rng'])
         if args.device != 'cpu' and state.get('cuda_rng') is not None:
@@ -192,30 +229,47 @@ def main():
         np.random.set_state(state['numpy_rng'])
         random.setstate(state['random_rng'])
         del state
-    dataset = FullZipDataset(active, paths, 'train', args.imgsz, augment=True, seed=args.seed)
+    dataset = make_dataset(active, paths, 'train', args.imgsz, augment=True, seed=args.seed, connection=connection)
     assert len(dataset) == identity['counts']['train']
     stop = [False]
     signal.signal(signal.SIGINT, lambda *_: stop.__setitem__(0, True))
     started = last_save = time.monotonic()
     run_images = 0
+    last_status_sync = 0
     base_status = dict(dataset_identity=identity['dataset_sha256'], dataset_scope='all_admitted_training_images',
                        train_images_per_epoch=len(dataset), validation_images=identity['counts']['val'],
                        test_images=identity['counts']['test'], device=str(device), config=config,
                        benchmark_only=bool(args.benchmark_steps), model_promoted=False)
+    base_status['gpu_name'] = torch.cuda.get_device_name(device) if device.type == 'cuda' else None
     def status(phase, **extra):
+        nonlocal last_status_sync
         elapsed = time.monotonic() - started
         rate = run_images / elapsed if elapsed else 0
         atomic_json(status_path, dict(**base_status, phase=phase, pid=os.getpid(), epoch_index=epoch,
                     epoch_cursor=cursor, global_step=step, run_images=run_images, elapsed_seconds=elapsed,
                     images_per_second=rate, estimated_epoch_hours=len(dataset) / rate / 3600 if rate else None,
-                    updated_local=time.strftime('%Y-%m-%d %H:%M:%S'), **extra))
+                    updated_local=datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'), **extra))
+        if connection is not None and (time.monotonic() - last_status_sync >= 30 or phase != 'training'):
+            connection.sync(status_path)
+            if connection.get('/control').json().get('stop'):
+                stop[0] = True
+            last_status_sync = time.monotonic()
+    def persist_checkpoint():
+        save_checkpoint(checkpoint, model, optimizer, epoch, cursor, step, config, identity)
+        if connection is not None:
+            connection.sync(checkpoint)
     try:
+        if connection is not None:
+            connection.sync(run / 'config.json')
+            connection.sync(run / 'data_policy.json')
         status('starting')
         while epoch < args.epochs:
             dataset.epoch = epoch
             order = torch.randperm(len(dataset), generator=torch.Generator().manual_seed(args.seed + epoch)).tolist()
             while cursor < len(dataset):
                 indices = order[cursor:cursor + args.batch]
+                if hasattr(dataset, 'prefetch'):
+                    dataset.prefetch(indices)
                 batch = dataset.collate_fn([dataset[i] for i in indices])
                 batch = {k: v.to(device) if torch.is_tensor(v) else v for k, v in batch.items()}
                 batch['img'] = batch['img'].float().div_(255)
@@ -235,28 +289,30 @@ def main():
                 run_images += len(indices)
                 step += 1
                 status('benchmarking' if args.benchmark_steps else 'training', last_loss=float(loss.detach()), learning_rate=lr)
-                if time.monotonic() - last_save >= 120 or step == 5:
-                    save_checkpoint(checkpoint, model, optimizer, epoch, cursor, step, config, identity)
+                if time.monotonic() - last_save >= 120 or run_images == args.batch * 5:
+                    persist_checkpoint()
                     last_save = time.monotonic()
                 if args.benchmark_steps and step >= args.benchmark_steps:
                     status('benchmark_completed', last_loss=float(loss.detach()))
                     return
                 if stop[0] or (run / 'STOP').exists():
-                    save_checkpoint(checkpoint, model, optimizer, epoch, cursor, step, config, identity)
+                    persist_checkpoint()
                     status('paused_with_checkpoint')
                     return
             # Training epoch is durable before starting the complete validation fold.
-            save_checkpoint(checkpoint, model, optimizer, epoch, cursor, step, config, identity)
+            persist_checkpoint()
             status('validating_full_holdout')
-            metrics = validate(model, active, paths, 'val', config, run)
+            metrics = validate(model, active, paths, 'val', config, run, connection)
             atomic_json(run / f'validation_epoch_{epoch + 1}.json', metrics)
+            if connection is not None:
+                connection.sync(run / f'validation_epoch_{epoch + 1}.json')
             # Test is deliberately not used for checkpoint/model selection.
             epoch += 1
             cursor = 0
             if hasattr(model.criterion, 'update'):
                 model.criterion.update()
             model.train()
-            save_checkpoint(checkpoint, model, optimizer, epoch, cursor, step, config, identity)
+            persist_checkpoint()
         status('training_and_validation_completed_test_not_evaluated')
     except Exception as exc:
         status('failed_previous_checkpoint_preserved', error=repr(exc), traceback=traceback.format_exc())

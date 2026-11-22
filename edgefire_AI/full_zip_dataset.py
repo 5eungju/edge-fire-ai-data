@@ -118,7 +118,7 @@ class FullZipDataset(Dataset):
     def virtual_file(self, ident):
         return str(Path.cwd() / '__zip_stream_virtual__' / self.split / f'{ident}.jpg')
 
-    def __getitem__(self, index):
+    def read_sample(self, index):
         ident, path, expected = self.rows[index]
         if path not in self.handles:
             if path in self.portable_hashes and path not in self.verified_paths:
@@ -134,11 +134,15 @@ class FullZipDataset(Dataset):
         image_bytes = archive.read(f'images/{self.split}/{ident}.jpg')
         if hashlib.sha256(image_bytes).hexdigest() != expected:
             raise ValueError('JPEG changed after review: ' + ident)
+        return ident, image_bytes, archive.read(f'labels/{self.split}/{ident}.txt').decode()
+
+    def __getitem__(self, index):
+        ident, image_bytes, label_text = self.read_sample(index)
         image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
         if image is None:
             raise ValueError('Unreadable JPEG: ' + ident)
         classes, segments = [], []
-        for line in archive.read(f'labels/{self.split}/{ident}.txt').decode().splitlines():
+        for line in label_text.splitlines():
             values = np.asarray(line.split(), dtype=np.float32)
             if len(values) < 7 or len(values) % 2 != 1 or not np.isfinite(values).all():
                 raise ValueError('Invalid polygon: ' + ident)

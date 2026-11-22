@@ -42,7 +42,7 @@ def verify_index(db, report):
     return counts
 
 
-def approve_portable(root, shard_roots=None):
+def approve_index(root):
     root = Path(root).resolve()
     manifest = json.loads((root / 'portable_manifest.json').read_text('utf8'))
     source = Path(__file__).parent
@@ -61,6 +61,11 @@ def approve_portable(root, shard_roots=None):
     identity['dataset_sha256'] = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
     identity['counts'] = counts
     require(identity == manifest['identity'], 'Portable dataset identity differs')
+    return root, identity, shards
+
+
+def approve_portable(root, shard_roots=None):
+    root, identity, shards = approve_index(root)
     paths = {}
     for folder in shard_roots or [root / 'shards']:
         for path in Path(folder).rglob('*.zip'):
@@ -104,7 +109,7 @@ def export(workspace, destination):
     finally:
         db.close()
     os.replace(temporary, target)
-    files = ['full_zip_dataset.py', 'train_full_stream.py', 'training_policy.py', 'export_full_portable.py',
+    files = ['full_zip_dataset.py', 'train_full_stream.py', 'training_policy.py', 'export_full_portable.py', 'colab_stream_client.py',
              'generic_pretrained_manifest.json', 'reviewed_background_links_full_v1.json',
              'reports/full_preparation_quality_20261122.json']
     for name in files:

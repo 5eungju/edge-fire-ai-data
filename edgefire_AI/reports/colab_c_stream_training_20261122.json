@@ -1,0 +1,45 @@
+{
+  "updated_KST": "2026-11-22T10:53:19.844448+09:00",
+  "execution": "Colab Tesla T4 CUDA; authenticated laptop stream; checkpoints stored on C:",
+  "dataset_identity": "83f668bb0abb210c65cc537ce8a71e0a94725d363f5044d1f320fa3e2ad09af5",
+  "counts": {
+    "train": 440207,
+    "val": 79218,
+    "test_reserved": 54826
+  },
+  "gpu": {
+    "phase": "training",
+    "device": "cuda:0",
+    "gpu_name": "Tesla T4",
+    "epoch_cursor": 2120,
+    "global_step": 265,
+    "run_images": 1792,
+    "images_per_second": 5.160975293750118,
+    "estimated_epoch_hours": 23.69314233499656,
+    "updated_local": "2026-11-22 10:53:02"
+  },
+  "cpu_backup": {
+    "phase": "paused_with_checkpoint",
+    "epoch_cursor": 22178,
+    "global_step": 11089,
+    "updated_local": "2026-11-22 10:49:42"
+  },
+  "preprocess": {
+    "train": "resize_long_side_512_jpeg95_444_v1",
+    "val": "original"
+  },
+  "parent_checkpoint_sha256": "65620fcd4069211082d2e46574dfb91b6805792e377e6eb32a6b499d6b0517e1",
+  "bridge_code_sha256": "8091918f54bff0ee756967eca8eb0d4a888166fe14064d233d467a4324a0d270",
+  "full_image_zip_transfer": false,
+  "google_drive_used": false,
+  "original_zip_writes": false,
+  "full_epoch_completed": false,
+  "full_validation_completed": false,
+  "model_promoted": false,
+  "limitations": [
+    "Throughput and remaining time estimates are early measurements including WAN streaming and periodic C checkpoint uploads.",
+    "Train transport resizes and reencodes JPEG95 4:4:4; validation remains original JPEG.",
+    "Temporary tunnel and Colab runtime require reconnection if interrupted.",
+    "CPU and GPU runs are distinct experiments; their processed image counts must not be added."
+  ]
+}
