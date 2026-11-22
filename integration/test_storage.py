@@ -19,9 +19,8 @@ class StorageContract(unittest.TestCase):
         self.assertEqual(a,b);self.assertTrue(a['project_id'].startswith('PRJ_'))
     def test_upload_persistence_and_path_safety(self):
         stream=io.BytesIO();Image.new('RGB',(24,24),'red').save(stream,format='PNG');raw=stream.getvalue()
-        with patch('storage_api.process_job'):
-            response=self.client.post('/api/v1/storage/jobs',headers=self.headers,files={'image':('../../outside.png',raw,'image/png')})
-        self.assertEqual(response.status_code,202,response.text);job=response.json()
+        response=self.client.post('/api/v1/storage/jobs',headers=self.headers,files={'image':('../../outside.png',raw,'image/png')})
+        self.assertEqual(response.status_code,202,response.text);job=response.json();self.assertEqual(job['status'],'PENDING')
         image=self.client.get('/api/v1/storage/jobs/'+job['id']+'/image',headers=self.headers)
         self.assertEqual(image.content,raw)
         self.assertEqual(self.client.post('/api/v1/storage/jobs/'+job['id']+'/retry',headers=self.headers).status_code,409)

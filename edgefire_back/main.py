@@ -5,10 +5,10 @@ from typing import List, Optional
 import time, json
 import uuid, httpx, os
 from fastapi import Depends
-from storage_api import router as storage_router, authorized, db, AI_URL
+from storage_api import router as storage_router, authorized, db
 
 app = FastAPI(title="EDGE-FIRE Backend API", version="1.0.0")
-app.add_middleware(CORSMiddleware, allow_origins=["http://127.0.0.1:3100", "http://localhost:3100"], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-API-Key"])
+app.add_middleware(CORSMiddleware, allow_origins=[os.environ.get("FRONTEND_BASE_URL", "http://127.0.0.1:3200"), os.environ.get("FRONTEND_BASE_URL", "http://127.0.0.1:3200").replace("127.0.0.1", "localhost")], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-API-Key"])
 app.include_router(storage_router)
 
 class ConnectionManager:
@@ -48,13 +48,7 @@ def read_root():
 @app.post("/api/v1/telemetry/multimodal", status_code=status.HTTP_202_ACCEPTED, dependencies=[Depends(authorized)])
 async def ingest_telemetry(payload: TelemetryRequest, background_tasks: BackgroundTasks):
     packet_data = payload.model_dump(exclude_none=True)
-    try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            response = await client.post(AI_URL+'/api/v1/ai/assess',json=packet_data,headers={'X-API-Key':os.environ['LOCAL_API_TOKEN']})
-        response.raise_for_status()
-        assessment=response.json()
-    except Exception:
-        assessment={'status':'AI_UNAVAILABLE','risk_level':None,'operational_use':False}
+    assessment={'status':'NOT_EVALUATED','risk_level':None,'operational_use':False,'notice':'환경·가스 관측은 저장만 합니다. 이미지 분석은 별도 저장소 작업으로 실행합니다.'}
     event_id='EVT_'+uuid.uuid4().hex
     with db() as con:
         con.execute('INSERT INTO telemetry VALUES(?,?,?,?)',(event_id,time.time(),json.dumps(packet_data),json.dumps(assessment)))

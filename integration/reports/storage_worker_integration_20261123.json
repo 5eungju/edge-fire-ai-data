@@ -1,0 +1,36 @@
+{
+  "job_id": "JOB_2eb9f506f09d41a08bcb5a05428a66df",
+  "status": "COMPLETED",
+  "detections": 1,
+  "model_id": "training-snapshot-06a79486d923",
+  "model_sha256": "06a79486d923813d90451c5891620d871c6e84a62b9393165406b5299ac486c1",
+  "input_sha256": "efe87a537a46118c2544d70d24756019ac64b510c69a4a0e862fe120047b78e2",
+  "image_size": [
+    1280,
+    720
+  ],
+  "result_path": "results/JOB_2eb9f506f09d41a08bcb5a05428a66df/b92d8162535949f7b62b09b8ca5ee64a/result.json",
+  "annotated_path": "results/JOB_2eb9f506f09d41a08bcb5a05428a66df/b92d8162535949f7b62b09b8ca5ee64a/annotated.jpg",
+  "checks": [
+    "frontend POST origin check",
+    "frontend proxy upload",
+    "SQLite pending job",
+    "independent model worker",
+    "C JSON/image artifacts",
+    "frontend result/image fetch",
+    "completed retry rejected"
+  ],
+  "operational_use": false,
+  "validation": "frontend proxy + real immutable checkpoint inference + C storage, not model accuracy evaluation",
+  "queue_tests_passed": 5,
+  "storage_contract_tests_passed": 4,
+  "frontend_production_build": "passed",
+  "browser_visual_check": "not performed",
+  "services": {
+    "frontend": "http://127.0.0.1:3200",
+    "backend": "http://127.0.0.1:8200",
+    "worker": "independent local process"
+  },
+  "backend_ai_http_call": false,
+  "shared_team_repository_modified": false
+}

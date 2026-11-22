@@ -1,3 +1,5 @@
+현재 개인 스토리지 워커 연동은 ../integration/STORAGE_WORKER.md를 따릅니다. 아래 AI HTTP 계약은 이전 경로 참고 자료입니다.
+
 개인 복사본 실행은 ../integration/README.md를 우선 확인하세요. 아래는 기존 AI 계약과 팀 연동 참고 자료입니다.
 
 # 백엔드·프론트 담당자 연동 안내
