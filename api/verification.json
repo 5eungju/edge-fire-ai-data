@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "health 200",
+    "full input 200; class scores sum to 1",
+    "missing optional inputs accepted and listed",
+    "invalid input rejected with 422",
+    "invalid input rejected with 422",
+    "invalid input rejected with 422",
+    "invalid input rejected with 422",
+    "OpenAPI 200"
+  ]
+}
