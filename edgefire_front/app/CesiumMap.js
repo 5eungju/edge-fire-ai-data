@@ -33,11 +33,12 @@ export const MOCK_SENSORS = [
   },
 ];
 
-const CesiumMap = forwardRef((props, ref) => {
+const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props, ref) => {
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
+  const [forecastMetadata, setForecastMetadata] = useState(null);
 
   // 부모 컴포넌트(page.tsx)에서 실시간 백엔드 데이터에 맞춰 시점 이동 및 마커 바인딩
   useImperativeHandle(ref, () => ({
@@ -114,12 +115,27 @@ const CesiumMap = forwardRef((props, ref) => {
 
       viewerRef.current = viewer;
 
+      if (props.enableForecast) {
+        fetch('/api/edgefire/forecast', {cache: 'no-store'})
+          .then(response => { if (!response.ok) throw new Error('Forecast unavailable'); return response.json(); })
+          .then(async data => {
+            if (viewer.isDestroyed()) return;
+            const layer = await Cesium.GeoJsonDataSource.load(data, {
+              clampToGround: true, stroke: Cesium.Color.ORANGE,
+              fill: Cesium.Color.ORANGE.withAlpha(0.15), strokeWidth: 1,
+            });
+            if (viewer.isDestroyed()) return;
+            viewer.dataSources.add(layer);
+            setForecastMetadata(data.metadata);
+          }).catch(() => {});
+      }
+
       // 카메라 기본 위치 설정
       viewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(127.7669, 37.8853, 18000),
+        destination: Cesium.Rectangle.fromDegrees(125.8, 36.8, 129.6, 38.7),
         orientation: {
           heading: Cesium.Math.toRadians(0),
-          pitch: Cesium.Math.toRadians(-45),
+          pitch: Cesium.Math.toRadians(-90),
           roll: 0,
         },
       });
@@ -173,10 +189,15 @@ const CesiumMap = forwardRef((props, ref) => {
         }
       };
     }
-  }, [loaded]);
+  }, [loaded, props.enableForecast]);
 
   return (
     <div className="w-full h-full relative">
+      {forecastMetadata && <div className="absolute top-2 left-2 z-10 bg-black/80 text-white text-[10px] p-2 rounded max-w-[90%]">
+        확산 추정 · 입력 조건 기준 · 미검증<br />
+        {forecastMetadata.input_time} · ERA5 {forecastMetadata.wind_ms}m/s · 풍향 {forecastMetadata.wind_from_deg}°<br />
+        수도권·강원도 · 춘천 가정 발화점 · 평지·균일 연료 · 10/20/30분
+      </div>}
       {!loaded && (
         <div className="flex items-center justify-center h-full text-gray-400">
           🌍 3D GIS 관제 지도 및 센서 데이터 로딩 중...

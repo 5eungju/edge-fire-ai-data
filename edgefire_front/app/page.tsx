@@ -262,7 +262,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
 
         {/* 중앙 패널: 3D GIS 관제 지도 */}
         <main className="w-[55%] bg-gray-950 rounded-lg border border-gray-700 relative overflow-hidden">
-          <CesiumMap ref={mapRef} />
+          <CesiumMap enableForecast={true} ref={mapRef} />
         </main>
 
         {/* 우측 패널: 실시간 차트 및 PTZ 비디오 */}

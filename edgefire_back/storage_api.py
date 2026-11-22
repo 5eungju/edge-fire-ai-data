@@ -31,6 +31,15 @@ def authorized(x_api_key: str | None = Header(default=None)):
 router = APIRouter(prefix='/api/v1/storage', dependencies=[Depends(authorized)])
 
 
+@router.get('/forecast')
+def forecast():
+    path = Path(__file__).resolve().parents[3] / 'outputs/fire_forecast_202512/spread_estimate.geojson'
+    if not path.is_file():
+        raise HTTPException(404, '확산 추정 결과가 없습니다.')
+    return FileResponse(path, media_type='application/geo+json',
+                        headers={'Cache-Control': 'no-store'})
+
+
 @router.get('/config')
 def config():
     with db() as con:
