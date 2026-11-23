@@ -33,7 +33,9 @@ export const MOCK_SENSORS = [
   },
 ];
 
-const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props, ref) => {
+const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean, onRegionChange?: (id: string) => void }} */ props, ref) => {
+  const regionChangeRef = useRef(props.onRegionChange);
+  regionChangeRef.current = props.onRegionChange;
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
@@ -98,6 +100,7 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
 
   function chooseRegion(id) {
     regionRef.current=id; setRegionId(id); pointRef.current=null;
+    regionChangeRef.current?.(id);
     pickingRef.current=false;setPickingPoint(false);setSelectedSensor(null);
     calculateRef.current?.({region:id,input_time:timeRef.current});
   }
@@ -249,6 +252,7 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
             setForecastError('수도권·강원도 범위 안에서 선택해 주세요.');return;
           }
           pointRef.current={latitude,longitude};regionRef.current='map';setRegionId('map');
+          regionChangeRef.current?.('map');
           pickingRef.current=false;setPickingPoint(false);setSelectedSensor(null);
           calculateRef.current?.({region:'map',latitude,longitude,input_time:timeRef.current});return;
         }

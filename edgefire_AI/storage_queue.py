@@ -29,7 +29,7 @@ class StorageQueue:
                 if statement.strip():
                     db.execute(statement)
             columns = {r['name'] for r in db.execute('PRAGMA table_info(jobs)')}
-            for name, spec in [('attempts', 'INTEGER NOT NULL DEFAULT 0'), ('claim_token', 'TEXT'),
+            for name, spec in [('region_id', 'TEXT'), ('attempts', 'INTEGER NOT NULL DEFAULT 0'), ('claim_token', 'TEXT'),
                                ('lease_until', 'REAL'), ('updated', 'REAL'), ('result_path', 'TEXT'), ('annotated_path', 'TEXT')]:
                 if name not in columns:
                     db.execute(f'ALTER TABLE jobs ADD COLUMN {name} {spec}')
@@ -70,14 +70,14 @@ class StorageQueue:
     def atomic_json(self, relative, content):
         self.atomic_bytes(relative, json.dumps(content, ensure_ascii=False, allow_nan=False, indent=2).encode('utf8'))
 
-    def enqueue(self, raw, mime):
+    def enqueue(self, raw, mime, region_id=None):
         object_id, job_id = uuid.uuid4().hex, 'JOB_' + uuid.uuid4().hex
         self.atomic_bytes('objects/' + object_id, raw)
         now = time.time()
         with self.db() as db:
             node = db.execute("SELECT value FROM settings WHERE key='node_id'").fetchone()[0]
-            db.execute('INSERT INTO jobs(id,node_id,created,status,object_id,mime,sha256,updated) VALUES(?,?,?,?,?,?,?,?)',
-                       (job_id, node, now, 'PENDING', object_id, mime, hashlib.sha256(raw).hexdigest(), now))
+            db.execute('INSERT INTO jobs(id,node_id,created,status,object_id,mime,sha256,updated,region_id) VALUES(?,?,?,?,?,?,?,?,?)',
+                       (job_id, node, now, 'PENDING', object_id, mime, hashlib.sha256(raw).hexdigest(), now, region_id))
         return self.get(job_id)
 
     def get(self, job_id):

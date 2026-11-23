@@ -8,7 +8,7 @@ import sys
 import time
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, File, Header, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from PIL import Image, UnidentifiedImageError
 import psutil
@@ -143,10 +143,20 @@ def config():
                       ai_model_available=Path(os.environ.get('VISION_MODEL_PATH', '__missing__')).is_file())
 
 
+PHOTO_REGIONS = {'seoul','incheon','suwon','chuncheon','wonju','gangneung'}
+
+
 @router.get('/jobs')
-def jobs():
+def jobs(region: str | None = None):
+    if region is not None and region not in PHOTO_REGIONS | {'unassigned'}:
+        raise HTTPException(422, '지원하지 않는 사진 지역입니다.')
     with db() as con:
-        rows = con.execute('SELECT * FROM jobs ORDER BY created DESC LIMIT 100').fetchall()
+        if region == 'unassigned':
+            rows = con.execute('SELECT * FROM jobs WHERE region_id IS NULL ORDER BY created DESC,id DESC LIMIT 100').fetchall()
+        elif region:
+            rows = con.execute('SELECT * FROM jobs WHERE region_id=? ORDER BY created DESC,id DESC LIMIT 100',(region,)).fetchall()
+        else:
+            rows = con.execute('SELECT * FROM jobs ORDER BY created DESC,id DESC LIMIT 100').fetchall()
     return [dict(row) | {'result': json.loads(row['result']) if row['result'] else None} for row in rows]
 
 
@@ -159,7 +169,9 @@ def job(job_id: str):
 
 
 @router.post('/jobs', status_code=202)
-async def upload(image: UploadFile = File(...)):
+async def upload(image: UploadFile = File(...), region_id: str | None = Form(default=None)):
+    if region_id is not None and region_id not in PHOTO_REGIONS:
+        raise HTTPException(422, '지원하지 않는 사진 지역입니다.')
     raw = await image.read(10 * 1024 * 1024 + 1)
     if len(raw) > 10 * 1024 * 1024:
         raise HTTPException(413, '이미지는 10MiB 이하로 보내 주세요.')
@@ -173,7 +185,18 @@ async def upload(image: UploadFile = File(...)):
             mime = Image.MIME[picture.format]
     except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as exc:
         raise HTTPException(422, str(exc) or '유효하지 않은 이미지') from exc
-    return QUEUE.enqueue(raw, mime)
+    return QUEUE.enqueue(raw, mime, region_id)
+
+
+@router.post('/jobs/{job_id}/location')
+def assign_photo_region(job_id: str, payload: dict):
+    region = payload.get('region_id')
+    if not isinstance(region,str) or region not in PHOTO_REGIONS or set(payload) != {'region_id'}:
+        raise HTTPException(422, '지원하는 지역 하나를 지정해 주세요.')
+    with db() as con:
+        if not con.execute('UPDATE jobs SET region_id=? WHERE id=?',(region,job_id)).rowcount:
+            raise HTTPException(404, '분석 기록이 없습니다.')
+    return job(job_id)
 
 
 @router.post('/jobs/{job_id}/retry', status_code=202)

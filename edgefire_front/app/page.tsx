@@ -9,6 +9,13 @@ import { RISK_LEVELS, type RiskLevel } from "./riskLevels";
 const CesiumMap = dynamic(() => import("./CesiumMap"), { ssr: false });
 
 export default function Home() {
+  const regionNames:Record<string,string> = {seoul:'서울',incheon:'인천',suwon:'수원',chuncheon:'춘천',wonju:'원주',gangneung:'강릉',map:'지도 선택 지점'};
+  const [photoRegion,setPhotoRegion] = useState('seoul');
+  const [showUnassigned,setShowUnassigned] = useState(false);
+  const [photoRevision,setPhotoRevision] = useState(0);
+  const photoScopeRef = useRef('seoul');
+  photoScopeRef.current = showUnassigned ? 'unassigned' : photoRegion;
+  const photoRequestRef = useRef(0);
   const mapRef = useRef<any>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const submittedImageRef = useRef('');
@@ -46,6 +53,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
 };
 
   const [storageJob, setStorageJob] = useState<any>(null);
+  const currentPhotoRef = useRef<any>(null);currentPhotoRef.current=storageJob;
   const [storageConnected, setStorageConnected] = useState(false);
   const [chemicalCid, setChemicalCid] = useState('');
   const [useReferenceCase, setUseReferenceCase] = useState(false);
@@ -70,9 +78,11 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
     return () => { active = false; clearInterval(timer); };
   }, [assessmentId]);
   async function runAssessment() {
+    const visionId=storageJob?.id;
+    if(!visionId) return;
     setAssessmentBusy(true); setAssessmentError(''); setAssessmentResult(null); setAssessmentId('');
     try {
-      const payload:any = {vision_job_id:storageJob.id};
+      const payload:any = {vision_job_id:visionId};
       if (chemicalCid.trim()) payload.chemical_cid = chemicalCid.trim();
       if (useReferenceCase) {
         const response = await fetch('/api/edgefire/model-examples', {cache:'no-store'});
@@ -85,19 +95,24 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
       const response = await fetch('/api/edgefire/assessments', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       const job = await response.json();
       if (!response.ok) throw new Error(job.detail || '통합 분석을 시작할 수 없습니다.');
-      setAssessmentId(job.id);
-    } catch (error) { setAssessmentError(String(error)); setAssessmentBusy(false); }
+      if(currentPhotoRef.current?.id===visionId) setAssessmentId(job.id);
+    } catch (error) { if(currentPhotoRef.current?.id===visionId) {setAssessmentError(String(error)); setAssessmentBusy(false);} }
   }
   useEffect(() => {
     let active = true;
+    const scope = showUnassigned ? 'unassigned' : photoRegion;
+    submittedImageRef.current='';setStorageJob(null);setPhotoBusy(false);setPhotoError('');
+    setAssessmentId('');setAssessmentResult(null);setAssessmentBusy(false);setShowAlertModal(false);
     async function refresh() {
       try {
-        const response = await fetch('/api/edgefire/jobs', {cache: 'no-store'});
+        if (scope === 'map') return;
+        const sequence = ++photoRequestRef.current;
+        const response = await fetch(`/api/edgefire/jobs?region=${scope}`, {cache: 'no-store'});
         if (!response.ok) throw new Error('Storage unavailable');
         const jobs = await response.json();
-        if (active) {
+        if (active && sequence === photoRequestRef.current && photoScopeRef.current === scope) {
           setStorageConnected(true);
-          const selected = submittedImageRef.current ? jobs.find((job:any) => job.id === submittedImageRef.current) : jobs.find((job:any) => job.status === 'COMPLETED');
+          const selected = submittedImageRef.current ? jobs.find((job:any) => job.id === submittedImageRef.current) : jobs[0];
           setStorageJob(selected || null);
           if (selected && ['COMPLETED','FAILED'].includes(selected.status)) {
             setPhotoBusy(false);
@@ -109,19 +124,37 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
     refresh();
     const timer = setInterval(refresh, 2500);
     return () => { active = false; clearInterval(timer); };
-  }, []);
+  }, [photoRegion,showUnassigned,photoRevision]);
+
+  function changePhotoRegion(id:string) {
+    photoScopeRef.current=id;++photoRequestRef.current;submittedImageRef.current='';
+    setStorageJob(null);setPhotoRegion(id);setShowUnassigned(false);setPhotoBusy(false);
+  }
+  async function connectPhoto() {
+    if (!storageJob || photoRegion === 'map') return;
+    const region=photoRegion, scope=photoScopeRef.current;
+    setPhotoError('');
+    try {
+      const response=await fetch(`/api/edgefire/jobs/${storageJob.id}/location`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({region_id:region})});
+      const data=await response.json();if(!response.ok) throw new Error(data.detail || '지역 연결 실패');
+      if(photoScopeRef.current===scope) {setShowUnassigned(false);setPhotoRevision(n=>n+1);}
+    } catch(error) {if(photoScopeRef.current===scope) setPhotoError(String(error));}
+  }
 
   async function uploadPhoto(file: File) {
+    const region=photoRegion;
+    if(region==='map' || showUnassigned) {setPhotoError('지도에서 등록 지역을 선택한 뒤 사진을 입력해 주세요.');return;}
+    ++photoRequestRef.current;
     setPhotoError('');
     if (file.size > 10*1024*1024) { setPhotoError('사진은 10MiB 이하로 선택해 주세요.'); return; }
     setPhotoBusy(true);setAssessmentResult(null);setAssessmentId('');setAssessmentBusy(false);
     try {
-      const body = new FormData();body.append('image',file);
+      const body = new FormData();body.append('image',file);body.append('region_id',region);
       const response = await fetch('/api/edgefire/jobs',{method:'POST',body});
       const job = await response.json();
       if (!response.ok) throw new Error(job.detail || '사진을 저장할 수 없습니다.');
-      submittedImageRef.current=job.id;setStorageJob(job);
-    } catch (error) { setPhotoError(String(error));setPhotoBusy(false); }
+      if(photoScopeRef.current===region) {++photoRequestRef.current;submittedImageRef.current=job.id;setStorageJob(job);}
+    } catch (error) { if(photoScopeRef.current===region) {setPhotoError(String(error));setPhotoBusy(false);} }
   }
 
   const handleSensorClick = (sensorId: string) => {
@@ -349,7 +382,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
 
         {/* 중앙 패널: 3D GIS 관제 지도 */}
         <main className="w-[55%] bg-gray-950 rounded-lg border border-gray-700 relative overflow-hidden">
-          <CesiumMap enableForecast={true} ref={mapRef} />
+          <CesiumMap enableForecast={true} onRegionChange={changePhotoRegion} ref={mapRef} />
         </main>
 
         {/* 우측 패널: 실시간 차트 및 PTZ 비디오 */}
@@ -366,24 +399,23 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
 
           <div className="h-1/2 bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
             <h2 className="font-bold border-b border-gray-700 pb-2 text-sm text-gray-200 flex justify-between items-center">
-              <span>■ PTZ 카메라 영상 (CAM-PTZ-01)</span>
-              <button onClick={() => photoInputRef.current?.click()} disabled={photoBusy} className="text-xs bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded">{photoBusy ? '사진 분석 중…' : '사진 입력'}</button>
+              <span>■ 저장 사진 · {showUnassigned ? '지역 미지정' : regionNames[photoRegion]}</span>
+              <button onClick={() => photoInputRef.current?.click()} disabled={photoBusy || showUnassigned || photoRegion==='map'} className="text-xs bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded">{photoBusy ? '사진 분석 중…' : '사진 입력'}</button>
               <input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp" aria-label="분석할 사진" className="hidden" onChange={event => {const file=event.target.files?.[0];if(file) uploadPhoto(file);event.target.value='';}} />
             </h2>
-            <div className="flex-1 w-full h-full pt-2 flex flex-col justify-center items-center relative overflow-hidden rounded bg-black mt-2 border border-gray-700">
+            <div className="flex gap-2 text-[10px] pt-1">
+              <button onClick={()=>{++photoRequestRef.current;photoScopeRef.current=showUnassigned?photoRegion:'unassigned';setStorageJob(null);setShowUnassigned(!showUnassigned);}} className="underline">{showUnassigned?'지역 사진으로 돌아가기':'미지정 사진 보기'}</button>
+              {showUnassigned && storageJob && photoRegion!=='map' && <button onClick={connectPhoto} className="text-blue-300 underline">{regionNames[photoRegion]}에 연결</button>}
+            </div>
+            <div className="flex-1 min-h-0 w-full pt-2 flex flex-col justify-center items-center relative overflow-hidden rounded bg-black mt-2 border border-gray-700">
               {storageJob ? <img
                 src={`/api/edgefire/jobs/${storageJob.id}/${storageJob.status === 'COMPLETED' ? 'annotated' : 'image'}`}
                 alt={storageJob.status === 'COMPLETED' ? '저장소 AI 분석 결과' : '분석 대기 중인 입력 사진'}
                 style={{ transform: `scale(${zoomLevel})` }}
                 className="w-full h-full object-contain transition-all duration-300"
-              /> : (<video
-                autoPlay loop muted playsInline
-                style={{ transform: `scale(${zoomLevel})` }}
-                className={`w-full h-full object-cover transition-all duration-300 ${isThermal ? "hue-rotate-180 invert brightness-125 contrast-200" : "opacity-80"}`}
-                src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4"
-              />)}
+              /> : <p className="text-xs text-gray-300 p-4">{photoRegion==='map' ? '사진 연결은 지도에서 서울·인천·수원·춘천·원주·강릉 중 하나를 선택해 주세요.' : '이 지역에 연결된 사진이 없습니다. 사진 입력으로 저장하거나 미지정 사진을 연결해 주세요.'}</p>}
               <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded backdrop-blur">
-                {storageJob ? `${submittedImageRef.current ? '입력 사진' : '저장 이미지'} · ${storageJob.status === 'COMPLETED' ? '분석 완료' : storageJob.status === 'FAILED' ? '분석 실패' : '분석 대기/진행'} · 지도 지역 미연결 | 표시 효과:` : "FOV: 45° | Tilt: -15° | Mode:"} {isThermal ? "🔥 IR Thermal" : "📷 Visible"} | Zoom: {zoomLevel}x
+                {storageJob ? `${submittedImageRef.current ? '입력 사진' : '저장 이미지'} · ${storageJob.status === 'COMPLETED' ? '분석 완료' : storageJob.status === 'FAILED' ? '분석 실패' : '분석 대기/진행'} · ${storageJob.region_id ? regionNames[storageJob.region_id]+' (사용자 지정)' : '지역 미지정'} | 표시 효과:` : "사진 대기 | 표시 효과:"} {isThermal ? "🔥 IR Thermal" : "📷 Visible"} | Zoom: {zoomLevel}x
               </div>
               {photoError && <p role="alert" className="absolute top-14 left-2 right-2 bg-red-950/95 text-red-200 text-xs p-2 rounded">{photoError}</p>}
               <div className="absolute bottom-2 right-2 bg-black/70 p-1.5 rounded-lg border border-gray-700 flex gap-1 backdrop-blur">
