@@ -33,6 +33,25 @@ def authorized(x_api_key: str | None = Header(default=None)):
 router = APIRouter(prefix='/api/v1/storage', dependencies=[Depends(authorized)])
 
 
+def air_quality_root():
+    return Path(os.environ.get('AIR_QUALITY_ROOT',str(Path(__file__).resolve().parents[3]/'outputs/air_quality_2026_v2'))).resolve()
+
+
+@router.get('/air-quality/stations')
+def air_quality_stations():
+    from air_quality_service import stations
+    return stations(air_quality_root())
+
+
+@router.get('/air-quality/series')
+def air_quality_series(station: str, end: str | None = None):
+    from air_quality_service import series
+    try:
+        return series(air_quality_root(),station,end)
+    except ValueError as exc:
+        raise HTTPException(422,str(exc)) from exc
+
+
 @router.get('/models')
 def models():
     return model_status(ROOT)

@@ -12,6 +12,12 @@ from main import app
 
 class StorageContract(unittest.TestCase):
     def setUp(self):self.client=TestClient(app);self.headers={'X-API-Key':'test-only-secret'}
+    def test_air_data_auth_and_invalid_station(self):
+        self.assertEqual(self.client.get('/api/v1/storage/air-quality/stations').status_code,401)
+        with patch.dict(os.environ,{'AIR_QUALITY_ROOT':TEMP.name}):
+            status=self.client.get('/api/v1/storage/air-quality/stations',headers=self.headers).json()
+            self.assertEqual(status['status'],'PREPARING')
+            self.assertEqual(self.client.get('/api/v1/storage/air-quality/series',headers=self.headers,params={'station':'../runtime'}).status_code,422)
     def test_assessment_routes_require_auth_and_registered_models(self):
         self.assertEqual(self.client.get('/api/v1/storage/models').status_code,401)
         status=self.client.get('/api/v1/storage/models',headers=self.headers).json()

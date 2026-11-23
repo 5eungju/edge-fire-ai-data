@@ -244,7 +244,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
             <button onClick={() => setShowImageComparison(true)} className="bg-blue-800 rounded p-2 text-sm">화재·비화재 이미지 정답과 예측 비교</button>
             <div className="bg-gray-800 p-3 rounded border border-gray-700 text-xs text-orange-400">
               • 모델: {storageJob?.result?.model_id || "대기 중"}<br />
-              • 학습 중 스냅샷의 연구용 결과입니다. 가스 수치와 위험 단계는 시연값입니다.
+              • 학습 중 모델입니다. 위험 단계는 시연값이며 대기 차트는 과거 관측 자료입니다.
             </div>
             <div className="text-xs text-gray-200 flex flex-col gap-2">
               <label>화학물질 CID (알고 있는 경우)
@@ -356,8 +356,8 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
         <aside className="w-[25%] flex flex-col gap-2">
           <div className="h-1/2 bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
             <h2 className="font-bold border-b border-gray-700 pb-2 text-sm text-gray-200 flex justify-between items-center">
-              <span>■ 가스 농도 차트 · 예시</span>
-              <span className="text-xs text-yellow-400">({selectedSensorId})</span>
+              <span>■ 과거 대기측정 농도 · 2026년</span>
+              <span className="text-xs text-yellow-400">관측소 자료</span>
             </h2>
             <div className="flex-1 w-full h-full pt-3">
               <GasChart selectedSensorId={selectedSensorId} />

@@ -1,0 +1,88 @@
+{
+  "task": "next_hour_ambient_CO_forecast",
+  "selected_model": "histogram_boosting",
+  "validation": {
+    "persistence": {
+      "mae_ppm": 0.034386273473501205,
+      "rmse_ppm": 0.05488539550513207
+    },
+    "neural_mlp": {
+      "mae_ppm": 0.0339730940759182,
+      "rmse_ppm": 0.05211028827098562
+    },
+    "histogram_boosting": {
+      "mae_ppm": 0.03334565361545052,
+      "rmse_ppm": 0.0520729410647317
+    }
+  },
+  "selected_test": {
+    "mae_ppm": 0.0271094941913479,
+    "rmse_ppm": 0.04227163465277899
+  },
+  "test_persistence": {
+    "mae_ppm": 0.027550479397177696,
+    "rmse_ppm": 0.04427507703908107
+  },
+  "validation_baseline_exceeded": true,
+  "split_counts": {
+    "train": 445202,
+    "val": 43896,
+    "test": 166596
+  },
+  "stations": 250,
+  "source_counts": {
+    "source_rows": 1949016,
+    "regional_rows": 725760,
+    "ignored_duplicate_or_quarantined_rows": 5760,
+    "retained_unique_observations": 720000,
+    "quarantined_conflicting_keys": 0
+  },
+  "missing": {
+    "SO2": 26740,
+    "CO": 33133,
+    "O3": 23466,
+    "NO2": 23510,
+    "PM10": 26581,
+    "PM25": 30110
+  },
+  "temporal_split": "Target timestamps: before March 24 train; March 24-31 validation; April onward test",
+  "features": [
+    "CO_t",
+    "CO_lag1",
+    "CO_lag2",
+    "CO_lag24",
+    "SO2_t",
+    "O3_t",
+    "NO2_t",
+    "PM10_t",
+    "PM25_t",
+    "hour_sin",
+    "hour_cos",
+    "weekday_sin",
+    "weekday_cos"
+  ],
+  "operational_use": false,
+  "wildfire_classifier": false,
+  "units": {
+    "SO2": "ppm",
+    "CO": "ppm",
+    "O3": "ppm",
+    "NO2": "ppm",
+    "PM10": "ug/m3",
+    "PM25": "ug/m3"
+  },
+  "source_archive": "C:\\Users\\tmdwn\\Downloads\\2026.zip",
+  "source_sha256": "0d70b05c0b24feac605744641edf8484aaf3f45eaf4955d7b23e2788e39f13cb",
+  "timestamp_interpretation": "YYYYMMDDHH, HH=24 rolls to next-day 00:00; Korean local time",
+  "limitations": [
+    "Ambient stations, not near-fire H2/VOC sensors",
+    "No incident labels; no wildfire sensitivity/specificity claim",
+    "Temporal holdout at same station population; not station-external evaluation",
+    "2026 monthly provisional/confirmed source status requires provenance review"
+  ],
+  "reference_urls": [
+    "https://www.airkorea.or.kr/web/last_amb_hour_data",
+    "https://m.airkorea.or.kr/info/standard/in"
+  ],
+  "model_sha256": "b99bff9364486c86497de63a02159a49defcd1410d79a8bd236507563e5ad676"
+}
