@@ -1,0 +1,146 @@
+{
+  "model_id": "training-snapshot-06a79486d923",
+  "model_sha256": "06a79486d923813d90451c5891620d871c6e84a62b9393165406b5299ac486c1",
+  "dataset_identity": "83f668bb0abb210c65cc537ce8a71e0a94725d363f5044d1f320fa3e2ad09af5",
+  "split": "val",
+  "test_accessed": false,
+  "selection": "First admitted validation IDs covering each class at distinct reviewed sites, before inference",
+  "coverage": {
+    "black_smoke": 1,
+    "white_gray_smoke": 1,
+    "flame": 1,
+    "cloud": 2,
+    "fog_haze": 2,
+    "chimney_smoke": 2
+  },
+  "not_global_evaluation": true,
+  "notice": "정답 라벨과 고정 모델의 예측 비교입니다. 소수 사례 시연이며 전체 정확도·실시간 탐지 성능 검증이 아닙니다.",
+  "cases": [
+    {
+      "id": "00004862bd9095afb59a296e",
+      "primary_class": "white_gray_smoke",
+      "ground_truth_classes": [
+        "white_gray_smoke",
+        "flame"
+      ],
+      "predicted_classes": [
+        "white_gray_smoke"
+      ],
+      "missed_classes": [
+        "flame"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "0000635152a583d08ecc2ccf",
+      "primary_class": "cloud",
+      "ground_truth_classes": [
+        "cloud"
+      ],
+      "predicted_classes": [],
+      "missed_classes": [
+        "cloud"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "0001cbbc577071f1027cd7ff",
+      "primary_class": "black_smoke",
+      "ground_truth_classes": [
+        "black_smoke"
+      ],
+      "predicted_classes": [],
+      "missed_classes": [
+        "black_smoke"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "000320eb1d5fae59c6a9b7d7",
+      "primary_class": "chimney_smoke",
+      "ground_truth_classes": [
+        "chimney_smoke"
+      ],
+      "predicted_classes": [],
+      "missed_classes": [
+        "chimney_smoke"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "0004c7a18d15b6a442e96667",
+      "primary_class": "cloud",
+      "ground_truth_classes": [
+        "cloud"
+      ],
+      "predicted_classes": [
+        "cloud"
+      ],
+      "missed_classes": [],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "000cde97e2f19bfc2b777d00",
+      "primary_class": "flame",
+      "ground_truth_classes": [
+        "flame"
+      ],
+      "predicted_classes": [],
+      "missed_classes": [
+        "flame"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "000ef9b30b2d3463aa102c6e",
+      "primary_class": "fog_haze",
+      "ground_truth_classes": [
+        "cloud",
+        "fog_haze"
+      ],
+      "predicted_classes": [
+        "cloud"
+      ],
+      "missed_classes": [
+        "fog_haze"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "0065e3b4443ef4089e02479d",
+      "primary_class": "fog_haze",
+      "ground_truth_classes": [
+        "fog_haze"
+      ],
+      "predicted_classes": [
+        "fog_haze"
+      ],
+      "missed_classes": [],
+      "extra_classes": [],
+      "split": "val"
+    },
+    {
+      "id": "00d747b4d81e483f7f666934",
+      "primary_class": "chimney_smoke",
+      "ground_truth_classes": [
+        "cloud",
+        "chimney_smoke"
+      ],
+      "predicted_classes": [
+        "cloud"
+      ],
+      "missed_classes": [
+        "chimney_smoke"
+      ],
+      "extra_classes": [],
+      "split": "val"
+    }
+  ]
+}

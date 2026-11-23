@@ -3,12 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import GasChart from "./GasChart";
+import ImageComparison from "./ImageComparison";
 import { RISK_LEVELS, type RiskLevel } from "./riskLevels";
 
 const CesiumMap = dynamic(() => import("./CesiumMap"), { ssr: false });
 
 export default function Home() {
   const mapRef = useRef<any>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const submittedImageRef = useRef('');
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState('');
 
   // 선택된 센서 및 실시간 관제 상태 관리
   const [selectedSensorId, setSelectedSensorId] = useState<string>("GAS-Node-02");
@@ -20,6 +25,7 @@ export default function Home() {
   const [lastAction, setLastAction] = useState<string | null>(null);
   const [actionPopup, setActionPopup] = useState<string | null>(null);
   const [showDetectionCompare, setShowDetectionCompare] = useState(false);
+  const [showImageComparison, setShowImageComparison] = useState(false);
   // 센서별 위험 단계 (현재는 화면 테스트용 초기값)
 const [sensorRiskLevels] = useState<
   Record<string, RiskLevel>
@@ -91,7 +97,12 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
         const jobs = await response.json();
         if (active) {
           setStorageConnected(true);
-          setStorageJob(jobs.find((job: any) => job.status === 'COMPLETED') || null);
+          const selected = submittedImageRef.current ? jobs.find((job:any) => job.id === submittedImageRef.current) : jobs.find((job:any) => job.status === 'COMPLETED');
+          setStorageJob(selected || null);
+          if (selected && ['COMPLETED','FAILED'].includes(selected.status)) {
+            setPhotoBusy(false);
+            if (selected.status === 'FAILED') setPhotoError(selected.error || '사진 분석 실패');
+          }
         }
       } catch { if (active) setStorageConnected(false); }
     }
@@ -100,12 +111,25 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
     return () => { active = false; clearInterval(timer); };
   }, []);
 
+  async function uploadPhoto(file: File) {
+    setPhotoError('');
+    if (file.size > 10*1024*1024) { setPhotoError('사진은 10MiB 이하로 선택해 주세요.'); return; }
+    setPhotoBusy(true);setAssessmentResult(null);setAssessmentId('');setAssessmentBusy(false);
+    try {
+      const body = new FormData();body.append('image',file);
+      const response = await fetch('/api/edgefire/jobs',{method:'POST',body});
+      const job = await response.json();
+      if (!response.ok) throw new Error(job.detail || '사진을 저장할 수 없습니다.');
+      submittedImageRef.current=job.id;setStorageJob(job);
+    } catch (error) { setPhotoError(String(error));setPhotoBusy(false); }
+  }
+
   const handleSensorClick = (sensorId: string) => {
     setSelectedSensorId(sensorId);
     if (mapRef.current) {
       mapRef.current.flyToSensor(sensorId);
     }
-    if (sensorId === "CAM-PTZ-01" && storageJob) {
+    if (sensorId === "CAM-PTZ-01" && storageJob?.status === 'COMPLETED') {
       const detections = storageJob.result?.detections || [];
       setAlertMessage(detections.length
         ? detections.map((d: any) => `${d.class_name}: ${(d.score * 100).toFixed(1)}%`).join(', ')
@@ -127,6 +151,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
 
   return (
     <div className="flex flex-col h-screen w-screen bg-gray-900 text-white p-2 gap-2 box-border relative">
+      {showImageComparison && <ImageComparison onClose={() => setShowImageComparison(false)} />}
       {/* 비상 경보 시연 알림 팝업 */}
 {actionPopup && (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -216,6 +241,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
               <button onClick={() => setShowAlertModal(false)} className="text-gray-400 hover:text-white">✕</button>
             </div>
             <p className="text-sm text-gray-200 leading-relaxed">{alertMessage}</p>
+            <button onClick={() => setShowImageComparison(true)} className="bg-blue-800 rounded p-2 text-sm">화재·비화재 이미지 정답과 예측 비교</button>
             <div className="bg-gray-800 p-3 rounded border border-gray-700 text-xs text-orange-400">
               • 모델: {storageJob?.result?.model_id || "대기 중"}<br />
               • 학습 중 스냅샷의 연구용 결과입니다. 가스 수치와 위험 단계는 시연값입니다.
@@ -330,7 +356,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
         <aside className="w-[25%] flex flex-col gap-2">
           <div className="h-1/2 bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
             <h2 className="font-bold border-b border-gray-700 pb-2 text-sm text-gray-200 flex justify-between items-center">
-              <span>■ 실시간 가스 농도 차트</span>
+              <span>■ 가스 농도 차트 · 예시</span>
               <span className="text-xs text-yellow-400">({selectedSensorId})</span>
             </h2>
             <div className="flex-1 w-full h-full pt-3">
@@ -341,12 +367,13 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
           <div className="h-1/2 bg-gray-800 rounded-lg p-4 border border-gray-700 flex flex-col">
             <h2 className="font-bold border-b border-gray-700 pb-2 text-sm text-gray-200 flex justify-between items-center">
               <span>■ PTZ 카메라 영상 (CAM-PTZ-01)</span>
-              <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse">{storageJob ? "저장 분석" : "시연 영상"}</span>
+              <button onClick={() => photoInputRef.current?.click()} disabled={photoBusy} className="text-xs bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded">{photoBusy ? '사진 분석 중…' : '사진 입력'}</button>
+              <input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp" aria-label="분석할 사진" className="hidden" onChange={event => {const file=event.target.files?.[0];if(file) uploadPhoto(file);event.target.value='';}} />
             </h2>
             <div className="flex-1 w-full h-full pt-2 flex flex-col justify-center items-center relative overflow-hidden rounded bg-black mt-2 border border-gray-700">
               {storageJob ? <img
-                src={`/api/edgefire/jobs/${storageJob.id}/annotated`}
-                alt="저장소 AI 분석 결과"
+                src={`/api/edgefire/jobs/${storageJob.id}/${storageJob.status === 'COMPLETED' ? 'annotated' : 'image'}`}
+                alt={storageJob.status === 'COMPLETED' ? '저장소 AI 분석 결과' : '분석 대기 중인 입력 사진'}
                 style={{ transform: `scale(${zoomLevel})` }}
                 className="w-full h-full object-contain transition-all duration-300"
               /> : (<video
@@ -356,8 +383,9 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
                 src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4"
               />)}
               <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded backdrop-blur">
-                {storageJob ? "저장 이미지 · 연구용 | 표시 효과:" : "FOV: 45° | Tilt: -15° | Mode:"} {isThermal ? "🔥 IR Thermal" : "📷 Visible"} | Zoom: {zoomLevel}x
+                {storageJob ? `${submittedImageRef.current ? '입력 사진' : '저장 이미지'} · ${storageJob.status === 'COMPLETED' ? '분석 완료' : storageJob.status === 'FAILED' ? '분석 실패' : '분석 대기/진행'} · 지도 지역 미연결 | 표시 효과:` : "FOV: 45° | Tilt: -15° | Mode:"} {isThermal ? "🔥 IR Thermal" : "📷 Visible"} | Zoom: {zoomLevel}x
               </div>
+              {photoError && <p role="alert" className="absolute top-14 left-2 right-2 bg-red-950/95 text-red-200 text-xs p-2 rounded">{photoError}</p>}
               <div className="absolute bottom-2 right-2 bg-black/70 p-1.5 rounded-lg border border-gray-700 flex gap-1 backdrop-blur">
                 <button onClick={() => setZoomLevel((prev) => Math.min(prev + 0.5, 3))} className="bg-gray-700 text-[10px] px-2 py-1 rounded font-bold">🔍 +</button>
                 <button onClick={() => setZoomLevel((prev) => Math.max(prev - 0.5, 1))} className="bg-gray-700 text-[10px] px-2 py-1 rounded font-bold">🔍 -</button>

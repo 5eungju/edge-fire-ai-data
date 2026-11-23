@@ -5,9 +5,34 @@ from pathlib import Path
 
 import numpy as np
 from fire_forecast.run import arrival, feature_collection, audit, train_occurrence
+from fire_forecast.service import validate, calculate, regions
 
 
 class GridTests(unittest.TestCase):
+    def test_region_input_and_coordinates(self):
+        self.assertEqual(validate({'region':'seoul'})[1:3],(37.5665,126.978))
+        self.assertEqual(validate({'region':'map','latitude':37.7,'longitude':128.1})[1:3],(37.7,128.1))
+        for payload in [{'region':'unknown'},{'region':'map'},{'latitude':True,'longitude':127},
+                        {'latitude':0,'longitude':127},{'region':'seoul','path':'../secret'}]:
+            with self.assertRaises(ValueError):validate(payload)
+
+    def test_selected_region_time_and_geojson_center(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            for name,lat,lon in [('seoul',37.5665,126.978),('gangneung',37.7519,128.8761)]:
+                data=dict(latitude=lat,longitude=lon,hourly_units={'wind_speed_10m':'m/s'},hourly={
+                    'time':['2025-12-01T12:00','2025-12-01T13:00'],
+                    'wind_speed_10m':[1,8],'wind_direction_10m':[0,270],'relative_humidity_2m':[40,20]})
+                (root/f'weather_{name}_20251201_10.json').write_text(json.dumps(data),encoding='utf-8')
+            first=calculate(root,{'region':'seoul'})
+            second=calculate(root,{'region':'gangneung','input_time':'2025-12-01T13:00'})
+            self.assertEqual(first['metadata']['longitude'],126.978)
+            self.assertEqual(second['metadata']['weather_region'],'gangneung')
+            self.assertEqual(second['metadata']['wind_ms'],8)
+            self.assertNotEqual(first['metadata']['request_id'],second['metadata']['request_id'])
+            self.assertEqual(second,calculate(root,{'region':'gangneung','input_time':'2025-12-01T13:00'}))
+            self.assertEqual(len(regions(root)['regions']),2)
+            with self.assertRaises(ValueError):calculate(root,{'input_time':'2026-01-01T00:00'})
     def test_wind_from_north_spreads_south_faster(self):
         t=arrival(8,0,30,n=11)
         self.assertLess(t[7,5],t[3,5])

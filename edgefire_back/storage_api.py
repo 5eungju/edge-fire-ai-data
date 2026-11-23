@@ -71,6 +71,48 @@ def forecast():
                         headers={'Cache-Control': 'no-store'})
 
 
+@router.get('/forecast/regions')
+def forecast_regions():
+    from fire_forecast.service import regions
+    root = Path(__file__).resolve().parents[3] / 'outputs/fire_forecast_202512'
+    return regions(root)
+
+
+@router.get('/vision-examples')
+def vision_examples():
+    root = Path(__file__).resolve().parents[3] / 'outputs/image_comparison_demo_v1'
+    path = root / 'manifest.json'
+    if not path.exists():
+        return {'status':'PREPARING','cases':[]}
+    data = json.loads(path.read_text(encoding='utf-8'))
+    data['cases'] = [{k:v for k,v in case.items() if k not in ['annotations','detections']} for case in data['cases']]
+    return dict(data,status='READY')
+
+
+@router.get('/vision-examples/{case_id}/{variant}')
+def vision_example_image(case_id: str, variant: str):
+    import re
+    if not re.fullmatch(r'[a-f0-9]{16,64}',case_id) or variant not in ['original','ground-truth','prediction']:
+        raise HTTPException(404,'비교 이미지가 없습니다.')
+    root = Path(__file__).resolve().parents[3] / 'outputs/image_comparison_demo_v1'
+    path = root/'manifest.json'
+    if not path.exists():raise HTTPException(404,'비교 자료 준비 중입니다.')
+    cases = json.loads(path.read_text(encoding='utf-8'))['cases']
+    if not any(case['id']==case_id for case in cases):raise HTTPException(404,'비교 이미지가 없습니다.')
+    filename = {'original':'original.jpg','ground-truth':'ground_truth.jpg','prediction':'prediction.jpg'}[variant]
+    return FileResponse(root/case_id/filename,media_type='image/jpeg',headers={'Cache-Control':'no-store'})
+
+
+@router.post('/forecast')
+def recalculate_forecast(payload: dict):
+    from fire_forecast.service import calculate
+    root = Path(__file__).resolve().parents[3] / 'outputs/fire_forecast_202512'
+    try:
+        return calculate(root, payload)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
 @router.get('/config')
 def config():
     with db() as con:

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 async function proxy(request: NextRequest, context: {params: Promise<{path: string[]}>}) {
   const {path} = await context.params;
   const relative = path.join('/');
-  if (!/^(config|training-status|forecast|models|model-examples|assessments(?:\/JOB_[a-f0-9]{32})?|jobs(?:\/JOB_[a-f0-9]{32}(?:\/(?:image|retry|annotated|result))?)?)$/.test(relative))
+  if (!/^(config|training-status|forecast(?:\/regions)?|vision-examples(?:\/[a-f0-9]{16,64}\/(?:original|ground-truth|prediction))?|models|model-examples|assessments(?:\/JOB_[a-f0-9]{32})?|jobs(?:\/JOB_[a-f0-9]{32}(?:\/(?:image|retry|annotated|result))?)?)$/.test(relative))
     return Response.json({detail: '경로를 찾을 수 없습니다.'}, {status: 404});
   if (request.method === 'POST' && ![process.env.FRONTEND_BASE_URL || 'http://127.0.0.1:3200',(process.env.FRONTEND_BASE_URL || 'http://127.0.0.1:3200').replace('127.0.0.1','localhost')].includes(request.headers.get('origin') || ''))
     return Response.json({detail: '같은 화면에서 요청해 주세요.'}, {status: 403});

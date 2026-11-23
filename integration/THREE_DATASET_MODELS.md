@@ -54,3 +54,5 @@ py edgefire_AI/register_multi_models.py --model-root C:/Users/tmdwn/Documents/Co
 - Next.js 프로덕션 빌드와 TypeScript 검사, 실제 브라우저 연결 시험
 
 기준선 미달 모델을 높은 성능으로 표시하거나, 가상의 정답으로 산불 발생/확산 모델이 완성됐다고 표시하지 않는다.
+
+현재 파일 업로드와 지역·시각·지도 좌표 선택, 검증 이미지 정답 비교 시연은 [DEMO.md](DEMO.md)에 정리했다.

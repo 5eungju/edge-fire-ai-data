@@ -1,0 +1,26 @@
+{
+  "regions": [
+    "seoul",
+    "incheon",
+    "suwon",
+    "chuncheon",
+    "wonju",
+    "gangneung"
+  ],
+  "regional_and_custom_coordinate_calculation": true,
+  "time_selection": true,
+  "stale_request_guard": true,
+  "photo_upload_browser_job": "JOB_8ac79418c7d6492eab93c87bf4247e28",
+  "browser_custom_point": {
+    "latitude": 37.3409,
+    "longitude": 127.92416
+  },
+  "comparison_cases": 9,
+  "comparison_split": "val",
+  "test_images_accessed": false,
+  "known_limitations": [
+    "Intermediate vision model missed annotated flame examples",
+    "No learned photo-to-coordinate or gas inference",
+    "Nearest ERA5 grid reanalysis; flat/uniform-fuel spread heuristic remains unvalidated"
+  ]
+}

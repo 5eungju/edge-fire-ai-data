@@ -39,6 +39,72 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
   const [loaded, setLoaded] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
   const [forecastMetadata, setForecastMetadata] = useState(null);
+  const [forecastRegions, setForecastRegions] = useState([]);
+  const [forecastTimes, setForecastTimes] = useState([]);
+  const [regionId, setRegionId] = useState("seoul");
+  const [inputTime, setInputTime] = useState("2025-12-01T12:00");
+  const [forecastBusy, setForecastBusy] = useState(false);
+  const [forecastError, setForecastError] = useState("");
+  const [pickingPoint, setPickingPoint] = useState(false);
+  const pointRef = useRef(null);
+  const regionRef = useRef("seoul");
+  const timeRef = useRef("2025-12-01T12:00");
+  const pickingRef = useRef(false);
+  const sequenceRef = useRef(0);
+  const requestRef = useRef(null);
+  const layerRef = useRef(null);
+  const calculateRef = useRef(null);
+
+  async function runForecast(payload) {
+    const viewer = viewerRef.current;
+    if (!viewer || viewer.isDestroyed()) return;
+    const sequence = ++sequenceRef.current;
+    requestRef.current?.abort();
+    const controller = new AbortController(); requestRef.current = controller;
+    setForecastBusy(true); setForecastError("");
+    try {
+      const response = await fetch('/api/edgefire/forecast', {method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload),signal:controller.signal});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || '확산 계산 실패');
+      if (sequence !== sequenceRef.current || viewer.isDestroyed()) return;
+      const Cesium = window.Cesium;
+      // Large horizon first, smaller horizons on top; only one result set remains.
+      const collection = {...data,features:[...data.features].reverse()};
+      const layer = await Cesium.GeoJsonDataSource.load(collection, {clampToGround:true,
+        stroke:Cesium.Color.ORANGE,fill:Cesium.Color.ORANGE.withAlpha(.22),strokeWidth:1});
+      if (sequence !== sequenceRef.current || viewer.isDestroyed()) { if (typeof layer.destroy === "function") layer.destroy(); return; }
+      layer.entities.values.forEach(entity => {
+        if (entity.polygon) {
+          const minutes = entity.properties.minutes.getValue();
+          entity.polygon.material = (minutes===10 ? Cesium.Color.RED : minutes===20 ? Cesium.Color.ORANGE : Cesium.Color.YELLOW).withAlpha(.3);
+        }
+      });
+      if (layerRef.current) viewer.dataSources.remove(layerRef.current,true);
+      viewer.dataSources.add(layer); layerRef.current = layer;
+      viewer.entities.removeById('selected-ignition');
+      viewer.entities.add({id:'selected-ignition',name:'선택한 가정 발화점',
+        position:Cesium.Cartesian3.fromDegrees(data.metadata.longitude,data.metadata.latitude),
+        point:{pixelSize:10,color:Cesium.Color.RED,outlineColor:Cesium.Color.WHITE,outlineWidth:2},
+        label:{text:'선택 발화점 · 가정',font:'12px sans-serif',showBackground:true,pixelOffset:new Cesium.Cartesian2(0,-20)}});
+      setForecastMetadata(data.metadata);
+      viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(data.metadata.longitude,data.metadata.latitude,1600),
+        orientation:{heading:0,pitch:Cesium.Math.toRadians(-90),roll:0},duration:.8});
+    } catch (error) {
+      if (error.name !== 'AbortError' && sequence === sequenceRef.current) setForecastError(error.message || String(error));
+    } finally { if (sequence === sequenceRef.current) setForecastBusy(false); }
+  }
+  calculateRef.current = runForecast;
+
+  function chooseRegion(id) {
+    regionRef.current=id; setRegionId(id); pointRef.current=null;
+    pickingRef.current=false;setPickingPoint(false);setSelectedSensor(null);
+    calculateRef.current?.({region:id,input_time:timeRef.current});
+  }
+  function recalculate() {
+    calculateRef.current?.({region:regionRef.current,input_time:timeRef.current,...(pointRef.current || {})});
+  }
+
 
   // 부모 컴포넌트(page.tsx)에서 실시간 백엔드 데이터에 맞춰 시점 이동 및 마커 바인딩
   useImperativeHandle(ref, () => ({
@@ -47,6 +113,7 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
       if (sensor && viewerRef.current && window.Cesium) {
         const Cesium = window.Cesium;
         setSelectedSensor(sensor);
+        if (props.enableForecast) return;
         viewerRef.current.camera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(sensor.lng, sensor.lat, 3000),
           duration: 1.5,
@@ -116,18 +183,17 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
       viewerRef.current = viewer;
 
       if (props.enableForecast) {
-        fetch('/api/edgefire/forecast', {cache: 'no-store'})
-          .then(response => { if (!response.ok) throw new Error('Forecast unavailable'); return response.json(); })
-          .then(async data => {
+        fetch('/api/edgefire/forecast/regions', {cache:'no-store'})
+          .then(response => {if (!response.ok) throw new Error('지역 목록 연결 실패');return response.json();})
+          .then(data => {
             if (viewer.isDestroyed()) return;
-            const layer = await Cesium.GeoJsonDataSource.load(data, {
-              clampToGround: true, stroke: Cesium.Color.ORANGE,
-              fill: Cesium.Color.ORANGE.withAlpha(0.15), strokeWidth: 1,
-            });
-            if (viewer.isDestroyed()) return;
-            viewer.dataSources.add(layer);
-            setForecastMetadata(data.metadata);
-          }).catch(() => {});
+            setForecastRegions(data.regions); setForecastTimes(data.times);
+            data.regions.forEach(region => viewer.entities.add({id:'weather-'+region.id,
+              name:region.name+' 기상 대표 지점',position:Cesium.Cartesian3.fromDegrees(region.longitude,region.latitude),
+              point:{pixelSize:9,color:Cesium.Color.DODGERBLUE,outlineColor:Cesium.Color.WHITE,outlineWidth:1},
+              label:{text:region.name,font:'12px sans-serif',showBackground:true,pixelOffset:new Cesium.Cartesian2(0,-18)}}));
+            calculateRef.current?.({region:regionRef.current,input_time:timeRef.current});
+          }).catch(error => {if (!viewer.isDestroyed()) setForecastError(error.message);});
       }
 
       // 카메라 기본 위치 설정
@@ -141,7 +207,7 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
       });
 
       // 📍 센서 마커 추가
-      MOCK_SENSORS.forEach((sensor) => {
+      (props.enableForecast ? [] : MOCK_SENSORS).forEach((sensor) => {
         let pinColor = Cesium.Color.GREEN;
         if (sensor.status === "WARNING") pinColor = Cesium.Color.ORANGE;
         if (sensor.status === "DANGER") pinColor = Cesium.Color.RED;
@@ -173,8 +239,25 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
       const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((click) => {
         const pickedObject = viewer.scene.pick(click.position);
+        if (props.enableForecast && pickingRef.current) {
+          const ray = viewer.camera.getPickRay(click.position);
+          const cartesian = viewer.scene.globe.pick(ray,viewer.scene) || viewer.camera.pickEllipsoid(click.position);
+          if (!cartesian) {setForecastError('지도 표면을 선택해 주세요.');return;}
+          const position = Cesium.Cartographic.fromCartesian(cartesian);
+          const latitude = Cesium.Math.toDegrees(position.latitude), longitude = Cesium.Math.toDegrees(position.longitude);
+          if (latitude < 36.8 || latitude > 38.7 || longitude < 125.8 || longitude > 129.6) {
+            setForecastError('수도권·강원도 범위 안에서 선택해 주세요.');return;
+          }
+          pointRef.current={latitude,longitude};regionRef.current='map';setRegionId('map');
+          pickingRef.current=false;setPickingPoint(false);setSelectedSensor(null);
+          calculateRef.current?.({region:'map',latitude,longitude,input_time:timeRef.current});return;
+        }
+
         if (Cesium.defined(pickedObject) && pickedObject.id) {
           const sensorId = pickedObject.id.id;
+          if (props.enableForecast && typeof sensorId === 'string' && sensorId.startsWith('weather-')) {
+            chooseRegion(sensorId.slice(8));return;
+          }
           const foundSensor = MOCK_SENSORS.find((s) => s.id === sensorId);
           if (foundSensor) {
             setSelectedSensor(foundSensor);
@@ -183,6 +266,7 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
       return () => {
+        ++sequenceRef.current; requestRef.current?.abort(); layerRef.current=null; viewerRef.current=null;
         handler.destroy();
         if (viewer && !viewer.isDestroyed()) {
           viewer.destroy();
@@ -193,10 +277,30 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean }} */ props,
 
   return (
     <div className="w-full h-full relative">
-      {forecastMetadata && <div className="absolute top-2 left-2 z-10 bg-black/80 text-white text-[10px] p-2 rounded max-w-[90%]">
-        확산 추정 · 입력 조건 기준 · 미검증<br />
-        {forecastMetadata.input_time} · ERA5 {forecastMetadata.wind_ms}m/s · 풍향 {forecastMetadata.wind_from_deg}°<br />
-        수도권·강원도 · 춘천 가정 발화점 · 평지·균일 연료 · 10/20/30분
+      {props.enableForecast && <div className="absolute top-2 left-2 z-10 bg-black/85 text-white text-[10px] p-2 rounded max-w-[94%] flex flex-col gap-1">
+        <div className="flex flex-wrap gap-1 items-center">
+          <label>지역 <select aria-label="계산 지역" value={regionId} onChange={event => chooseRegion(event.target.value)} className="bg-gray-800 rounded p-1">
+            {forecastRegions.map(region => <option key={region.id} value={region.id}>{region.name}</option>)}
+            {regionId === 'map' && <option value="map">지도 선택 지점</option>}
+          </select></label>
+          <label>시각 <select aria-label="기상 시각" value={inputTime} onChange={event => {timeRef.current=event.target.value;setInputTime(event.target.value);recalculate();}} className="bg-gray-800 rounded p-1 max-w-[155px]">
+            {forecastTimes.map(time => <option key={time} value={time}>{time.replace('T',' ')}</option>)}
+          </select></label>
+        </div>
+        <div className="flex flex-wrap gap-1">
+          <button className="bg-blue-700 rounded px-2 py-1" onClick={() => {pickingRef.current=!pickingRef.current;setPickingPoint(pickingRef.current);}}>{pickingPoint ? '지도 클릭 대기 · 취소' : '지도에서 발화점 선택'}</button>
+          <button className="bg-gray-700 rounded px-2 py-1" onClick={recalculate}>다시 계산</button>
+          <button className="bg-gray-700 rounded px-2 py-1" onClick={() => {const viewer=viewerRef.current;if(viewer && !viewer.isDestroyed()) viewer.camera.setView({destination:window.Cesium.Rectangle.fromDegrees(125.8,36.8,129.6,38.7),orientation:{heading:0,pitch:-Math.PI/2,roll:0},duration:.8});}}>전체 지역 보기</button>
+        </div>
+        <p role="status">{forecastBusy ? '선택 지점·시각으로 계산 중…' : '확산 추정 · 입력 조건 기준 · 미검증'}</p>
+        {forecastError && <p role="alert" className="text-red-300">{forecastError} {forecastMetadata ? '(이전 결과 유지)' : ''}</p>}
+        {forecastMetadata && <>
+          <p>계산 위치: {forecastMetadata.region_name} {forecastMetadata.latitude.toFixed(5)}, {forecastMetadata.longitude.toFixed(5)}</p>
+          <p>{forecastMetadata.input_time.replace('T',' ')} · ERA5 {forecastMetadata.wind_ms}m/s · 풍향 {forecastMetadata.wind_from_deg}° · 습도 {forecastMetadata.humidity_pct}%</p>
+          <p>기상 대표 지점: {forecastMetadata.weather_region_name} · 거리 {forecastMetadata.representative_point_distance_km}km</p>
+          <p>가정 발화점 · 평지·균일 연료 · 빨강 10 / 주황 20 / 노랑 30분</p>
+          <p>파랑 점: 기상 대표 지점 · 사진은 지도와 별도 입력</p>
+        </>}
       </div>}
       {!loaded && (
         <div className="flex items-center justify-center h-full text-gray-400">
