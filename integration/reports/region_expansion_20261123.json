@@ -1,0 +1,316 @@
+{
+  "region_count": 18,
+  "hourly_records": 4320,
+  "common_times": 240,
+  "regions": [
+    {
+      "id": "chuncheon",
+      "name": "춘천",
+      "latitude": 37.8853,
+      "longitude": 127.7669,
+      "weather_grid_latitude": 38.0,
+      "weather_grid_longitude": 127.75,
+      "hours": 240,
+      "weather_sha256": "89fb6eb7cd75e8de49b54dd076a3018abb3ec02fa1e40f720a8d3bb9a39344df",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.8853&longitude=127.7669&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "chuncheon",
+      "representative_distance_km": 12.84,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "seoul",
+      "name": "서울",
+      "latitude": 37.5665,
+      "longitude": 126.978,
+      "weather_grid_latitude": 37.5,
+      "weather_grid_longitude": 127.0,
+      "hours": 240,
+      "weather_sha256": "d484161c73dd0af4fa20ab3acc8633dc9d7d4bd5cc2860872500e60d719e7e0a",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.5665&longitude=126.978&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "seoul",
+      "representative_distance_km": 7.64,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "suwon",
+      "name": "수원",
+      "latitude": 37.2636,
+      "longitude": 127.0286,
+      "weather_grid_latitude": 37.25,
+      "weather_grid_longitude": 127.0,
+      "hours": 240,
+      "weather_sha256": "c3889b38854ff5064d3fd332d76d264f281cbd603246b79e34509c2c63475424",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.2636&longitude=127.0286&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "suwon",
+      "representative_distance_km": 2.95,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "incheon",
+      "name": "인천",
+      "latitude": 37.4563,
+      "longitude": 126.7052,
+      "weather_grid_latitude": 37.5,
+      "weather_grid_longitude": 126.75,
+      "hours": 240,
+      "weather_sha256": "af5a14168aa09c57cc36dd2ba27f37a968bd7f8361376d94cbe9fb2bfcb860da",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.4563&longitude=126.7052&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "incheon",
+      "representative_distance_km": 6.26,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "wonju",
+      "name": "원주",
+      "latitude": 37.3422,
+      "longitude": 127.9202,
+      "weather_grid_latitude": 37.25,
+      "weather_grid_longitude": 128.0,
+      "hours": 240,
+      "weather_sha256": "4819e5c35546bfdd7a4495564990247025e7050f807080dd8fe3edc6a7a4a636",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.3422&longitude=127.9202&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "wonju",
+      "representative_distance_km": 12.45,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "gangneung",
+      "name": "강릉",
+      "latitude": 37.7519,
+      "longitude": 128.8761,
+      "weather_grid_latitude": 37.75,
+      "weather_grid_longitude": 128.75,
+      "hours": 240,
+      "weather_sha256": "471dc12d5d9b0f1c84d259a62280ead445f764cddeee0e1fa5b12d81b9e33757",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.7519&longitude=128.8761&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "gangneung",
+      "representative_distance_km": 11.09,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "goyang",
+      "name": "고양",
+      "latitude": 37.6584,
+      "longitude": 126.832,
+      "weather_grid_latitude": 37.75,
+      "weather_grid_longitude": 126.75,
+      "hours": 240,
+      "weather_sha256": "9a0a3e81177a8321acc29ede511ea4d3b407dd9b59062f8ddc9c0b17cb6594bb",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.6584&longitude=126.832&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "goyang",
+      "representative_distance_km": 12.48,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "paju",
+      "name": "파주",
+      "latitude": 37.7599,
+      "longitude": 126.7802,
+      "weather_grid_latitude": 37.75,
+      "weather_grid_longitude": 126.75,
+      "hours": 240,
+      "weather_sha256": "cebab3ad32ca81cc2ce06771af70122fa51db802e1fa49ac1a9147f3b626951d",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.7599&longitude=126.7802&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "goyang",
+      "representative_distance_km": 2.87,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "namyangju",
+      "name": "남양주",
+      "latitude": 37.636,
+      "longitude": 127.2165,
+      "weather_grid_latitude": 37.75,
+      "weather_grid_longitude": 127.25,
+      "hours": 240,
+      "weather_sha256": "4644a1e5ee7d52b7a1a323633975a8b3c3219e1d86b4536da27d7df036e3f28c",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.636&longitude=127.2165&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "namyangju",
+      "representative_distance_km": 13.01,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "yangpyeong",
+      "name": "양평",
+      "latitude": 37.4917,
+      "longitude": 127.4876,
+      "weather_grid_latitude": 37.5,
+      "weather_grid_longitude": 127.5,
+      "hours": 240,
+      "weather_sha256": "db01598cd07f2e8b9fb4239de21fb1ffc7e99b06aa14e54efa0ef4b140d20272",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.4917&longitude=127.4876&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "yangpyeong",
+      "representative_distance_km": 1.43,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "gapyeong",
+      "name": "가평",
+      "latitude": 37.8315,
+      "longitude": 127.5095,
+      "weather_grid_latitude": 37.75,
+      "weather_grid_longitude": 127.5,
+      "hours": 240,
+      "weather_sha256": "ae8e6c3a674c89f8a1e4742bdb2f1ba18fde8f280e6e3304a0150ee6da09b544",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.8315&longitude=127.5095&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "gapyeong",
+      "representative_distance_km": 9.1,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "pocheon",
+      "name": "포천",
+      "latitude": 37.8949,
+      "longitude": 127.2003,
+      "weather_grid_latitude": 38.0,
+      "weather_grid_longitude": 127.25,
+      "hours": 240,
+      "weather_sha256": "3e013061a48c9e6e07f4543d94b6f07157ace6eedac89f73e8f5bb167bbc8eaf",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.8949&longitude=127.2003&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "pocheon",
+      "representative_distance_km": 12.47,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "sokcho",
+      "name": "속초",
+      "latitude": 38.207,
+      "longitude": 128.5918,
+      "weather_grid_latitude": 38.25,
+      "weather_grid_longitude": 128.5,
+      "hours": 240,
+      "weather_sha256": "c3be0051a7e81fd2d764cd37bf0631f758f9f56e04e35b51db8948dd0d85ed50",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.207&longitude=128.5918&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "sokcho",
+      "representative_distance_km": 9.34,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "donghae",
+      "name": "동해",
+      "latitude": 37.5244,
+      "longitude": 129.1144,
+      "weather_grid_latitude": 37.5,
+      "weather_grid_longitude": 129.0,
+      "hours": 240,
+      "weather_sha256": "32fef2d3b56d0a9a28d7903a435f30e6d372f792785f2ec4724563ef27b1f0e7",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.5244&longitude=129.1144&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "donghae",
+      "representative_distance_km": 10.45,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "samcheok",
+      "name": "삼척",
+      "latitude": 37.4498,
+      "longitude": 129.1658,
+      "weather_grid_latitude": 37.5,
+      "weather_grid_longitude": 129.0,
+      "hours": 240,
+      "weather_sha256": "21f5c45c4df67758bef31290cc2746683910c8b4674607e8d49a618254b8bc71",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.4498&longitude=129.1658&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "donghae",
+      "representative_distance_km": 15.66,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "hongcheon",
+      "name": "홍천",
+      "latitude": 37.6972,
+      "longitude": 127.8886,
+      "weather_grid_latitude": 37.75,
+      "weather_grid_longitude": 128.0,
+      "hours": 240,
+      "weather_sha256": "9ff90c8e6754a4e4c1d89187a50920ec455e4edc2320454887db532b7471433d",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.6972&longitude=127.8886&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "hongcheon",
+      "representative_distance_km": 11.42,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "pyeongchang",
+      "name": "평창",
+      "latitude": 37.3705,
+      "longitude": 128.39,
+      "weather_grid_latitude": 37.25,
+      "weather_grid_longitude": 128.5,
+      "hours": 240,
+      "weather_sha256": "6d962162c5aeeb628f9463eb6cf965da9bff89d1877c5fcab7c4ca8c5b733a2a",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.3705&longitude=128.39&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "pyeongchang",
+      "representative_distance_km": 16.56,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    },
+    {
+      "id": "jeongseon",
+      "name": "정선",
+      "latitude": 37.3806,
+      "longitude": 128.6607,
+      "weather_grid_latitude": 37.5,
+      "weather_grid_longitude": 128.75,
+      "hours": 240,
+      "weather_sha256": "4a6f9829f4c2ad9478892966fa969b29786c1850d67c71f5cbc3eb83328e5ef7",
+      "weather_source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.3806&longitude=128.6607&start_date=2025-12-01&end_date=2025-12-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_direction_10m&wind_speed_unit=ms&timezone=Asia%2FSeoul&models=era5",
+      "calculation_source": "jeongseon",
+      "representative_distance_km": 15.44,
+      "checked_times": [
+        "2025-12-01T12:00",
+        "2025-12-10T23:00"
+      ]
+    }
+  ],
+  "weather_kind": "ERA5 reanalysis, representative nearby point; not station observation",
+  "photo_location": "user assigned; not verified capture GPS",
+  "operational_use": false
+}

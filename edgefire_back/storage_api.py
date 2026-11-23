@@ -143,7 +143,8 @@ def config():
                       ai_model_available=Path(os.environ.get('VISION_MODEL_PATH', '__missing__')).is_file())
 
 
-PHOTO_REGIONS = {'seoul','incheon','suwon','chuncheon','wonju','gangneung'}
+from fire_forecast.catalog import REGIONS as REGION_CATALOG
+PHOTO_REGIONS = set(REGION_CATALOG)
 
 
 @router.get('/jobs')

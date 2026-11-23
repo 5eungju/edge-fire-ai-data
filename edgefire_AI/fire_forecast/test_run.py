@@ -6,9 +6,17 @@ from pathlib import Path
 import numpy as np
 from fire_forecast.run import arrival, feature_collection, audit, train_occurrence
 from fire_forecast.service import validate, calculate, regions
+from fire_forecast.catalog import POINTS, REGIONS, NAMES
 
 
 class GridTests(unittest.TestCase):
+    def test_expanded_regions_share_names_and_valid_coordinates(self):
+        self.assertEqual(len(POINTS),18)
+        self.assertEqual(len(REGIONS),len(POINTS))
+        self.assertEqual(set(REGIONS),set(NAMES))
+        for key,coordinates in REGIONS.items():
+            self.assertEqual(validate({'region':key})[1:3],coordinates)
+
     def test_region_input_and_coordinates(self):
         self.assertEqual(validate({'region':'seoul'})[1:3],(37.5665,126.978))
         self.assertEqual(validate({'region':'map','latitude':37.7,'longitude':128.1})[1:3],(37.7,128.1))

@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import GasChart from "./GasChart";
 import ImageComparison from "./ImageComparison";
+import regionCatalog from "../../edgefire_AI/fire_forecast/regions.json";
 import { RISK_LEVELS, type RiskLevel } from "./riskLevels";
 
 const CesiumMap = dynamic(() => import("./CesiumMap"), { ssr: false });
 
 export default function Home() {
-  const regionNames:Record<string,string> = {seoul:'서울',incheon:'인천',suwon:'수원',chuncheon:'춘천',wonju:'원주',gangneung:'강릉',map:'지도 선택 지점'};
+  const regionNames:Record<string,string> = {...Object.fromEntries(regionCatalog.map(region=>[region.id,region.name])),map:'지도 선택 지점'};
   const [photoRegion,setPhotoRegion] = useState('seoul');
   const [showUnassigned,setShowUnassigned] = useState(false);
   const [photoRevision,setPhotoRevision] = useState(0);
@@ -413,7 +414,7 @@ const riskBadgeStyles: Record<RiskLevel, string> = {
                 alt={storageJob.status === 'COMPLETED' ? '저장소 AI 분석 결과' : '분석 대기 중인 입력 사진'}
                 style={{ transform: `scale(${zoomLevel})` }}
                 className="w-full h-full object-contain transition-all duration-300"
-              /> : <p className="text-xs text-gray-300 p-4">{photoRegion==='map' ? '사진 연결은 지도에서 서울·인천·수원·춘천·원주·강릉 중 하나를 선택해 주세요.' : '이 지역에 연결된 사진이 없습니다. 사진 입력으로 저장하거나 미지정 사진을 연결해 주세요.'}</p>}
+              /> : <p className="text-xs text-gray-300 p-4">{photoRegion==='map' ? '사진 연결은 지도 지역 목록에서 등록 지역을 선택해 주세요.' : '이 지역에 연결된 사진이 없습니다. 사진 입력으로 저장하거나 미지정 사진을 연결해 주세요.'}</p>}
               <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded backdrop-blur">
                 {storageJob ? `${submittedImageRef.current ? '입력 사진' : '저장 이미지'} · ${storageJob.status === 'COMPLETED' ? '분석 완료' : storageJob.status === 'FAILED' ? '분석 실패' : '분석 대기/진행'} · ${storageJob.region_id ? regionNames[storageJob.region_id]+' (사용자 지정)' : '지역 미지정'} | 표시 효과:` : "사진 대기 | 표시 효과:"} {isThermal ? "🔥 IR Thermal" : "📷 Visible"} | Zoom: {zoomLevel}x
               </div>

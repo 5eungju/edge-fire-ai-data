@@ -1,0 +1,110 @@
+[
+  {
+    "id": "chuncheon",
+    "name": "춘천",
+    "latitude": 37.8853,
+    "longitude": 127.7669
+  },
+  {
+    "id": "seoul",
+    "name": "서울",
+    "latitude": 37.5665,
+    "longitude": 126.978
+  },
+  {
+    "id": "suwon",
+    "name": "수원",
+    "latitude": 37.2636,
+    "longitude": 127.0286
+  },
+  {
+    "id": "incheon",
+    "name": "인천",
+    "latitude": 37.4563,
+    "longitude": 126.7052
+  },
+  {
+    "id": "wonju",
+    "name": "원주",
+    "latitude": 37.3422,
+    "longitude": 127.9202
+  },
+  {
+    "id": "gangneung",
+    "name": "강릉",
+    "latitude": 37.7519,
+    "longitude": 128.8761
+  },
+  {
+    "id": "goyang",
+    "name": "고양",
+    "latitude": 37.6584,
+    "longitude": 126.832
+  },
+  {
+    "id": "paju",
+    "name": "파주",
+    "latitude": 37.7599,
+    "longitude": 126.7802
+  },
+  {
+    "id": "namyangju",
+    "name": "남양주",
+    "latitude": 37.636,
+    "longitude": 127.2165
+  },
+  {
+    "id": "yangpyeong",
+    "name": "양평",
+    "latitude": 37.4917,
+    "longitude": 127.4876
+  },
+  {
+    "id": "gapyeong",
+    "name": "가평",
+    "latitude": 37.8315,
+    "longitude": 127.5095
+  },
+  {
+    "id": "pocheon",
+    "name": "포천",
+    "latitude": 37.8949,
+    "longitude": 127.2003
+  },
+  {
+    "id": "sokcho",
+    "name": "속초",
+    "latitude": 38.207,
+    "longitude": 128.5918
+  },
+  {
+    "id": "donghae",
+    "name": "동해",
+    "latitude": 37.5244,
+    "longitude": 129.1144
+  },
+  {
+    "id": "samcheok",
+    "name": "삼척",
+    "latitude": 37.4498,
+    "longitude": 129.1658
+  },
+  {
+    "id": "hongcheon",
+    "name": "홍천",
+    "latitude": 37.6972,
+    "longitude": 127.8886
+  },
+  {
+    "id": "pyeongchang",
+    "name": "평창",
+    "latitude": 37.3705,
+    "longitude": 128.39
+  },
+  {
+    "id": "jeongseon",
+    "name": "정선",
+    "latitude": 37.3806,
+    "longitude": 128.6607
+  }
+]

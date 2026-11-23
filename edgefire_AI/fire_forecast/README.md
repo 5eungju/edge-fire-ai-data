@@ -1,6 +1,6 @@
 # 발생·확산 연구 모듈
 
-기존 YOLO 학습과 별도인 CPU 1스레드 작업이다. 결과는 C드라이브에 저장한다. 지도 범위는 수도권·강원도이며 서울·수원·인천·춘천·원주·강릉 6개 지점의 시간자료를 확보했다. run.py 배치 예제는 춘천 한 지점의 가정 발화점을 사용한다. 새 프론트는 service.py를 통해 6개 지역·시각·지도 좌표를 선택해 재계산한다. 실제 발화/확산 관측을 의미하지 않는다. 자세한 시연은 ../../integration/DEMO.md를 참고한다.
+기존 YOLO 학습과 별도인 CPU 1스레드 작업이다. 결과는 C드라이브에 저장한다. 지도 범위는 수도권·강원도이며 공유 지역 목록(regions.json)의 18개 지점의 시간자료를 확보했다. run.py 배치 예제는 춘천 한 지점의 가정 발화점을 사용한다. 새 프론트는 service.py를 통해 18개 지역·시각·지도 좌표를 선택해 재계산한다. 실제 발화/확산 관측을 의미하지 않는다. 자세한 시연은 ../../integration/DEMO.md를 참고한다.
 
 기상 자료 재수집은 edgefire_AI 폴더에서 `py -m fire_forecast.fetch_weather --root C:/Users/tmdwn/Documents/Codex/2026-11-19/new-chat/outputs/fire_forecast_202512`로 실행한다. requests가 필요하다.
 

@@ -5,10 +5,10 @@ import math
 import os
 import uuid
 from pathlib import Path
-from fire_forecast.fetch_weather import REGIONS
+from fire_forecast.catalog import REGIONS, NAMES
 from fire_forecast.run import arrival, feature_collection
 
-NAMES = dict(seoul='서울',incheon='인천',suwon='수원',chuncheon='춘천',wonju='원주',gangneung='강릉')
+
 
 
 def weather_path(root,region):
@@ -65,7 +65,7 @@ def calculate(root,payload):
     if weather['hourly_units'].get('wind_speed_10m')!='m/s':raise ValueError('풍속 단위를 확인해야 합니다.')
     wind=hourly['wind_speed_10m'][index];direction=hourly['wind_direction_10m'][index];humidity=hourly['relative_humidity_2m'][index]
     if any(v is None for v in [wind,direction,humidity]):raise ValueError('선택 시각의 기상 자료가 없습니다.')
-    fingerprint=hashlib.sha256(json.dumps([3,region,lat,lon,timestamp,hashlib.sha256(raw).hexdigest()]).encode()).hexdigest()
+    fingerprint=hashlib.sha256(json.dumps([4,region,lat,lon,timestamp,hashlib.sha256(raw).hexdigest()]).encode()).hexdigest()
     target=root/'requests'/(fingerprint+'.geojson')
     if target.exists():return json.loads(target.read_text(encoding='utf-8'))
     result=feature_collection(arrival(wind,direction,humidity),lat,lon,20)

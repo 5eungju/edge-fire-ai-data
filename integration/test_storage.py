@@ -41,10 +41,10 @@ class StorageContract(unittest.TestCase):
         stream=io.BytesIO();Image.new('RGB',(24,24),'blue').save(stream,format='PNG');raw=stream.getvalue()
         def upload(region=None):
             return self.client.post('/api/v1/storage/jobs',headers=self.headers,files={'image':('photo.png',raw,'image/png')},data={} if region is None else {'region_id':region})
-        a=upload('seoul').json();b=upload('chuncheon').json();old=upload().json()
+        a=upload('seoul').json();b=upload('paju').json();old=upload().json()
         def ids(region):
             return [j['id'] for j in self.client.get('/api/v1/storage/jobs',headers=self.headers,params={'region':region}).json()]
-        self.assertIn(a['id'],ids('seoul'));self.assertNotIn(b['id'],ids('seoul'))
+        self.assertIn(a['id'],ids('seoul'));self.assertNotIn(b['id'],ids('seoul'));self.assertIn(b['id'],ids('paju'))
         self.assertIn(old['id'],ids('unassigned'));self.assertNotIn(old['id'],ids('seoul'))
         route='/api/v1/storage/jobs/'+old['id']+'/location'
         self.assertEqual(self.client.post(route,json={'region_id':'seoul'}).status_code,401)

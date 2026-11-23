@@ -1,23 +1,27 @@
 """Download small, attributed ERA5 inputs for the capital area and Gangwon."""
 import argparse
+import json
 from pathlib import Path
 
 import requests
 from fire_forecast.run import write
 
-REGIONS = {
-    'chuncheon': (37.8853,127.7669), 'seoul': (37.5665,126.978),
-    'suwon': (37.2636,127.0286), 'incheon': (37.4563,126.7052),
-    'wonju': (37.3422,127.9202), 'gangneung': (37.7519,128.8761),
-}
+from fire_forecast.catalog import REGIONS
+
 
 
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--root',type=Path,required=True)
+    parser.add_argument('--refresh',action='store_true')
     args=parser.parse_args();root=args.root.resolve()
     if root.drive.upper() != 'C:':raise ValueError('Use C: storage')
     for name,(lat,lon) in REGIONS.items():
+        filename='weather_era5_20251201_10.json' if name=='chuncheon' else f'weather_{name}_20251201_10.json'
+        if (root/filename).exists() and not args.refresh:
+            existing=json.loads((root/filename).read_text(encoding='utf-8'))
+            if len(existing.get('hourly',{}).get('time',[]))==240:
+                print(name,'retained',flush=True);continue
         params=dict(latitude=lat,longitude=lon,start_date='2025-12-01',end_date='2025-12-10',
             hourly='temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m',
             wind_speed_unit='ms',timezone='Asia/Seoul',models='era5')
@@ -31,7 +35,7 @@ def main():
             attribution='Open-Meteo and Copernicus Climate Change Service ERA5')
         filename='weather_era5_20251201_10.json' if name=='chuncheon' else f'weather_{name}_20251201_10.json'
         write(root/filename,data)
-        print(name,len(data['hourly']['time']))
+        print(name,len(data['hourly']['time']),flush=True)
 
 
 if __name__=='__main__':main()

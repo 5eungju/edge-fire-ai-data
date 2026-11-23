@@ -303,7 +303,7 @@ const CesiumMap = forwardRef((/** @type {{ enableForecast?: boolean, onRegionCha
           <p>{forecastMetadata.input_time.replace('T',' ')} · ERA5 {forecastMetadata.wind_ms}m/s · 풍향 {forecastMetadata.wind_from_deg}° · 습도 {forecastMetadata.humidity_pct}%</p>
           <p>기상 대표 지점: {forecastMetadata.weather_region_name} · 거리 {forecastMetadata.representative_point_distance_km}km</p>
           <p>가정 발화점 · 평지·균일 연료 · 빨강 10 / 주황 20 / 노랑 30분</p>
-          <p>파랑 점: 기상 대표 지점 · 사진은 지도와 별도 입력</p>
+          <p>파랑 점: 기상 대표 지점 · 사진 지역은 사용자 지정</p>
         </>}
       </div>}
       {!loaded && (
